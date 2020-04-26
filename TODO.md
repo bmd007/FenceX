@@ -1,2 +1,3 @@
 # another docker compose for two instances deployment
-#change toward test-bed/caller
+# use maven instead of local library
+# work on runner

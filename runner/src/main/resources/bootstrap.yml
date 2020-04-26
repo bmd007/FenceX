@@ -1,0 +1,9 @@
+spring:
+  application.name: stateful-geofencing-faas
+  cloud:
+    consul:
+      config:
+        enabled: true
+      enabled: true
+      discovery:
+        enabled: true

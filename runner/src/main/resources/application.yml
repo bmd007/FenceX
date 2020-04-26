@@ -1,0 +1,49 @@
+server.port: 8242
+
+management:
+  server.port: 8243
+  health:
+    defaults.enabled: true
+    diskspace.enabled: false
+  endpoints:
+    web:
+      base-path: /
+      exposure.include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: never
+    auditevents.enabled: false
+  metrics:
+    enable.jvm: false
+    enable.jvm.gc.pause: true
+    enable.jvm.memory: true
+    enable.jvm.threads: true
+    enable.process: false
+    enable.process.files: true
+    enable.http: false
+    enable.http.server.requests: true
+    enable.logback: false
+    enable.system: false
+
+spring:
+  application.name: stateful-geofencing-faas
+  datasource:
+    initialization-mode: always
+  kafka:
+    streams:
+      replication-factor: 3
+      properties:
+        num.stream.threads: 4
+    bootstrap-servers: "localhost:9092"
+
+  h2:
+    console:
+      enabled: true
+
+kafka:
+  topic-partitions:
+    eventTopic: '1:1'
+    changeLogTopic: '1:1'
+
+

@@ -3,12 +3,14 @@ package statefull.geofencing.faas.function;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-import statefull.geo.fencing.faas.commons.domain.Mover;
-import statefull.geo.fencing.faas.commons.dto.MoverLocationUpdate;
+import org.springframework.stereotype.Component;
+import statefull.geofencing.faas.common.domain.Mover;
+import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 
 import java.util.UUID;
 import java.util.function.BiFunction;
 
+@Component
 public class MoverAggregateFunction implements BiFunction<Mover, MoverLocationUpdate, Mover> {
 
     private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue),4326);

@@ -1,9 +1,11 @@
 package statefull.geofencing.faas.function;
 
-import statefull.geo.fencing.faas.commons.dto.MoverLocationUpdate;
+import org.springframework.stereotype.Component;
+import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 
 import java.util.function.Predicate;
 
+@Component
 public class MoverLocationUpdateFilterFunction implements Predicate<MoverLocationUpdate> {
 
     @Override

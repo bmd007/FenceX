@@ -4,9 +4,11 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.springframework.stereotype.Component;
 
 import java.util.function.BiFunction;
 
+@Component
 public class WrapLocationByPolygonFunction implements BiFunction<Double, Double, Polygon> {
 
     private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue),4326);

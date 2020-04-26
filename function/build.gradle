@@ -42,7 +42,7 @@ dependencies {
 	}
 	implementation 'org.locationtech.jts:jts-core:1.16.1'
 	implementation "com.google.guava:guava:29.0-jre"
-	implementation files('libs/statefull-geo-fencing-faas-common-0.0.1-SNAPSHOT.jar')
+	implementation files('libs/statefull-geofencing-faas-common-0.0.1-SNAPSHOT.jar')
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

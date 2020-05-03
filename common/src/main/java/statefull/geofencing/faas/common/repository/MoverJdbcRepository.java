@@ -139,7 +139,7 @@ public class MoverJdbcRepository {
         return Mover.newBuilder()
                 .withId(rs.getString("id"))
                 .withLastLocation(wktPointToCoordinate(rs.getString("last_location")))
-                .withUpdatedAt(rs.getTimestamp("updatedAt").toInstant())
+                .withUpdatedAt(rs.getTimestamp("updated_at").toInstant())
                 .build();
     }
 

@@ -9,7 +9,7 @@ jacoco {
     toolVersion = "0.8.5"
 }
 
-group = 'wonderland'
+group = 'statefull.geofencing.faas.runner'
 ext.buildNumber = {
     def buildNumber = System.getenv('VERSION')
     if (buildNumber == null || buildNumber.allWhitespace) {
@@ -24,18 +24,21 @@ sourceCompatibility = 11
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 ext {
-    set('springCloudVersion', "Hoxton.SR3")
+    set('springCloudVersion', "Hoxton.SR4")
 }
 
 dependencies {
-//    implementation 'org.springframework.cloud:spring-cloud-function-context'
 
     // spring basics
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-function-context'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
 
@@ -43,19 +46,18 @@ dependencies {
     implementation 'org.apache.kafka:kafka-streams'
     implementation 'org.springframework.kafka:spring-kafka'
 
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa') {
+    implementation ('org.springframework.boot:spring-boot-starter-data-jpa') {
         exclude group: 'com.zaxxer', module: 'HikariCP'
     }
 
-    // h2
-    implementation 'com.h2database:h2:1.4.200'
-    implementation 'org.locationtech.jts:jts-core:1.16.1' // not needed when if h2gis
+    implementation 'com.h2database:h2:1.4.200' //this the newer version of h2. Hibernate-spatial has no dialect for it.
+    //Also h2gis (one of its geo extensions) doesn't support its latest (1.4.200) version
+    implementation 'org.locationtech.jts:jts-core:1.16.1' // not needed if h2gis got used
 
-    implementation "com.google.guava:guava:28.2-jre"
+    implementation "com.google.guava:guava:29.0-jre"
 
-    // to use h2gis
-    //implementation 'com.h2database:h2:1.4.197' // h2gis does not support 1.4.199 yet.
-    //implementation 'org.orbisgis:h2gis:1.5.0'
+    implementation files('libs/statefull-geofencing-faas-common-0.0.1-SNAPSHOT.jar')
+    implementation files('libs/statefull-geofencing-faas-functions-0.0.1-SNAPSHOT.jar')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

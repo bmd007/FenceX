@@ -12,10 +12,15 @@ import java.util.Objects;
 @JsonDeserialize(builder = MoverLocationUpdate.Builder.class)
 public class MoverLocationUpdate {
 
-    private String moverId;
-    private Instant timestamp;
-    private double latitude;
-    private double longitude;
+    private final String moverId;
+    private final Instant timestamp;
+    private final double latitude;
+    private final double longitude;
+
+    @JsonIgnore
+    public boolean isNotDefined(){
+        return moverId==null || moverId.isEmpty() || moverId.isBlank();
+    }
 
     private MoverLocationUpdate(Builder builder) {
         moverId = builder.moverId;

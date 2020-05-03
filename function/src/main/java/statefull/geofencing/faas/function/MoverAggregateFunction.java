@@ -1,9 +1,9 @@
 package statefull.geofencing.faas.function;
 
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Component;
+import statefull.geofencing.faas.common.domain.Coordinate;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 
@@ -13,27 +13,24 @@ import java.util.function.BiFunction;
 @Component
 public class MoverAggregateFunction implements BiFunction<Mover, MoverLocationUpdate, Mover> {
 
-    private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue),4326);
+    private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
 
     @Override
     public Mover apply(Mover currentState, MoverLocationUpdate locationUpdate) {
         //implement me. below is an straight forward example
-        if (!currentState.getId().equals(locationUpdate.getMoverId())){
-            //todo throw error
-        }
-        if (currentState==null){
-            //todo check if possible what does it mean
-        }
+        if (!locationUpdate.isNotDefined()) {
 
-        var point = geometryFactory.createPoint(new Coordinate(locationUpdate.getLatitude(), locationUpdate.getLongitude()));
-        var newStateBuilder = currentState.cloneBuilder()
-                .withUpdatedAt(locationUpdate.getTimestamp())
-                .withLastLocation(point);
+            if (!currentState.isNotDefined() && !currentState.getId().equals(locationUpdate.getMoverId())){
+                //todo throw error: obsessive check because of key = id
+            }
 
-        if (currentState.getId()==null || currentState.getId().isEmpty() || currentState.getId().isBlank()){
-            newStateBuilder.withId(UUID.randomUUID().toString());
+            return Mover.newBuilder()
+                    .withUpdatedAt(locationUpdate.getTimestamp())
+                    .withLastLocation(new Coordinate(locationUpdate.getLatitude(), locationUpdate.getLongitude()))
+                    .withId(locationUpdate.getMoverId())
+                    .build();
         }
 
-        return newStateBuilder.build();
+        return null;
     }
 }

@@ -32,18 +32,18 @@ spring:
     initialization-mode: always
   kafka:
     streams:
-      replication-factor: 3
+      replication-factor: 1
       properties:
-        num.stream.threads: 4
+        num.stream.threads: 1
     bootstrap-servers: "localhost:9092"
 
   h2:
     console:
       enabled: true
+      settings:
+        web-allow-others: true
 
 kafka:
   topic-partitions:
     eventTopic: '1:1'
     changeLogTopic: '1:1'
-
-

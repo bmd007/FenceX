@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 @Component
 public class WrapLocationByPolygonFunction implements BiFunction<Double, Double, Polygon> {
 
-    private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue),4326);
+    private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
 
     @Override
     public Polygon apply(Double latitude, Double longitude) {

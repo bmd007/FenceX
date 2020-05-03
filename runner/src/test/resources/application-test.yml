@@ -19,11 +19,3 @@ spring:
     enabled: true
     bootstrap-servers: ${spring.embedded.kafka.brokers}
 
-# This is the mapped ip:port for inter instance communication.
-# This port is never going to be opened during testing.
-kafka:
-  streams:
-    server:
-      config:
-        app-ip: localhost
-        app-port: 6767

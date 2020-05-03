@@ -1,34 +1,41 @@
 package statefull.geofencing.faas.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
-import org.locationtech.jts.geom.Point;
 
 import java.time.Instant;
 import java.util.Objects;
 
+
+@JsonDeserialize(builder = Mover.Builder.class)
 public class Mover {
 
     private String id;
 
-    private Point lastLocation;
+    private Coordinate lastLocation;
 
     private Instant updatedAt;
 
     public Mover() {
     }
 
-    public static Mover defineEmpty(){
-        return newBuilder().withId("").build();
-    }
-
-    public Builder cloneBuilder(){
-        return newBuilder(this);
-    }
-
     private Mover(Builder builder) {
         id = builder.id;
         lastLocation = builder.lastLocation;
         updatedAt = builder.updatedAt;
+    }
+    
+    @JsonIgnore
+    public boolean isNotDefined(){
+        return id==null || id.isEmpty() || id.isBlank();
+    }
+
+    public static Mover defineEmpty() {
+        return newBuilder().withId("")
+                .withLastLocation(Coordinate.nullValue())
+                .withUpdatedAt(Instant.now())
+                .build();
     }
 
     public static Builder newBuilder() {
@@ -41,6 +48,10 @@ public class Mover {
         builder.lastLocation = copy.getLastLocation();
         builder.updatedAt = copy.getUpdatedAt();
         return builder;
+    }
+
+    public Builder cloneBuilder() {
+        return newBuilder(this);
     }
 
     @Override
@@ -76,13 +87,13 @@ public class Mover {
         return id;
     }
 
-    public Point getLastLocation() {
+    public Coordinate getLastLocation() {
         return lastLocation;
     }
 
     public static final class Builder {
         private String id;
-        private Point lastLocation;
+        private Coordinate lastLocation;
         private Instant updatedAt;
 
         private Builder() {
@@ -93,7 +104,7 @@ public class Mover {
             return this;
         }
 
-        public Builder withLastLocation(Point val) {
+        public Builder withLastLocation(Coordinate val) {
             lastLocation = val;
             return this;
         }

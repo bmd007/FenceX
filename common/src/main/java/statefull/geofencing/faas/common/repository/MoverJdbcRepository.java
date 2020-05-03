@@ -1,15 +1,13 @@
 package statefull.geofencing.faas.common.repository;
 
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import statefull.geofencing.faas.common.domain.Coordinate;
 import statefull.geofencing.faas.common.domain.Mover;
 
 import javax.annotation.Nullable;
@@ -24,10 +22,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Repository
 public class MoverJdbcRepository {
 
-    private JdbcTemplate jdbc;
-    private WKTReader wktReader = new WKTReader(new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue),4326));
+    public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
+    private final JdbcTemplate jdbc;
 
     //todo incorporate time stamp into queries for checking availability
+    private final WKTReader wktReader = new WKTReader(new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326));
 
     public MoverJdbcRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -50,7 +49,9 @@ public class MoverJdbcRepository {
                         + " key (id)"
                         + " values ('%s', '%s', '%s');",
                 mover.getId(),
-                mover.getLastLocation().toText()));
+                coordinateToWktPoint(mover.getLastLocation()),
+                mover.getUpdatedAt()
+        ));
     }
 
     /**
@@ -61,7 +62,7 @@ public class MoverJdbcRepository {
     public Mover get(String key) {
         try {
             var sql = String.format("select * from movers where id = '%s'", key);
-            return jdbc.queryForObject(sql, (RowMapper<Mover>) this::mapRow);
+            return jdbc.queryForObject(sql, this::mapRow);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -71,7 +72,7 @@ public class MoverJdbcRepository {
      * @return all movers.
      */
     public List<Mover> getAll() {
-        return jdbc.query("select * from movers;", (RowMapper<Mover>) this::mapRow);
+        return jdbc.query("select * from movers;", this::mapRow);
     }
 
     /**
@@ -80,7 +81,7 @@ public class MoverJdbcRepository {
      * @return a list of movers where the keys are in range.
      */
     public List<Mover> getInRange(String from, String to) {
-        return jdbc.query("select * from movers where (id between ? and ?);", (RowMapper<Mover>) this::mapRow, from, to);
+        return jdbc.query("select * from movers where (id between ? and ?);", this::mapRow, from, to);
     }
 
     /**
@@ -96,6 +97,8 @@ public class MoverJdbcRepository {
     public void deleteAll() {
         jdbc.execute("delete from movers;");
     }
+
+    //todo add support for maxAge
 
     /**
      * @return how many movers have saved.
@@ -117,7 +120,7 @@ public class MoverJdbcRepository {
                 .map(point -> point.toText())
                 .collect(Collectors.joining(","));
         var sql = String.format("select * from movers where last_location && 'POLYGON((%s))';", polygonString);
-        return jdbc.query(sql, (RowMapper<Mover>) this::mapRow);
+        return jdbc.query(sql, this::mapRow);
     }
 
     /**
@@ -126,25 +129,34 @@ public class MoverJdbcRepository {
      * @param polygon a list of at least 3 points.
      * @return a list of movers with coordinates inside the polygon.
      */
+    //todo add support for maxAge
     public List<Mover> query(Polygon polygon) {
         var sql = String.format("select * from movers where last_location && %s';", polygon.toText());
-        return jdbc.query(sql, (RowMapper<Mover>) this::mapRow);
+        return jdbc.query(sql, this::mapRow);
     }
 
     private Mover mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Mover.newBuilder()
                 .withId(rs.getString("id"))
-                .withLastLocation(parsePoint(rs.getString("last_location")))
-                .withUpdatedAt(rs.getTimestamp("availability_timestamp").toInstant())
+                .withLastLocation(wktPointToCoordinate(rs.getString("last_location")))
+                .withUpdatedAt(rs.getTimestamp("updatedAt").toInstant())
                 .build();
     }
 
-    private Point parsePoint(String point) {
+    //todo handle ull fields
+    private Coordinate wktPointToCoordinate(String wktPoint) {
         try {
-            return (Point) this.wktReader.read(point);
+            var point = (Point) this.wktReader.read(wktPoint);
+            return Coordinate.of(point.getX(), point.getY());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        throw new IllegalStateException("Cannot parse point string: " + point);
+        throw new IllegalStateException("Cannot parse point string: " + wktPoint);
+    }
+
+    //todo handle ull fields
+    private String coordinateToWktPoint(Coordinate coordinate) {
+        org.locationtech.jts.geom.CoordinateXY jtsCoordinate = new CoordinateXY(coordinate.getLatitude(), coordinate.getLongitude());
+        return GEOMETRY_FACTORY.createPoint(jtsCoordinate).toText();
     }
 }

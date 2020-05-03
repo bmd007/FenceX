@@ -1,6 +1,8 @@
 package statefull.geofencing.faas.runner.resource;
 
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +14,11 @@ import statefull.geofencing.faas.runner.dto.MoversDto;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 @RestController
 @RequestMapping("/api/movers")
@@ -41,8 +45,7 @@ public class MoverResource {
     @GetMapping("/box")
     public MoversDto queryBox(@RequestParam(required = true) double latitude,
                               @RequestParam(required = true) double longitude,
-                              @RequestParam(required = false) Long maxAge,
-                              @RequestParam(required = false) Set<Boolean> availability) {
+                              @RequestParam(required = false) Long maxAge) {
         return queryPolygon(wrapLocationByPolygonFunction.apply(latitude, longitude), maxAge);
     }
 
@@ -50,6 +53,17 @@ public class MoverResource {
     public MoversDto queryPolygon(@Valid @RequestBody Polygon polygon, @RequestParam(required = false) Long maxAge) {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, polygon);
         var results = polygonalGeoFencingFunction.apply(repository, polygon)
+                .stream()
+                .map(this::map)
+                .collect(Collectors.toList());
+        return new MoversDto(results);
+    }
+
+    @PostMapping("/kwt")
+    public MoversDto queryPolygon(@Valid @RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
+        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
+        var polygon = (Polygon) repository.getWktReader().read(kwtString);
+        var results = repository.query(polygon)
                 .stream()
                 .map(this::map)
                 .collect(Collectors.toList());

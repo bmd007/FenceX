@@ -24,9 +24,7 @@ public class MoverJdbcRepository {
 
     public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
     private final JdbcTemplate jdbc;
-
-    //todo incorporate time stamp into queries for checking availability
-    private final WKTReader wktReader = new WKTReader(new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326));
+    public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
 
     public MoverJdbcRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -112,26 +110,10 @@ public class MoverJdbcRepository {
      *
      * @param polygon a list of at least 3 points.
      * @return a list of movers with coordinates inside the polygon.
-     * TODO query might be wrong. Polygon to text using points is different from interpolation
-     */
-    public List<Mover> query(List<Point> polygon) {
-        checkArgument(polygon.size() > 2, "Incomplete polygon");
-        var polygonString = Stream.concat(polygon.stream(), Stream.of(polygon.get(0))) // ends with the first.
-                .map(point -> point.toText())
-                .collect(Collectors.joining(","));
-        var sql = String.format("select * from movers where last_location && 'POLYGON((%s))';", polygonString);
-        return jdbc.query(sql, this::mapRow);
-    }
-
-    /**
-     * Query by a polygon.
-     *
-     * @param polygon a list of at least 3 points.
-     * @return a list of movers with coordinates inside the polygon.
      */
     //todo add support for maxAge
     public List<Mover> query(Polygon polygon) {
-        var sql = String.format("select * from movers where last_location && %s';", polygon.toText());
+        var sql = String.format("select * from movers where last_location && '%s' ;", polygon.toText());
         return jdbc.query(sql, this::mapRow);
     }
 

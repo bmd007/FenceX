@@ -17,11 +17,6 @@ public class MoverLocationUpdate {
     private final double latitude;
     private final double longitude;
 
-    @JsonIgnore
-    public boolean isNotDefined(){
-        return moverId==null || moverId.isEmpty() || moverId.isBlank();
-    }
-
     private MoverLocationUpdate(Builder builder) {
         moverId = builder.moverId;
         timestamp = builder.timestamp;
@@ -40,6 +35,11 @@ public class MoverLocationUpdate {
         builder.latitude = copy.getLatitude();
         builder.longitude = copy.getLongitude();
         return builder;
+    }
+
+    @JsonIgnore
+    public boolean isNotDefined() {
+        return moverId == null || moverId.isEmpty() || moverId.isBlank();
     }
 
     @JsonIgnore

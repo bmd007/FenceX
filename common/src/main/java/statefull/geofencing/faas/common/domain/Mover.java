@@ -25,11 +25,6 @@ public class Mover {
         lastLocation = builder.lastLocation;
         updatedAt = builder.updatedAt;
     }
-    
-    @JsonIgnore
-    public boolean isNotDefined(){
-        return id==null || id.isEmpty() || id.isBlank();
-    }
 
     public static Mover defineEmpty() {
         return newBuilder().withId("")
@@ -48,6 +43,11 @@ public class Mover {
         builder.lastLocation = copy.getLastLocation();
         builder.updatedAt = copy.getUpdatedAt();
         return builder;
+    }
+
+    @JsonIgnore
+    public boolean isNotDefined() {
+        return id == null || id.isEmpty() || id.isBlank();
     }
 
     public Builder cloneBuilder() {

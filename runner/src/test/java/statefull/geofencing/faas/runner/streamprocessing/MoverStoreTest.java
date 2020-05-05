@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.common.repository.MoverJdbcRepository;
 
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

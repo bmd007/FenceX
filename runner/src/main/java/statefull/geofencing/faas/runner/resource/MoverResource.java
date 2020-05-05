@@ -1,6 +1,5 @@
 package statefull.geofencing.faas.runner.resource;
 
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 import org.slf4j.Logger;
@@ -16,9 +15,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @RestController
 @RequestMapping("/api/movers")

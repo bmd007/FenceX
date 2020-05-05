@@ -5,7 +5,6 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import statefull.geofencing.faas.common.domain.Coordinate;
 import statefull.geofencing.faas.common.domain.Mover;
@@ -14,17 +13,13 @@ import javax.annotation.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @Repository
 public class MoverJdbcRepository {
 
     public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
-    private final JdbcTemplate jdbc;
     public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
+    private final JdbcTemplate jdbc;
 
     public MoverJdbcRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;

@@ -61,8 +61,8 @@ public class KStreamAndKTableDefinitions {
                 .stream(Topics.MOVER_POSITION_UPDATES_TOPIC, MOVER_POSITION_UPDATE_CONSUMED)
                 .filterNot((k, v) -> k == null || k.isBlank() || k.isEmpty() || v == null || v.getKey() == null || v.getKey().isEmpty() || v.getKey().isBlank())
                 .filter((k, v) -> k.equals(v.getKey()))
-                .filter((k, v) -> v.getLatitude() >= -90 &&  v.getLatitude() <= 90)
-                .filter((k, v) -> v.getLongitude() >= -180 &&  v.getLongitude() <= 180  )
+                .filter((k, v) -> v.getLatitude() >= -90 && v.getLatitude() <= 90)
+                .filter((k, v) -> v.getLongitude() >= -180 && v.getLongitude() <= 180)
                 .filter((key, value) -> moverLocationUpdateFilterFunction.test(value))
                 .groupByKey()
                 // Aggregate status into a in-memory KTable as a source for global KTable

@@ -112,19 +112,19 @@ services:
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: statefull-geofencing-fass-runner2
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
 
-  statefull-geofencing-fass-runner3:
-    hostname: statefull-geofencing-fass-runner3
-    ports:
-      - 8246:9585
-      - 8247:9586
-      - 9602:8084
-      - 9502:9097
-    build:
-      context: ./runner
-      dockerfile: Dockerfile
-    depends_on:
-      - kafka
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: statefull-geofencing-fass-runner3
-      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
+#  statefull-geofencing-fass-runner3:
+#    hostname: statefull-geofencing-fass-runner3
+#    ports:
+#      - 8246:9585
+#      - 8247:9586
+#      - 9602:8084
+#      - 9502:9097
+#    build:
+#      context: ./runner
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - kafka
+#    environment:
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+#      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: statefull-geofencing-fass-runner3
+#      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585

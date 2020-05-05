@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Profile;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.apache.kafka.common.config.TopicConfig.*;
+import static org.apache.kafka.common.config.TopicConfig.CLEANUP_POLICY_COMPACT;
+import static org.apache.kafka.common.config.TopicConfig.CLEANUP_POLICY_CONFIG;
 
 /**
  * Configuration class to automatically create the topics with the configured partitions and replication factor.

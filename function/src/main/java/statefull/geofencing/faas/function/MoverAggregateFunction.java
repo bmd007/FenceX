@@ -7,7 +7,6 @@ import statefull.geofencing.faas.common.domain.Coordinate;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 
-import java.util.UUID;
 import java.util.function.BiFunction;
 
 @Component
@@ -20,7 +19,7 @@ public class MoverAggregateFunction implements BiFunction<Mover, MoverLocationUp
         //implement me. below is an straight forward example
         if (!locationUpdate.isNotDefined()) {
 
-            if (!currentState.isNotDefined() && !currentState.getId().equals(locationUpdate.getMoverId())){
+            if (!currentState.isNotDefined() && !currentState.getId().equals(locationUpdate.getMoverId())) {
                 //todo throw error: obsessive check because of key = id
             }
 

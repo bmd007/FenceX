@@ -25,7 +25,7 @@ public class Application {
     @EventListener(org.springframework.context.event.ContextRefreshedEvent.class)
     public void setupH2Console() {
         try {
-            this.webServer = org.h2.tools.Server.createWebServer("-webPort", "8084", "-tcpAllowOthers").start();
+            this.webServer = org.h2.tools.Server.createWebServer("-webPort", "8084", "-webAllowOthers").start();
             this.server = org.h2.tools.Server.createTcpServer("-tcpPort", "9097", "-tcpAllowOthers").start();
         } catch (SQLException throwable) {
             LOGGER.error("", throwable);

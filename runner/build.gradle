@@ -9,11 +9,11 @@ jacoco {
     toolVersion = "0.8.5"
 }
 
-group = 'statefull.geofencing.faas.runner'
+group = 'statefull.geofencing.faas'
 ext.buildNumber = {
     def buildNumber = System.getenv('VERSION')
     if (buildNumber == null || buildNumber.allWhitespace) {
-        buildNumber = '1.0.0-SNAPSHOT'
+        buildNumber = 'beta'
     }
     return buildNumber
 }

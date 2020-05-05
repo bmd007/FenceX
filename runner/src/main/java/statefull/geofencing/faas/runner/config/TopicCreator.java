@@ -36,10 +36,16 @@ public class TopicCreator {
         return String.format("%s-%s-changelog", applicationName, storeName);
     }
 
+//    @Bean
+//    public NewTopic eventsTopic() {
+//        return new NewTopic(Topics.EVENT_LOG, eventTopicDefinition.numPartitions, eventTopicDefinition.replicationFactor)
+//                .configs(Map.of(RETENTION_MS_CONFIG, "-1", RETENTION_BYTES_CONFIG, "-1"));
+//    }
+
     @Bean
-    public NewTopic eventsTopic() {
-        return new NewTopic(Topics.EVENT_LOG, eventTopicDefinition.numPartitions, eventTopicDefinition.replicationFactor)
-                .configs(Map.of(RETENTION_MS_CONFIG, "-1", RETENTION_BYTES_CONFIG, "-1"));
+    public NewTopic moverPositionUpdateTopic() {
+        return new NewTopic(Topics.MOVER_POSITION_UPDATES_TOPIC, changeLogTopicDefinition.numPartitions, changeLogTopicDefinition.replicationFactor)
+                .configs(Map.of(CLEANUP_POLICY_CONFIG, CLEANUP_POLICY_COMPACT));
     }
 
     @Bean

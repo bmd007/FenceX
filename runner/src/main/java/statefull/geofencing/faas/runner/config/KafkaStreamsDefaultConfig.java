@@ -20,11 +20,13 @@ import java.util.stream.Collectors;
 public class KafkaStreamsDefaultConfig {
 
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
-    public KafkaStreamsConfiguration kakfaStreamsConfig(
+    public KafkaStreamsConfiguration kafkaStreamsConfig(
             @Value("${spring.application.name}") String applicationName,
             @Value("${spring.kafka.bootstrap-servers}") String bootStrapServers,
             @Value("${kafka.streams.replication-factor:1}") int replicationFactor,
             @Value("${kafka.streams.properties.num.stream.threads:1}") int numStreamThreads,
+            @Value("${kafka.streams.server.config.app.port:9585}") int port,
+            @Value("${kafka.streams.server.config.app.ip:localhost}") String ip,
             Environment environment) {
         var props = new HashMap<String, Object>();
 
@@ -38,11 +40,11 @@ public class KafkaStreamsDefaultConfig {
 //        props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
 
         //        // This configuration is for making remote interactive queries possible
-        //        props.put(StreamsConfig.APPLICATION_SERVER_CONFIG, ip + ":" + port);
+        props.put(StreamsConfig.APPLICATION_SERVER_CONFIG, ip + ":" + port);
 
         var activeProfiles = Arrays.stream(environment.getActiveProfiles()).collect(Collectors.toSet());
         //The properties below, should not be applied when active profile is test
-        if (!activeProfiles.contains("test")) {
+        if (!activeProfiles.contains("test") && !activeProfiles.contains("local")) {
             props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
             props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
         } else {

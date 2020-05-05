@@ -20,6 +20,7 @@ services:
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_CREATE_TOPICS: >-
+        mover-position-updates:3:2,
         event_log:5:3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
@@ -77,47 +78,53 @@ services:
       APPLICATION_SECRET: letmein
       KM_ARGS: -Djava.net.preferIPv4Stack=true
 
-  message-counter1:
-    hostname: message-counter1
+  statefull-geofencing-fass-runner1:
+    hostname: statefull-geofencing-fass-runner1
     ports:
-      - 8222:9585
-      - 8223:9586
+      - 8242:9585
+      - 8243:9586
+      - 9600:8084
+      - 9500:9097
     build:
-      context: .
+      context: ./runner
       dockerfile: Dockerfile
     depends_on:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: message-counter1
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: statefull-geofencing-fass-runner1
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
 
-  message-counter2:
-    hostname: message-counter2
+  statefull-geofencing-fass-runner2:
+    hostname: statefull-geofencing-fass-runner2
     ports:
-      - 8224:9585
-      - 8225:9586
+      - 8244:9585
+      - 8245:9586
+      - 9601:8084
+      - 9501:9097
     build:
-      context: .
+      context: ./runner
       dockerfile: Dockerfile
     depends_on:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: message-counter2
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: statefull-geofencing-fass-runner2
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
 
-  message-counter3:
-    hostname: message-counter3
+  statefull-geofencing-fass-runner3:
+    hostname: statefull-geofencing-fass-runner3
     ports:
-      - 8226:9585
-      - 8227:9586
+      - 8246:9585
+      - 8247:9586
+      - 9602:8084
+      - 9502:9097
     build:
-      context: .
+      context: ./runner
       dockerfile: Dockerfile
     depends_on:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: message-counter3
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: statefull-geofencing-fass-runner3
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585

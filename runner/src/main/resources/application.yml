@@ -1,7 +1,7 @@
-server.port: 8242
+server.port: 9585
 
 management:
-  server.port: 8243
+  server.port: 9586
   health:
     defaults.enabled: true
     diskspace.enabled: false
@@ -41,7 +41,17 @@ spring:
     console:
       enabled: true
       settings:
-        web-allow-others: true
+        web-allow-others: on
+
+kafka:
+  topic-partitions:
+    eventTopic: '3:2'
+    changeLogTopic: '3:2'
+
+
+---
+spring:
+  profiles: local
 
 kafka:
   topic-partitions:

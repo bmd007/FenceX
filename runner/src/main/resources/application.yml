@@ -32,7 +32,7 @@ spring:
     initialization-mode: always
   kafka:
     streams:
-      replication-factor: 1
+      replication-factor: 3
       properties:
         num.stream.threads: 1
     bootstrap-servers: "localhost:9092"
@@ -41,7 +41,7 @@ spring:
     console:
       enabled: true
       settings:
-        web-allow-others: on
+        web-allow-others: true
 
 kafka:
   topic-partitions:
@@ -52,6 +52,9 @@ kafka:
 ---
 spring:
   profiles: local
+  kafka:
+    streams:
+      replication-factor: 1
 
 kafka:
   topic-partitions:

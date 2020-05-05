@@ -20,7 +20,7 @@ services:
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_CREATE_TOPICS: >-
-        mover-position-updates:3:2,
+        mover-position-updates:3:3,
         event_log:5:3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT

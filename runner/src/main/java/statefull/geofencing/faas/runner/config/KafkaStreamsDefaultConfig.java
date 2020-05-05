@@ -46,7 +46,6 @@ public class KafkaStreamsDefaultConfig {
         //The properties below, should not be applied when active profile is test
         if (!activeProfiles.contains("test") && !activeProfiles.contains("local")) {
             props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
-            props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
         } else {
             props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 100); //to slow down commits so that tests can catch up with the eventual consistency ?>!
         }

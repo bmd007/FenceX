@@ -1,6 +1,6 @@
 #Stateful Geofencing Faas
 
-##Proposal
+## Proposal
 
 Geofencing queries usually take special treatments since they relay upon a special type of index. This type of index is more CPU intensive than, for instance, index for plain text. So latency is an important factor in geofencing queries. One of the solutions to reduce the latency is to use in memory databases to avoid IO latency (which is considerably higher than computational latency relatively). 
 But the first challenge with in memory data bases is to use them in a resilient way. Resiliency usually comes with replication. And replication beings up the holy inconsistency problem. 
@@ -24,3 +24,15 @@ Other parts of this project other than lowest level of abstraction  can be:
 - Load testing
 - Cloud Foundry integration 
 - Examining support of JVM languages other than Java
+
+
+## References:
+ - Ben Stopford, Designing Event-Driven Systems Concepts and Patterns for Streaming Services with Apache Kafka
+ - Jay Kreps, I ♥ Logs
+ - Martin Kleppmann, Making Sense of Stream Processing The Philosophy Behind Apache Kafka and Scalable Stream Data Platforms
+ - Mohammed Al-Ameen1, Josef Spillner,  Systematic and open exploration of FaaS and Serverless Computing research
+ - van Eyk, E., Scheuner, J., Eisman, S. et al (2020) Beyond Microbenchmarks: The SPEC-RG Vision for a Comprehensive Serverless Benchmark Companion of the ACM/SPEC International Conference on Performance Engineering: http://dx.doi.org/10.1145/3375555.3384381
+ - Erwin van Eyk1, and Alexandru Iosup, Simon Seif, and Markus Thömmes. 2017. The SPEC Cloud Group’s Research Vision on FaaS and Serverless Architectures. In Proceedings of WoSC’: Workshop on Serverless Computing, Las Vegas, NV, 2017 (WoSC’17), https://doi.org/10.1145/3154847.3154848
+ - Fabian Hueske, Vasiliki Kalavri, Stream Processing with Apache Flink Fundamentals, Implementation, and Operation of Streaming Applications 
+ - Vikram Sreekanti, Chenggang Wu, Xiayue Charles Lin, Johann Schleier-Smith, Jose M. Faleiro, Joseph E. Gonzalez, Joseph M. Hellerstein, Alexey Tumanov, 2020, Cloudburst: Stateful Functions-as-a-Service
+ - Serverless Computing: One Step Forward, Two Steps BackJoseph M. Hellerstein, Jose Faleiro, Joseph E. Gonzalez, Johann Schleier-Smith, Vikram Sreekanti,Alexey Tumanov and Chenggang Wu

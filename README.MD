@@ -1,4 +1,4 @@
-#Stateful Geofencing Faas
+# Stateful Geofencing Faas
 
 ## Proposal
 

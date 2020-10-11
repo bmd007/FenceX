@@ -123,7 +123,7 @@ public class MoverJdbcRepository {
     //todo handle ull fields
     private Coordinate wktPointToCoordinate(String wktPoint) {
         try {
-            var point = (Point) this.wktReader.read(wktPoint);
+            var point = (Point) wktReader.read(wktPoint);
             return Coordinate.of(point.getX(), point.getY());
         } catch (ParseException e) {
             e.printStackTrace();

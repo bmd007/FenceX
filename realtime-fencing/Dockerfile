@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk14
 
 MAINTAINER "Mohammad Mahdi Amini 'bmd579@gmail.com'"
 
-ADD build/libs/statefull-geofencing-faas-runner-beta.jar /application.jar
+ADD build/libs/statefull-geofencing-faas-location-update-processor-beta.jar /application.jar
 
 ENV JAVA_OPTS ""
 

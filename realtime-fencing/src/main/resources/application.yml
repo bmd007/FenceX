@@ -1,7 +1,7 @@
-server.port: 9585
+server.port: 9535
 
 management:
-  server.port: 9586
+  server.port: 9536
   health:
     defaults.enabled: true
     diskspace.enabled: false
@@ -27,7 +27,7 @@ management:
     enable.system: false
 
 spring:
-  application.name: stateful-geofencing-faas
+  application.name: location-update-processor
   datasource:
     initialization-mode: always
   kafka:

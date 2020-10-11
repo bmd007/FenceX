@@ -44,7 +44,13 @@ public class TopicCreator {
 //    }
 
     @Bean
-    public NewTopic moverPositionUpdateTopic() {
+    public NewTopic moverUpdatesTopic() {
+        return new NewTopic(Topics.MOVER_UPDATES_TOPIC, changeLogTopicDefinition.numPartitions, changeLogTopicDefinition.replicationFactor)
+                .configs(Map.of(CLEANUP_POLICY_CONFIG, CLEANUP_POLICY_COMPACT));
+    }
+
+    @Bean
+    public NewTopic moverPositionUpdatesTopic() {
         return new NewTopic(Topics.MOVER_POSITION_UPDATES_TOPIC, changeLogTopicDefinition.numPartitions, changeLogTopicDefinition.replicationFactor)
                 .configs(Map.of(CLEANUP_POLICY_CONFIG, CLEANUP_POLICY_COMPACT));
     }

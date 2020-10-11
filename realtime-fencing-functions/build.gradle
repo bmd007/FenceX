@@ -1,17 +1,17 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.6.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id "org.springframework.boot.experimental.thin-launcher" version "1.0.24.RELEASE"
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id "org.springframework.boot.experimental.thin-launcher" version "1.0.25.RELEASE"
     id 'java'
 }
 
 group = 'statefull.geofencing.faas'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '14'
+version = 'beta'
+sourceCompatibility = '15'
 
 jar {
     manifest {
-        attributes 'Start-Class': 'statefull.geofencing.faas.functions.Application'
+        attributes 'Start-Class': 'statefull.geofencing.faas.realtime.fencing.function.Application'
     }
 }
 
@@ -29,7 +29,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "Hoxton.SR4")
+    set('springCloudVersion', "Hoxton.SR8")
 }
 
 dependencies {
@@ -37,12 +37,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-function-context'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa') {
-        exclude group: 'com.zaxxer', module: 'HikariCP'
-    }
-    implementation 'org.locationtech.jts:jts-core:1.16.1'
+    implementation 'org.locationtech.jts:jts-core:1.17.1'
     implementation "com.google.guava:guava:29.0-jre"
-    implementation files('libs/statefull-geofencing-faas-common-0.0.1-SNAPSHOT.jar')
+    implementation files('libs/statefull-geofencing-faas-common-beta.jar')
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

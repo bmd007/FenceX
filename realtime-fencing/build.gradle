@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.6.RELEASE'
-    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id "io.spring.dependency-management" version "1.0.10.RELEASE"
     id 'java'
     id "jacoco" //code coverage
 }
@@ -20,7 +20,7 @@ ext.buildNumber = {
 
 project.version = buildNumber()
 
-sourceCompatibility = 11
+sourceCompatibility = 15
 
 repositories {
     mavenCentral()
@@ -30,7 +30,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "Hoxton.SR4")
+    set('springCloudVersion', "Hoxton.SR8")
 }
 
 dependencies {
@@ -46,18 +46,12 @@ dependencies {
     implementation 'org.apache.kafka:kafka-streams'
     implementation 'org.springframework.kafka:spring-kafka'
 
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa') {
-        exclude group: 'com.zaxxer', module: 'HikariCP'
-    }
-
-    implementation 'com.h2database:h2:1.4.200' //this the newer version of h2. Hibernate-spatial has no dialect for it.
-    //Also h2gis (one of its geo extensions) doesn't support its latest (1.4.200) version
-    implementation 'org.locationtech.jts:jts-core:1.16.1' // not needed if h2gis got used
+    implementation 'org.locationtech.jts:jts-core:1.17.1' // not needed if h2gis got used
 
     implementation "com.google.guava:guava:29.0-jre"
 
-    implementation files('libs/statefull-geofencing-faas-common-0.0.1-SNAPSHOT.jar')
-    implementation files('libs/statefull-geofencing-faas-functions-0.0.1-SNAPSHOT.jar')
+    implementation files('libs/statefull-geofencing-faas-common-beta.jar')
+//    implementation files('libs/statefull-geofencing-faas-realtime-fencing-functions-beta.jar')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -68,8 +62,7 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:3.1.6'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine'
-    compile group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
-
+    implementation 'com.github.javafaker:javafaker:1.0.2'
 }
 
 dependencyManagement {
@@ -80,9 +73,4 @@ dependencyManagement {
 
 test {
     useJUnitPlatform {}
-}
-
-wrapper {
-    gradleVersion = "6.3"
-    distributionType = Wrapper.DistributionType.ALL
 }

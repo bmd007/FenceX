@@ -6,6 +6,7 @@ import org.apache.kafka.common.utils.Time;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.slf4j.Logger;
@@ -23,15 +24,19 @@ import javax.annotation.PostConstruct;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
+import static statefull.geofencing.faas.location.update.processor.config.Stores.MOVER_GLOBAL_STATE_STORE;
+import static statefull.geofencing.faas.location.update.processor.config.Stores.MOVER_IN_MEMORY_STATE_STORE;
+
 @Configuration
 public class KStreamAndKTableDefinitions {
 
     private static final Consumed<String, MoverLocationUpdate> MOVER_POSITION_UPDATE_CONSUMED = Consumed.with(Serdes.String(), CustomSerdes.MOVER_POSITION_UPDATE_JSON_SERDE);
     private static final Consumed<String, Mover> MOVER_CONSUMED = Consumed.with(Serdes.String(), CustomSerdes.MOVER_JSON_SERDE);
+    private static final Produced<String, Mover> MOVER_PRODUCED = Produced.with(Serdes.String(), CustomSerdes.MOVER_JSON_SERDE);
 
     // Use an in-memory store for intermediate state storage.
     private static final Materialized<String, Mover, KeyValueStore<Bytes, byte[]>> IN_MEMORY_TEMP_KTABLE = Materialized
-            .<String, Mover>as(Stores.inMemoryKeyValueStore(statefull.geofencing.faas.location.update.processor.config.Stores.MOVER_IN_MEMORY_STATE_STORE))
+            .<String, Mover>as(Stores.inMemoryKeyValueStore(MOVER_IN_MEMORY_STATE_STORE))
             .withKeySerde(Serdes.String())
             .withValueSerde(CustomSerdes.MOVER_JSON_SERDE);
 
@@ -67,13 +72,15 @@ public class KStreamAndKTableDefinitions {
                 .groupByKey()
                 // Aggregate status into a in-memory KTable as a source for global KTable
                 .aggregate(Mover::defineEmpty, (key, value, aggregate) -> moverAggregateFunction.apply(aggregate, value),
-                        IN_MEMORY_TEMP_KTABLE);
+                        IN_MEMORY_TEMP_KTABLE)
+                .toStream()
+                .to(Topics.MOVER_UPDATES_TOPIC, MOVER_PRODUCED);
 
         // register a global store which reads directly from the aggregated in memory table's changelog
-        var storeBuilder = new MoverStore.Builder(statefull.geofencing.faas.location.update.processor.config.Stores.MOVER_GLOBAL_STATE_STORE, Time.SYSTEM, repository);
+        var storeBuilder = new MoverStore.Builder(MOVER_GLOBAL_STATE_STORE, Time.SYSTEM, repository);
         builder.addGlobalStore(storeBuilder,
-                TopicCreator.storeTopicName(statefull.geofencing.faas.location.update.processor.config.Stores.MOVER_IN_MEMORY_STATE_STORE, applicationName),
-                MOVER_CONSUMED, () -> new MoverProcessor(statefull.geofencing.faas.location.update.processor.config.Stores.MOVER_GLOBAL_STATE_STORE));
+                TopicCreator.storeTopicName(MOVER_IN_MEMORY_STATE_STORE, applicationName),
+                MOVER_CONSUMED, () -> new MoverProcessor(MOVER_GLOBAL_STATE_STORE));
     }
 
 }

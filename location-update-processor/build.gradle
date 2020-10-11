@@ -68,7 +68,7 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:3.1.6'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine'
-    compile group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
 
 }
 

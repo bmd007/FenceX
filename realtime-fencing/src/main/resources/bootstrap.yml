@@ -1,5 +1,5 @@
 spring:
-  application.name: stateful-geofencing-faas
+  application.name: location-update-processor
   cloud:
     consul:
       config:

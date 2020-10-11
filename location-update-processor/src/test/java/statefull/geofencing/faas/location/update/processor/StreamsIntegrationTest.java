@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import statefull.geofencing.faas.common.repository.MoverJdbcRepository;
 import statefull.geofencing.faas.location.update.processor.config.Stores;
-import statefull.geofencing.faas.location.update.processor.streamprocessing.UpdateProducer;
 import statefull.geofencing.faas.location.update.processor.util.KafkaStreamsAwait;
 
 import static java.util.concurrent.TimeUnit.SECONDS;

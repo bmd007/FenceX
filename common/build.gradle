@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'statefull.geofencing.faas'
-version = '0.0.1-SNAPSHOT'
+version = 'beta'
 sourceCompatibility = '15'
 
 jar {

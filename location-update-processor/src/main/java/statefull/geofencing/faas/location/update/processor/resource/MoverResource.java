@@ -44,16 +44,6 @@ public class MoverResource {
         return queryPolygon(wrapLocationByPolygonFunction.apply(latitude, longitude), maxAge);
     }
 
-    @PostMapping("/polygon")
-    public MoversDto queryPolygon(@RequestBody Polygon polygon, @RequestParam(required = false) Long maxAge) {
-        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, polygon);
-        var results = polygonalGeoFencingFunction.apply(repository, polygon)
-                .stream()
-                .map(this::map)
-                .collect(Collectors.toList());
-        return new MoversDto(results);
-    }
-
     @PostMapping("/kwt")
     public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);

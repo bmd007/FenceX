@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.realtime.fencing.query;
+package statefull.geofencing.faas.realtime.fencing.service;
 
 
 import org.springframework.beans.factory.annotation.Value;

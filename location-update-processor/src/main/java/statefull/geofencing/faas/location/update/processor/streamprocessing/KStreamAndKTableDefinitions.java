@@ -62,7 +62,6 @@ public class KStreamAndKTableDefinitions {
     @PostConstruct
     public void configureStores() {
         builder
-                // create a stream from the provider updates topic
                 .stream(Topics.MOVER_POSITION_UPDATES_TOPIC, MOVER_POSITION_UPDATE_CONSUMED)
                 .filterNot((k, v) -> k == null || k.isBlank() || k.isEmpty() || v == null || v.getKey() == null || v.getKey().isEmpty() || v.getKey().isBlank())
                 .filter((k, v) -> k.equals(v.getKey()))

@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.realtime.fencing.query;
+package statefull.geofencing.faas.realtime.fencing.service;
 
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
@@ -28,6 +28,8 @@ import static java.util.Objects.isNull;
  * <code>Flux&lt;M></code>, it will be <code>Mono&lt;E></code> <br>
  * For now we don't test this class separately. Instead we test each resource class that uses this class.
  **/
+
+/
 public class ViewService<E, M, I> {
 
     public static final String HIGH_LEVEL_QUERY_PARAM_NAME = "isHighLevelQuery";

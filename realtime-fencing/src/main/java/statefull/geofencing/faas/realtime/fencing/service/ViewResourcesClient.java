@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.realtime.fencing.query;
+package statefull.geofencing.faas.realtime.fencing.service;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

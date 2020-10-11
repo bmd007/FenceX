@@ -1,9 +1,12 @@
-package statefull.geofencing.faas.realtime.fencing.query;
+package statefull.geofencing.faas.realtime.fencing.resource;
 
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import statefull.geofencing.faas.realtime.fencing.dto.FenceDto;
 import statefull.geofencing.faas.realtime.fencing.dto.FencesDto;
 import statefull.geofencing.faas.realtime.fencing.exception.NotFoundException;
+import statefull.geofencing.faas.realtime.fencing.service.FenceViewService;
+import statefull.geofencing.faas.realtime.fencing.service.ViewService;
 
 @RestController
 @RequestMapping("/api/views/fences")

@@ -11,7 +11,6 @@ import statefull.geofencing.faas.location.update.processor.dto.CoordinateDto;
 import statefull.geofencing.faas.location.update.processor.dto.MoverDto;
 import statefull.geofencing.faas.location.update.processor.dto.MoversDto;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class MoverResource {
     }
 
     @PostMapping("/polygon")
-    public MoversDto queryPolygon(@Valid @RequestBody Polygon polygon, @RequestParam(required = false) Long maxAge) {
+    public MoversDto queryPolygon(@RequestBody Polygon polygon, @RequestParam(required = false) Long maxAge) {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, polygon);
         var results = polygonalGeoFencingFunction.apply(repository, polygon)
                 .stream()
@@ -56,7 +55,7 @@ public class MoverResource {
     }
 
     @PostMapping("/kwt")
-    public MoversDto queryPolygon(@Valid @RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
+    public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
         var polygon = (Polygon) repository.getWktReader().read(kwtString);
         var results = repository.query(polygon)

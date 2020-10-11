@@ -3,9 +3,6 @@ package statefull.geofencing.faas.location.update.processor.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,9 +10,6 @@ import java.util.Objects;
 @JsonDeserialize(builder = PolygonDto.Builder.class)
 public class PolygonDto {
 
-    @NotNull
-    @Size(min = 3)
-    @Valid
     private final List<CoordinateDto> points;
 
     private PolygonDto(Builder builder) {

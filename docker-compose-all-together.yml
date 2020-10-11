@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
 
@@ -78,6 +78,7 @@ services:
       APPLICATION_SECRET: letmein
       KM_ARGS: -Djava.net.preferIPv4Stack=true
 
+#TODO correct according to housekeeping
   statefull-geofencing-fass-runner1:
     hostname: statefull-geofencing-fass-runner1
     ports:

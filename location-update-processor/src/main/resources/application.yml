@@ -27,7 +27,7 @@ management:
     enable.system: false
 
 spring:
-  application.name: stateful-geofencing-faas
+  application.name: location-update-processor
   datasource:
     initialization-mode: always
   kafka:

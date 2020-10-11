@@ -4,18 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.Objects;
 
 public class CoordinateDto {
 
-    @Min(-90)
-    @Max(90)
     private final double latitude;
-
-    @Min(-180)
-    @Max(180)
     private final double longitude;
 
     @JsonCreator
@@ -27,7 +20,6 @@ public class CoordinateDto {
     public double getLatitude() {
         return latitude;
     }
-
     public double getLongitude() {
         return longitude;
     }

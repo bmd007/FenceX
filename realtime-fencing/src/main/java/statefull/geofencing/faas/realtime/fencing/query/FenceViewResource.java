@@ -2,7 +2,6 @@ package statefull.geofencing.faas.realtime.fencing.query;
 
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import statefull.geofencing.faas.realtime.fencing.dto.FenceDto;
 import statefull.geofencing.faas.realtime.fencing.dto.FencesDto;
 import statefull.geofencing.faas.realtime.fencing.exception.NotFoundException;
 

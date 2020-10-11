@@ -17,7 +17,7 @@ public class FenceViewService extends ViewService<FencesDto, FenceDto, Fence> {
 
     final static Function<FencesDto, List<FenceDto>> LIST_EXTRACTOR = FencesDto::getFences;
     final static Function<List<FenceDto>, FencesDto> LIST_WRAPPER = FencesDto::fences;
-    final static Function<Fence, FenceDto> DTO_MAPPER = fence -> FenceDto.builder().withKwt(fence.getKwt()).build();
+    final static Function<Fence, FenceDto> DTO_MAPPER = fence -> FenceDto.newBuilder().withMoverId(fence.getMoverId()).withWkt(fence.getWkt()).build();
 
     public FenceViewService(StreamsBuilderFactoryBean streams,
                             @Value("${kafka.streams.server.config.app-ip}") String ip,

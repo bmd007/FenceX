@@ -15,9 +15,10 @@ public class FencesDto {
     public FencesDto() {
     }
 
-    public static FencesDto singleFence(String wkt) {
+    public static FencesDto singleFence(String wkt, String moverID) {
         return FencesDto.builder()
-                .withFence(FenceDto.builder()
+                .withFence(FenceDto.newBuilder()
+                        .withMoverId(moverID)
                         .withWkt(wkt)
                         .build())
                 .build();

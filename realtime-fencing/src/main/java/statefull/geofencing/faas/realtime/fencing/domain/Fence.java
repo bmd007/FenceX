@@ -2,40 +2,64 @@ package statefull.geofencing.faas.realtime.fencing.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
+import org.locationtech.jts.geom.Geometry;
 
 @JsonDeserialize(builder = Fence.Builder.class)
 public class Fence {
 
-    private String kwt;
-
-    public Fence() {
-    }
+    private String wkt;
+    private String moverId;
 
     private Fence(Builder builder) {
-        this.kwt = builder.kwt;
+        wkt = builder.wkt;
+        moverId = builder.moverId;
     }
 
-    public String getKwt() {
-        return kwt;
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public Builder cloneBuilder(){
+        return newBuilder(this);
+    }
+
+    public static Builder newBuilder(Fence copy) {
+        Builder builder = new Builder();
+        builder.wkt = copy.getWkt();
+        builder.moverId = copy.getMoverId();
+        return builder;
+    }
+
+    public String getWkt() {
+        return wkt;
+    }
+
+    public String getMoverId() {
+        return moverId;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("kwt", kwt)
+                .add("wkt", wkt)
+                .add("moverId", moverId)
                 .toString();
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    public static final class Builder {
+        private String wkt;
+        private String moverId;
 
-    public static class Builder {
+        private Builder() {
+        }
 
-        private String kwt;
+        public Builder withWkt(String val) {
+            wkt = val;
+            return this;
+        }
 
-        public Builder withKwt(String kwt) {
-            this.kwt = kwt;
+        public Builder withMoverId(String val) {
+            moverId = val;
             return this;
         }
 

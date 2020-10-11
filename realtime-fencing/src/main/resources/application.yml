@@ -47,8 +47,11 @@ kafka:
   topic-partitions:
     eventTopic: '3:2'
     changeLogTopic: '3:2'
-
-
+  streams:
+    server:
+      config:
+        app-ip: localhost
+        app-port: ${server.port}
 ---
 spring:
   profiles: local

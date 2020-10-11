@@ -21,53 +21,38 @@ import java.util.stream.Collectors;
 public class FenceResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FenceResource.class);
-    private final MoverJdbcRepository repository;
-    private BiFunction<MoverJdbcRepository, Polygon, List<Mover>> polygonalGeoFencingFunction;
-    private BiFunction<Double, Double, Polygon> wrapLocationByPolygonFunction;
 
-    public FenceResource(MoverJdbcRepository repository,
-                         BiFunction<MoverJdbcRepository, Polygon, List<Mover>> polygonalGeoFencingFunction,
-                         BiFunction<Double, Double, Polygon> wrapLocationByPolygonFunction) {
-        this.repository = repository;
-        this.polygonalGeoFencingFunction = polygonalGeoFencingFunction;
-        this.wrapLocationByPolygonFunction = wrapLocationByPolygonFunction;
-    }
+//    @GetMapping("/{id}")
+//    public MoverDto get(@PathVariable("id") String id) {
+//        return map(repository.get(id));
+//    }
+//
+//    @GetMapping("/box")
+//    public MoversDto queryBox(@RequestParam(required = true) double latitude,
+//                              @RequestParam(required = true) double longitude,
+//                              @RequestParam(required = false) Long maxAge) {
+//        return queryPolygon(wrapLocationByPolygonFunction.apply(latitude, longitude), maxAge);
+//    }
+//
+//    @PostMapping("/polygon")
+//    public MoversDto queryPolygon(@RequestBody Polygon polygon, @RequestParam(required = false) Long maxAge) {
+//        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, polygon);
+//        var results = polygonalGeoFencingFunction.apply(repository, polygon)
+//                .stream()
+//                .map(this::map)
+//                .collect(Collectors.toList());
+//        return new MoversDto(results);
+//    }
+//
+//    @PostMapping("/kwt")
+//    public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
+//        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
+//        var polygon = (Polygon) repository.getWktReader().read(kwtString);
+//        var results = repository.query(polygon)
+//                .stream()
+//                .map(this::map)
+//                .collect(Collectors.toList());
+//        return new MoversDto(results);
+//    }
 
-    @GetMapping("/{id}")
-    public MoverDto get(@PathVariable("id") String id) {
-        return map(repository.get(id));
-    }
-
-    @GetMapping("/box")
-    public MoversDto queryBox(@RequestParam(required = true) double latitude,
-                              @RequestParam(required = true) double longitude,
-                              @RequestParam(required = false) Long maxAge) {
-        return queryPolygon(wrapLocationByPolygonFunction.apply(latitude, longitude), maxAge);
-    }
-
-    @PostMapping("/polygon")
-    public MoversDto queryPolygon(@RequestBody Polygon polygon, @RequestParam(required = false) Long maxAge) {
-        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, polygon);
-        var results = polygonalGeoFencingFunction.apply(repository, polygon)
-                .stream()
-                .map(this::map)
-                .collect(Collectors.toList());
-        return new MoversDto(results);
-    }
-
-    @PostMapping("/kwt")
-    public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
-        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
-        var polygon = (Polygon) repository.getWktReader().read(kwtString);
-        var results = repository.query(polygon)
-                .stream()
-                .map(this::map)
-                .collect(Collectors.toList());
-        return new MoversDto(results);
-    }
-
-
-    private MoverDto map(Mover v) {
-        return new MoverDto(v.getId(), new CoordinateDto(v.getLastLocation().getLatitude(), v.getLastLocation().getLongitude()));
-    }
 }

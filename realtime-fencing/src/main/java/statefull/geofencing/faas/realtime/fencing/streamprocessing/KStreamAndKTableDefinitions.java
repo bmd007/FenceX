@@ -5,12 +5,10 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +19,7 @@ import statefull.geofencing.faas.realtime.fencing.config.Stores;
 import statefull.geofencing.faas.realtime.fencing.config.Topics;
 
 import javax.annotation.PostConstruct;
+import java.util.function.BiFunction;
 
 @Configuration
 public class KStreamAndKTableDefinitions {
@@ -41,18 +40,32 @@ public class KStreamAndKTableDefinitions {
     public KStreamAndKTableDefinitions(StreamsBuilder streamsBuilder) {
         this.streamsBuilder = streamsBuilder;
     }
-
+    BiFunction<Mover, String, KeyValue<String, Boolean>> moverFenceIntersectionChecker = (mover, wkt) -> {
+        try {
+            var point = GEOMETRY_FACTORY.createPoint(new Coordinate(mover.getLastLocation().getLatitude(),
+                    mover.getLastLocation().getLongitude()));
+            var fence = wktReader.read(wkt);
+            return KeyValue.pair(mover.getId(), fence.intersects(point));
+        } catch (ParseException e) {
+            LOGGER.error("error while intersecting {} with fence {}", mover, wkt, e);
+            return KeyValue.pair(mover.getId(), null);
+        }
+    };
 
     @PostConstruct
     public void configureStores() {
         var moversFenceKTable = streamsBuilder.stream(Topics.FENCE_EVENT_LOG, WKT_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .groupByKey()
-                .aggregate(() -> "", (moverId, todo, currentWkt) -> todo, FENCE_KTABLE);
+                .aggregate(() -> "", (moverId, newWkt, currentWkt) -> newWkt, FENCE_KTABLE);
 
-        KStream<String, KeyValue<String, String>> moverFenceIntersectionStream = streamsBuilder.stream(Topics.MOVER_UPDATES_TOPIC, MOVER_CONSUMED)
+        streamsBuilder.stream(Topics.MOVER_UPDATES_TOPIC, MOVER_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
-                .join(moversFenceKTable, (moverLocationUpdate, fenceWkt) -> KeyValue.pair(moverLocationUpdate.getId(), fenceWkt));//todo check the intersection
+                .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
+                .foreach((moverId, intersects) -> System.out.println(moverId + "intersection status with its " +
+                        "corresponding fence is: "+ intersects));
+        //todo
+        // check the intersection
 //todo turn the join stream into another KTable of "mover is/is not in deifned fence" and produce "move
         // left/moved to the defined fence" events.
     }

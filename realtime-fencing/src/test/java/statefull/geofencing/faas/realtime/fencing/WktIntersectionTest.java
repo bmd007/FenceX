@@ -55,5 +55,7 @@ public class WktIntersectionTest {
         var result = combined.intersects(point);
         //then
         assertTrue(result);
+        assertTrue(wktReader.read(polygon1wkt).intersects(point));
+        assertTrue(polygon1.getBoundary().intersects(polygon1.getBoundary().getInteriorPoint()));
     }
 }

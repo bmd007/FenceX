@@ -43,6 +43,8 @@ public class FenceResource {
                 .switchIfEmpty(Mono.error(new NotFoundException(String.format("%s not found (%s doesn't exist).", "Fence for moverId", moverId))));
     }
 
+    //todo support @Put for adding new polygons to the current fence for a mover (Post is for replacement)
+
     @PostMapping
     public Mono defineFenceForMover(@RequestBody FenceDto fenceDto) {
         try {

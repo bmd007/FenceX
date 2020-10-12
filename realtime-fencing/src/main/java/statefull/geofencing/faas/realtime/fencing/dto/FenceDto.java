@@ -2,6 +2,7 @@ package statefull.geofencing.faas.realtime.fencing.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
+import statefull.geofencing.faas.realtime.fencing.exception.IllegalInputException;
 
 @JsonDeserialize(builder = FenceDto.Builder.class)
 //todo add support for went into and left the fence (needs another KTable of MoverAndFenceIntersectionUpdate(events) --(state: boolean isInAFence))
@@ -54,11 +55,17 @@ public class FenceDto {
         }
 
         public Builder withWkt(String val) {
+            if (val == null || val.isBlank() || val.isEmpty()){
+                throw new IllegalInputException("wkt fence can not be null/empty/balnk");
+            }
             wkt = val;
             return this;
         }
 
         public Builder withMoverId(String val) {
+            if (val == null || val.isBlank() || val.isEmpty()){
+                throw new IllegalInputException("mover id can not be null/empty/balnk");
+            }
             moverId = val;
             return this;
         }

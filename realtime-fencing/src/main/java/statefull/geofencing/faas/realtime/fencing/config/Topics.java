@@ -4,6 +4,7 @@ public class Topics {
     public static final String MOVER_UPDATES_TOPIC = "mover-updates";
 
     //owned by this service
-    //todo fence-interaction-events
-    //todo fence-event-topic (will be event-sourcing style)
+    public static final String FENCE_EVENT_LOG = "fence_event_log"; //for now it will be used only for fence creation/deletion (value:String).
+    // Polymorphism can be used later to provide more event types and a complicated processor as subscriber.
+    //todo fence-intersection-events
 }

@@ -1,34 +1,63 @@
 package statefull.geofencing.faas.realtime.fencing.resource;
 
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.locationtech.jts.io.WKTReader;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
-import statefull.geofencing.faas.common.domain.Mover;
-import statefull.geofencing.faas.common.repository.MoverJdbcRepository;
-import statefull.geofencing.faas.realtime.fencing.dto.CoordinateDto;
+import reactor.core.publisher.Mono;
+import statefull.geofencing.faas.realtime.fencing.config.Topics;
 import statefull.geofencing.faas.realtime.fencing.dto.FenceDto;
-import statefull.geofencing.faas.realtime.fencing.dto.MoverDto;
-import statefull.geofencing.faas.realtime.fencing.dto.MoversDto;
-
-import java.util.stream.Collectors;
+import statefull.geofencing.faas.realtime.fencing.dto.FencesDto;
+import statefull.geofencing.faas.realtime.fencing.exception.IllegalInputException;
+import statefull.geofencing.faas.realtime.fencing.exception.NotFoundException;
+import statefull.geofencing.faas.realtime.fencing.service.FenceViewService;
+import statefull.geofencing.faas.realtime.fencing.service.ViewService;
 
 @RestController
-@RequestMapping("/api/mover")
-//todo
+@RequestMapping("/api/fences")
 public class FenceResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FenceResource.class);
+    public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
+    public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
+    private final FenceViewService service;
+    private final KafkaTemplate<String, String> fenceEventPublisher;
 
-    @GetMapping("/{moverId}/fence")
-    public FenceDto get(@PathVariable("moverId") String moverId) {
-        
+    public FenceResource(FenceViewService service, KafkaTemplate<String, String> fenceEventPublisher) {
+        this.service = service;
+        this.fenceEventPublisher = fenceEventPublisher;
     }
 
-    @PostMapping("/{moverId}/fence/wkt")
-    public FenceDto queryPolygon(@PathVariable("moverId") String moverId, @RequestBody String kwtString) throws ParseException {
-        
+    //isHighLevelQuery query param is related to inter instance communication and it should be true in normal operations or not defined
+    @GetMapping
+    public Mono<FencesDto> getFences(@RequestParam(required = false, value = ViewService.HIGH_LEVEL_QUERY_PARAM_NAME,
+            defaultValue = "true") boolean isHighLevelQuery) {
+        return service.getAll(isHighLevelQuery);
     }
 
+    @GetMapping("/{moverId}")
+    public Mono<FenceDto> getFenceByMoverId(@PathVariable("moverId") String moverId) {
+        return service.getById(moverId)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("%s not found (%s doesn't exist).", "Fence for moverId", moverId))));
+    }
+
+    @PostMapping
+    public Mono defineFenceForMover(@RequestBody FenceDto fenceDto) {
+        try {
+            Geometry fence = wktReader.read(fenceDto.getWkt());
+//            if (!fence.isValid()){
+//                throw new IllegalInputException("provided wkt is parsed into a non valid geometry");
+//            }
+        } catch (ParseException e) {
+            throw new IllegalInputException("provided wkt is not a parsable: " + e.getMessage());
+        }
+        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, fenceDto.getMoverId(), fenceDto.getWkt()).completable());
+    }
+
+    @DeleteMapping("/{moverId}")
+    public Mono defineFenceForMover(@PathVariable("moverId") String moverId) {
+        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, moverId, null).completable());
+    }
 }

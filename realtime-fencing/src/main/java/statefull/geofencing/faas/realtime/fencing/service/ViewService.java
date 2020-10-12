@@ -29,7 +29,7 @@ import static java.util.Objects.isNull;
  * For now we don't test this class separately. Instead we test each resource class that uses this class.
  **/
 
-/
+
 public class ViewService<E, M, I> {
 
     public static final String HIGH_LEVEL_QUERY_PARAM_NAME = "isHighLevelQuery";
@@ -95,7 +95,7 @@ public class ViewService<E, M, I> {
     }
 
     private Flux<M> getFromRemoteStorage(StreamsMetadata metadata) {
-        String url = String.format("http://%s:%d/api/views/%s?%s=false", metadata.host(), metadata.port(),
+        String url = String.format("http://%s:%d/api/%s?%s=false", metadata.host(), metadata.port(),
                 pathPart, HIGH_LEVEL_QUERY_PARAM_NAME);
         return commonClient.getOne(externalClass, url).flatMapIterable(listOfMfromEextractor);
     }
@@ -132,7 +132,7 @@ public class ViewService<E, M, I> {
                     .orElseGet(() -> Mono.empty());//No data for that key locally
         }
 
-        var url = String.format("http://%s:%d/api/views/%s/%s", metadata.host(), metadata.port(), pathPart, id);
+        var url = String.format("http://%s:%d/api/%s/%s", metadata.host(), metadata.port(), pathPart, id);
         LOGGER.debug("Querying other instance's {} store for id: {} from {}", storeName, id, url);
         return commonClient.getOne(middleClass, url)
                 .switchIfEmpty(Mono.empty());//No data for that key remotely

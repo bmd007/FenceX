@@ -6,9 +6,7 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.realtime.fencing.CustomSerdes;
-import statefull.geofencing.faas.realtime.fencing.config.Topics;
 
 import javax.annotation.PostConstruct;
 

@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.apache.kafka.common.config.TopicConfig.CLEANUP_POLICY_COMPACT;
-import static org.apache.kafka.common.config.TopicConfig.CLEANUP_POLICY_CONFIG;
+import static org.apache.kafka.common.config.TopicConfig.*;
 
 /**
  * Configuration class to automatically create the topics with the configured partitions and replication factor.
@@ -35,6 +34,12 @@ public class TopicCreator {
 
     public static String storeTopicName(String storeName, String applicationName) {
         return String.format("%s-%s-changelog", applicationName, storeName);
+    }
+
+    @Bean
+    public NewTopic fenceEventsTopic() {
+        return new NewTopic(Topics.FENCE_EVENT_LOG, eventTopicDefinition.numPartitions, eventTopicDefinition.replicationFactor)
+                .configs(Map.of(RETENTION_MS_CONFIG, "-1", RETENTION_BYTES_CONFIG, "-1"));
     }
 
     @Bean

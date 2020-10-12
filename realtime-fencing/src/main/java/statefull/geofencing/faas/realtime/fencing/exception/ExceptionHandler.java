@@ -29,9 +29,7 @@ public class ExceptionHandler implements WebExceptionHandler {
     private ObjectMapper jsonMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
-    public static final String NOT_FOUND = "NOT_FOUND";
     public static final String SERVICE_FAILED = "SERVICE_FAILED";
-    public static final String SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE";
 
     public ExceptionHandler(ObjectMapper jsonMapper) {
         this.jsonMapper = jsonMapper;
@@ -39,10 +37,8 @@ public class ExceptionHandler implements WebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable e) {
-        if (e instanceof NotFoundException) {
-            return handleNotFoundException(exchange, (NotFoundException) e);
-        } else if (e instanceof ServiceUnavailableException) {
-            return handleServiceUnavailableException(exchange, (ServiceUnavailableException) e);
+        if (e instanceof ApplicationException){
+            return handleApplicationException(exchange, (ApplicationException) e);
         } else if (e instanceof ResponseStatusException) {
             return handleResponseStatusException(exchange, (ResponseStatusException) e);
         } else {
@@ -50,28 +46,9 @@ public class ExceptionHandler implements WebExceptionHandler {
         }
     }
 
-    private Mono<Void> handleServiceUnavailableException(ServerWebExchange exchange, ServiceUnavailableException e) {
-        LOGGER.info("Handling NotFoundException: {}", e.getMessage());
-        var errors = ErrorsDto.builder()
-                .withErrors(List.of(ErrorDto.builder()
-                        .withCode(SERVICE_UNAVAILABLE)
-                        .withMessage(e.getMessage())
-                        .build()))
-                .build();
-
-        return writeResponse(exchange, HttpStatus.SERVICE_UNAVAILABLE, toBytes(errors));
-    }
-
-    private Mono<Void> handleNotFoundException(ServerWebExchange exchange, NotFoundException e) {
-        LOGGER.info("Handling NotFoundException: {}", e.getMessage());
-        var errors = ErrorsDto.builder()
-                .withErrors(List.of(ErrorDto.builder()
-                        .withCode(NOT_FOUND)
-                        .withMessage(e.getMessage())
-                        .build()))
-                .build();
-
-        return writeResponse(exchange, HttpStatus.NOT_FOUND, toBytes(errors));
+    private Mono<Void> handleApplicationException(ServerWebExchange exchange, ApplicationException e) {
+        LOGGER.error("handling", e);
+        return writeResponse(exchange, e.getStatus(), toBytes(e.getErrorsDto()));
     }
 
     private Mono<Void> handleServerError(ServerWebExchange exchange, Throwable e) {
@@ -82,7 +59,6 @@ public class ExceptionHandler implements WebExceptionHandler {
                         .withMessage(e.getMessage())
                         .build()))
                 .build();
-
         return writeResponse(exchange, HttpStatus.INTERNAL_SERVER_ERROR, toBytes(errors));
     }
 

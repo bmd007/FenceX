@@ -27,7 +27,7 @@ management:
     enable.system: false
 
 spring:
-  application.name: location-update-processor
+  application.name: realtime-fencing
   datasource:
     initialization-mode: always
   kafka:

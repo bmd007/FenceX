@@ -37,18 +37,28 @@ public class MoverResource {
         return map(repository.get(id));
     }
 
-    @GetMapping("/box")
-    public MoversDto queryBox(@RequestParam(required = true) double latitude,
-                              @RequestParam(required = true) double longitude,
+    @GetMapping("/box/by/coordinate")
+    public MoversDto queryBox(@RequestParam double latitude,
+                              @RequestParam double longitude,
                               @RequestParam(required = false) Long maxAge) {
-        return queryPolygon(wrapLocationByPolygonFunction.apply(latitude, longitude), maxAge);
+         var polygon = wrapLocationByPolygonFunction.apply(latitude, longitude);
+        var results =
+//                repository.query(polygon)
+                polygonalGeoFencingFunction.apply(repository, polygon)
+                        .stream()
+                        .map(this::map)
+                        .collect(Collectors.toList());
+        return new MoversDto(results);
+
     }
 
     @PostMapping("/kwt")
     public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
         var polygon = (Polygon) repository.getWktReader().read(kwtString);
-        var results = repository.query(polygon)
+        var results =
+//                repository.query(polygon)
+                polygonalGeoFencingFunction.apply(repository, polygon)
                 .stream()
                 .map(this::map)
                 .collect(Collectors.toList());

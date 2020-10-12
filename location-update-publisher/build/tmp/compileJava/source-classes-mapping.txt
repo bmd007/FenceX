@@ -1,10 +1,10 @@
 statefull/geofencing/faas/location/update/processor/config/Topics.java
  statefull.geofencing.faas.location.update.processor.config.Topics
+statefull/geofencing/faas/location/update/processor/Application.java
+ statefull.geofencing.faas.location.update.processor.Application
 statefull/geofencing/faas/location/update/processor/dto/TimeLessMoverLocationUpdate.java
  statefull.geofencing.faas.location.update.processor.dto.TimeLessMoverLocationUpdate
  statefull.geofencing.faas.location.update.processor.dto.TimeLessMoverLocationUpdate$Builder
-statefull/geofencing/faas/location/update/processor/Application.java
- statefull.geofencing.faas.location.update.processor.Application
 statefull/geofencing/faas/location/update/processor/serialization/JsonDeserializer.java
  statefull.geofencing.faas.location.update.processor.serialization.JsonDeserializer
 statefull/geofencing/faas/location/update/processor/serialization/JsonMapperProvider.java

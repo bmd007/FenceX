@@ -17,12 +17,12 @@ public class Fence {
 
 
     public static Fence define(String wkt, String moverId){
-        return newBuilder().withMoverId("").withWkt("").build();
+        return newBuilder().withMoverId(moverId).withWkt(wkt).build();
     }
 
 
     public static Fence defineEmpty(){
-        return newBuilder().withMoverId("").withWkt("").build();
+        return newBuilder().withMoverId("").withWkt("EMPTY").build();
     }
 
     public static Builder newBuilder() {

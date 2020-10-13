@@ -12,12 +12,13 @@ import org.locationtech.jts.io.WKTReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.support.serializer.JsonSerde;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.realtime.fencing.CustomSerdes;
 import statefull.geofencing.faas.realtime.fencing.config.Stores;
 import statefull.geofencing.faas.realtime.fencing.config.Topics;
+import statefull.geofencing.faas.realtime.fencing.domain.Fence;
 import statefull.geofencing.faas.realtime.fencing.dto.FenceDto;
-import statefull.geofencing.faas.realtime.fencing.serialization.JsonSerde;
 
 import javax.annotation.PostConstruct;
 import java.util.function.BiFunction;
@@ -31,22 +32,22 @@ public class KStreamAndKTableDefinitions {
     public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
     public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
 
-    private static final Materialized<String, String, KeyValueStore<Bytes, byte[]>> FENCE_KTABLE = Materialized
-            .<String, String, KeyValueStore<Bytes, byte[]>>as(Stores.FENCE_STATE_STORE)
+    private static final Materialized<String, Fence, KeyValueStore<Bytes, byte[]>> FENCE_KTABLE = Materialized
+            .<String, Fence, KeyValueStore<Bytes, byte[]>>as(Stores.FENCE_STATE_STORE)
             .withKeySerde(Serdes.String())
-            .withValueSerde(Serdes.String());
+            .withValueSerde(new JsonSerde<Fence>(Fence.class));
 
     private final StreamsBuilder streamsBuilder;
 
     public KStreamAndKTableDefinitions(StreamsBuilder streamsBuilder) {
         this.streamsBuilder = streamsBuilder;
     }
-    BiFunction<Mover, String, KeyValue<String, Boolean>> moverFenceIntersectionChecker = (mover, fence) -> {
+    BiFunction<Mover, Fence, KeyValue<String, Boolean>> moverFenceIntersectionChecker = (mover, fence) -> {
         try {
             System.out.println("** before intersection operation:"+ mover +":"+ fence);
             var point = GEOMETRY_FACTORY.createPoint(new Coordinate(mover.getLastLocation().getLatitude(),
                     mover.getLastLocation().getLongitude()));
-            var fenceGeometry = wktReader.read(fence);
+            var fenceGeometry = wktReader.read(fence.getWkt());
             return KeyValue.pair(mover.getId(), fenceGeometry.intersects(point));
         } catch (Exception e) {
             LOGGER.error("error while intersecting {} with fence {}", mover, fence, e);
@@ -59,16 +60,14 @@ public class KStreamAndKTableDefinitions {
         var moversFenceKTable = streamsBuilder.stream(Topics.FENCE_EVENT_LOG, WKT_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .filterNot((key, value) -> value.isEmpty())
-                .peek((key, value) -> System.out.println("** before aggregate:"+ key +":"+ value))
                 .groupByKey()
-                .aggregate(() -> "EMPTY",
-                        (moverId, newWkt, currentFence) -> newWkt,
+                .aggregate(Fence::defineEmpty,
+                        (moverId, newWkt, currentFence) -> Fence.define(newWkt, moverId),
                         FENCE_KTABLE);
 
         streamsBuilder.stream(Topics.MOVER_UPDATES_TOPIC, MOVER_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .filterNot((key, value) -> value.isNotDefined())
-                .peek((key, value) -> System.out.println("** before join:"+ key +":"+ value))
                 .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
                 .foreach((moverId, intersects) -> System.out.println(moverId + " intersection status with its " +
                         "corresponding fence is: "+ intersects));

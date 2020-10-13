@@ -46,7 +46,7 @@ public class FenceResource {
     //todo support @Put for adding new polygons to the current fence for a mover (Post is for replacement)
 
     @PostMapping
-    public Mono defineFenceForMover(@RequestBody FenceDto fenceDto) {
+    public Mono<String> defineFenceForMover(@RequestBody FenceDto fenceDto) {
         try {
             Geometry fence = wktReader.read(fenceDto.getWkt());
 //            if (!fence.isValid()){
@@ -55,11 +55,12 @@ public class FenceResource {
         } catch (ParseException e) {
             throw new IllegalInputException("provided wkt is not a parsable: " + e.getMessage());
         }
-        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, fenceDto.getMoverId(), fenceDto.getWkt()).completable());
+        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, fenceDto.getMoverId(), fenceDto.getWkt()).completable())
+                .map(ignore -> fenceDto + "was published successfully");
     }
 
     @DeleteMapping("/{moverId}")
-    public Mono defineFenceForMover(@PathVariable("moverId") String moverId) {
+    public Mono deleteFenceForMover(@PathVariable("moverId") String moverId) {
         return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, moverId, null).completable());
     }
 }

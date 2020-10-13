@@ -1,6 +1,8 @@
 package statefull.geofencing.faas.realtime.fencing.service;
 
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.streams.KeyQueryMetadata;
+import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -37,10 +39,9 @@ public class ViewService<E, M, I> {
     private final String storeName;
     private final Class<E> externalClass;
     private final Class<M> middleClass;
-    //TODO rename these 3 mappers
-    private final Function<I, M> mapperFromItoE;
-    private final Function<E, List<M>> listOfMfromEextractor;
-    private final Function<List<M>, E> listOfMtoE;
+    private final Function<I, M> domainToDtoMapper;
+    private final Function<E, List<M>> dtoListContainerToListOfDtos;
+    private final Function<List<M>, E> listOfDtosToDtoListContainer;
     private final String pathPart;
     WebClient.Builder webClientBuilder;
     private String ip;
@@ -50,7 +51,7 @@ public class ViewService<E, M, I> {
 
     public ViewService(String ip, int port, StreamsBuilderFactoryBean streams,
                        String storeName, Class<E> externalClass, Class<M> middleClass,
-                       Function<I, M> mapperFromItoE, Function<E, List<M>> listOfMfromEextractor, Function<List<M>, E> listOfMtoE,
+                       Function<I, M> domainToDtoMapper, Function<E, List<M>> dtoListContainerToListOfDtos, Function<List<M>, E> listOfDtosToDtoListContainer,
                        String pathPart, ViewResourcesClient commonClient) {
         this.ip = ip;
         this.port = port;
@@ -58,9 +59,9 @@ public class ViewService<E, M, I> {
         this.storeName = storeName;
         this.externalClass = externalClass;
         this.middleClass = middleClass;
-        this.mapperFromItoE = mapperFromItoE;
-        this.listOfMfromEextractor = listOfMfromEextractor;
-        this.listOfMtoE = listOfMtoE;
+        this.domainToDtoMapper = domainToDtoMapper;
+        this.dtoListContainerToListOfDtos = dtoListContainerToListOfDtos;
+        this.listOfDtosToDtoListContainer = listOfDtosToDtoListContainer;
         this.pathPart = pathPart;
         this.commonClient = commonClient;
         // We are not injecting here because the available web client does load balancing which is not wanted here
@@ -72,16 +73,16 @@ public class ViewService<E, M, I> {
         if (isHighLevelQuery) {
             var remoteData = getAllFromRemoteStorage();
             var allData = Flux.concat(localData, remoteData);
-            return allData.collectList().map(listOfMtoE);
+            return allData.collectList().map(listOfDtosToDtoListContainer);
         } else {
-            return localData.collectList().map(listOfMtoE);
+            return localData.collectList().map(listOfDtosToDtoListContainer);
         }
     }
     //**
     // Use this method for fetching all of data ONLY if the assinged store is GLOBAL
     // **//
     public Mono<E> getAllFromGlobalStore() {
-        return getFromLocalStorage().collectList().map(listOfMtoE);
+        return getFromLocalStorage().collectList().map(listOfDtosToDtoListContainer);
     }
 
     private Flux<M> getAllFromRemoteStorage() {
@@ -97,7 +98,7 @@ public class ViewService<E, M, I> {
     private Flux<M> getFromRemoteStorage(StreamsMetadata metadata) {
         String url = String.format("http://%s:%d/api/%s?%s=false", metadata.host(), metadata.port(),
                 pathPart, HIGH_LEVEL_QUERY_PARAM_NAME);
-        return commonClient.getOne(externalClass, url).flatMapIterable(listOfMfromEextractor);
+        return commonClient.getOne(externalClass, url).flatMapIterable(dtoListContainerToListOfDtos);
     }
 
     private Flux<M> getFromLocalStorage() {
@@ -107,7 +108,7 @@ public class ViewService<E, M, I> {
                 .filter(kv -> !isNullOrEmpty(kv.key))
                 .filter(kv -> !isNull(kv.value))
                 .map(kv -> kv.value)
-                .map(mapperFromItoE)
+                .map(domainToDtoMapper)
                 .doAfterTerminate(it::close);
     }
 
@@ -116,32 +117,32 @@ public class ViewService<E, M, I> {
     }
 
     public Mono<M> getById(String id) {
-        var metadata = streams.getKafkaStreams().metadataForKey(storeName, id, new StringSerializer());
+        var metadata = streams.getKafkaStreams().queryMetadataForKey(storeName, id, new StringSerializer());
 
-        if (metadata.equals(StreamsMetadata.NOT_AVAILABLE)) {
+        if (metadata.equals(KeyQueryMetadata.NOT_AVAILABLE)) {
             LOGGER.error("Neither this or other instances has access to requested key. Metadata: {}", metadata);
             return Mono.empty();//No metadata for that key
         }
 
-        if (metadata.host().equals(ip) && metadata.port() == port) {
+        if (metadata.getActiveHost().host().equals(ip) && metadata.getActiveHost().port() == port) {
             LOGGER.debug("Querying local store {} for id: {}", storeName, id);
             var store = waitUntilStoreIsQueryable();
             return Optional.ofNullable(store.get(id))
-                    .map(mapperFromItoE)
+                    .map(domainToDtoMapper)
                     .map(Mono::just)
                     .orElseGet(() -> Mono.empty());//No data for that key locally
         }
 
-        var url = String.format("http://%s:%d/api/%s/%s", metadata.host(), metadata.port(), pathPart, id);
+        var url = String.format("http://%s:%d/api/%s/%s", metadata.getActiveHost().host(), metadata.getActiveHost().port(), pathPart, id);
         LOGGER.debug("Querying other instance's {} store for id: {} from {}", storeName, id, url);
         return commonClient.getOne(middleClass, url)
                 .switchIfEmpty(Mono.empty());//No data for that key remotely
     }
 
     public Mono<M> getByIdFromGlobalStore(String id) {
-        var metadata = streams.getKafkaStreams().metadataForKey(storeName, id, new StringSerializer());
+        var metadata = streams.getKafkaStreams().queryMetadataForKey(storeName, id, new StringSerializer());
 
-        if (metadata.equals(StreamsMetadata.NOT_AVAILABLE)) {
+        if (metadata.equals(KeyQueryMetadata.NOT_AVAILABLE)) {
             LOGGER.error("Neither this or other instances has access to requested key. Metadata: {}", metadata);
             return Mono.empty();//No metadata for that key
         }
@@ -149,15 +150,17 @@ public class ViewService<E, M, I> {
         LOGGER.debug("Querying local part of global store {} for id: {}", storeName, id);
         var store = waitUntilStoreIsQueryable();
         return Optional.ofNullable(store.get(id))
-                .map(mapperFromItoE)
+                .map(domainToDtoMapper)
                 .map(Mono::just)
-                .orElseGet(() -> Mono.empty());//No data for that key locally
+                .orElseGet(Mono::empty);//No data for that key locally
     }
 
     public ReadOnlyKeyValueStore<String, I> waitUntilStoreIsQueryable() {
         for (int i = 0; i < 10; i++) {
             try {
-                return streams.getKafkaStreams().store(storeName, QueryableStoreTypes.keyValueStore());
+                var storyQueryParams = StoreQueryParameters.fromNameAndType(storeName,
+                        QueryableStoreTypes.<String, I>keyValueStore());
+                return streams.getKafkaStreams().store(storyQueryParams);
             } catch (InvalidStateStoreException e2) {
                 // store not yet ready for querying
                 LOGGER.error(

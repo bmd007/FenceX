@@ -62,7 +62,7 @@ public class KStreamAndKTableDefinitions {
         streamsBuilder.stream(Topics.MOVER_UPDATES_TOPIC, MOVER_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
-                .foreach((moverId, intersects) -> System.out.println(moverId + "intersection status with its " +
+                .foreach((moverId, intersects) -> System.out.println(moverId + " intersection status with its " +
                         "corresponding fence is: "+ intersects));
         //todo
         // check the intersection

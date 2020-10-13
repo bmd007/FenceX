@@ -60,7 +60,8 @@ public class FenceResource {
     }
 
     @DeleteMapping("/{moverId}")
-    public Mono deleteFenceForMover(@PathVariable("moverId") String moverId) {
-        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, moverId, null).completable());
+    public Mono<String> deleteFenceForMover(@PathVariable("moverId") String moverId) {
+        //todo
+        return Mono.error(() -> new NotFoundException("DELETE FUNCTIONALITY NOW SUPPORTED YET"));
     }
 }

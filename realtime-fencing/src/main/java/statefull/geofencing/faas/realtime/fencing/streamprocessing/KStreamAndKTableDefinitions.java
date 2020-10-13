@@ -21,6 +21,7 @@ import statefull.geofencing.faas.realtime.fencing.domain.Fence;
 import statefull.geofencing.faas.realtime.fencing.dto.FenceDto;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 @Configuration
@@ -59,7 +60,7 @@ public class KStreamAndKTableDefinitions {
     public void configureStores() {
         var moversFenceKTable = streamsBuilder.stream(Topics.FENCE_EVENT_LOG, WKT_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
-                .filterNot((key, value) -> value.isEmpty())
+                .filterNot((key, value) -> value == null || value.isEmpty() || value.isBlank())
                 .groupByKey()
                 .aggregate(Fence::defineEmpty,
                         (moverId, newWkt, currentFence) -> Fence.define(newWkt, moverId),

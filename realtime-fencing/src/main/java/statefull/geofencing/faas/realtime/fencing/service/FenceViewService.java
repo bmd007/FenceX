@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.function.Function;
 
 @Service
-public class FenceViewService extends ViewService<FencesDto, FenceDto, Fence> {
+public class FenceViewService extends ViewService<FencesDto, FenceDto, String> {
 
     final static Function<FencesDto, List<FenceDto>> LIST_EXTRACTOR = FencesDto::getFences;
     final static Function<List<FenceDto>, FencesDto> LIST_WRAPPER = FencesDto::fences;
-    final static Function<Fence, FenceDto> DTO_MAPPER = fence -> FenceDto.newBuilder()
-            .withMoverId(fence.getMoverId())
-            .withWkt(fence.getWkt())
+    final static Function<String, FenceDto> DTO_MAPPER = fence -> FenceDto.newBuilder()
+            .withMoverId(fence)
+            .withWkt(fence)
             .build();
 
     public FenceViewService(StreamsBuilderFactoryBean streams,

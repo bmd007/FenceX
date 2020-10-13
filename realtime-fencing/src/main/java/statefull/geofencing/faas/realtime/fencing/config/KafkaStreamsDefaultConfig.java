@@ -2,6 +2,7 @@ package statefull.geofencing.faas.realtime.fencing.config;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ public class KafkaStreamsDefaultConfig {
         props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, numStreamThreads);
 
         // Using this means accepting the app to continue when it faces a deserialization error, instead of break down
-//        props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
+        props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
 
         //        // This configuration is for making remote interactive queries possible
         props.put(StreamsConfig.APPLICATION_SERVER_CONFIG, ip + ":" + port);

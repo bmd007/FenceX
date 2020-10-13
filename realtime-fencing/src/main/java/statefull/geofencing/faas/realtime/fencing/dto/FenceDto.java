@@ -1,5 +1,6 @@
 package statefull.geofencing.faas.realtime.fencing.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
 import statefull.geofencing.faas.realtime.fencing.exception.IllegalInputException;
@@ -14,6 +15,11 @@ public class FenceDto {
     private FenceDto(Builder builder) {
         wkt = builder.wkt;
         moverId = builder.moverId;
+    }
+
+    @JsonIgnore
+    public boolean isEmpty(){
+        return  moverId == null || moverId.isEmpty() || moverId.isBlank() ||  wkt == null || wkt.isEmpty() || wkt.isBlank();
     }
 
     public static Builder newBuilder() {
@@ -55,17 +61,17 @@ public class FenceDto {
         }
 
         public Builder withWkt(String val) {
-            if (val == null || val.isBlank() || val.isEmpty()){
-                throw new IllegalInputException("wkt fence can not be null/empty/balnk");
-            }
+//            if (val == null || val.isBlank() || val.isEmpty()){
+//                throw new IllegalInputException("wkt fence can not be null/empty/balnk");
+//            }
             wkt = val;
             return this;
         }
 
         public Builder withMoverId(String val) {
-            if (val == null || val.isBlank() || val.isEmpty()){
-                throw new IllegalInputException("mover id can not be null/empty/balnk");
-            }
+//            if (val == null || val.isBlank() || val.isEmpty()){
+//                throw new IllegalInputException("mover id can not be null/empty/balnk");
+//            }
             moverId = val;
             return this;
         }

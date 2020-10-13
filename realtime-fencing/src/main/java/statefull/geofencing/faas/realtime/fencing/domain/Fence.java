@@ -15,6 +15,16 @@ public class Fence {
         moverId = builder.moverId;
     }
 
+
+    public static Fence define(String wkt, String moverId){
+        return newBuilder().withMoverId("").withWkt("").build();
+    }
+
+
+    public static Fence defineEmpty(){
+        return newBuilder().withMoverId("").withWkt("").build();
+    }
+
     public static Builder newBuilder() {
         return new Builder();
     }

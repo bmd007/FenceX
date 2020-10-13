@@ -36,9 +36,9 @@ spring:
       properties:
         num.stream.threads: 1
     bootstrap-servers: "localhost:9092"
-#    producer:
-#      key-serializer: org.springframework.kafka.support.serializer.StringOrBytesSerializer
-#      value-serializer: org.springframework.kafka.support.serializer.StringOrBytesSerializer
+    producer:
+      key-serializer: org.springframework.kafka.support.serializer.StringOrBytesSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 
   h2:

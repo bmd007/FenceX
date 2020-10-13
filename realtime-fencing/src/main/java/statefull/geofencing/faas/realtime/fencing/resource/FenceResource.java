@@ -23,9 +23,9 @@ public class FenceResource {
     public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
     public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
     private final FenceViewService service;
-    private final KafkaTemplate<String, String> fenceEventPublisher;
+    private final KafkaTemplate<String, FenceDto> fenceEventPublisher;
 
-    public FenceResource(FenceViewService service, KafkaTemplate<String, String> fenceEventPublisher) {
+    public FenceResource(FenceViewService service, KafkaTemplate<String, FenceDto> fenceEventPublisher) {
         this.service = service;
         this.fenceEventPublisher = fenceEventPublisher;
     }
@@ -55,7 +55,7 @@ public class FenceResource {
         } catch (ParseException e) {
             throw new IllegalInputException("provided wkt is not a parsable: " + e.getMessage());
         }
-        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, fenceDto.getMoverId(), fenceDto.getWkt()).completable())
+        return Mono.fromFuture(fenceEventPublisher.send(Topics.FENCE_EVENT_LOG, fenceDto.getMoverId(), fenceDto).completable())
                 .map(ignore -> fenceDto + "was published successfully");
     }
 

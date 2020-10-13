@@ -1,9 +1,0 @@
-spring:
-  application.name: location-update-publisher
-  cloud:
-    consul:
-      config:
-        enabled: true
-      enabled: true
-      discovery:
-        enabled: true

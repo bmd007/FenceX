@@ -53,12 +53,15 @@ public class Application {
                 return null;
             }
         })
-        .bufferUntilChanged(tripDataDto -> tripDataDto.getTripRefNumber())
+        .bufferUntilChanged(tripDataDto -> tripDataDto.getTripRefNumber())//be careful: this approach only make
+                // senses when in the source file, all of the records related to one trip are all after each other
+                // and different trips do not intervene each other sequence of rows.
+        .filter(tripDataDtos -> tripDataDtos.size() >= 6)
         .doOnNext(tripDataDtos -> {
                     var tripId = tripDataDtos.get(0).getTripRefNumber();
                     Flux.fromIterable(tripDataDtos)
                             .map(tripDataDto -> LocationReport.define(tripDataDto.getTimestamp(), tripDataDto.getLatitude(), tripDataDto.getLongitude()))
-                            .sort((o1, o2) -> o1.getTimestamp().isBefore(o2.getTimestamp()) ? 1 : -1)
+                            .sort((o1, o2) -> o1.getTimestamp().isAfter(o2.getTimestamp()) ? 1 : -1)
                             .collectList()
                             .map(locationReports -> TripDocument.newBuilder().withLocationReports(locationReports).withTripId(tripId).build())
                             .flatMap(repository::save)

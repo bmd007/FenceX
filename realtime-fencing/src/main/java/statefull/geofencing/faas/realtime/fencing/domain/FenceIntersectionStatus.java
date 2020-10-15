@@ -2,25 +2,25 @@ package statefull.geofencing.faas.realtime.fencing.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
-import org.locationtech.jts.geom.Geometry;
 
-@JsonDeserialize(builder = Fence.Builder.class)
-public class Fence {
+@JsonDeserialize(builder = FenceIntersectionStatus.Builder.class)
+//todo add more fields like timeStamp, fenceWkt
+public class FenceIntersectionStatus {
 
-    private String wkt;
+    private Boolean isInFence;
     private String moverId;
 
-    private Fence(Builder builder) {
-        wkt = builder.wkt;
+    private FenceIntersectionStatus(Builder builder) {
+        isInFence = builder.isInFence;
         moverId = builder.moverId;
     }
 
-    public static Fence define(String wkt, String moverId){
-        return newBuilder().withMoverId(moverId).withWkt(wkt).build();
+    public static FenceIntersectionStatus define(Boolean isInFence, String moverId){
+        return newBuilder().withMoverId(moverId).withIsInFence(isInFence).build();
     }
 
-    public static Fence defineEmpty(){
-        return newBuilder().withMoverId("").withWkt("EMPTY").build();
+    public static FenceIntersectionStatus defineEmpty(){
+        return newBuilder().withMoverId("").withIsInFence(Boolean.FALSE).build();
     }
 
     public static Builder newBuilder() {
@@ -31,15 +31,15 @@ public class Fence {
         return newBuilder(this);
     }
 
-    public static Builder newBuilder(Fence copy) {
+    public static Builder newBuilder(FenceIntersectionStatus copy) {
         Builder builder = new Builder();
-        builder.wkt = copy.getWkt();
+        builder.isInFence = copy.getIsInFence();
         builder.moverId = copy.getMoverId();
         return builder;
     }
 
-    public String getWkt() {
-        return wkt;
+    public Boolean getIsInFence() {
+        return isInFence;
     }
 
     public String getMoverId() {
@@ -49,20 +49,20 @@ public class Fence {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("wkt", wkt)
+                .add("isInFence", isInFence)
                 .add("moverId", moverId)
                 .toString();
     }
 
     public static final class Builder {
-        private String wkt;
+        private Boolean isInFence;
         private String moverId;
 
         private Builder() {
         }
 
-        public Builder withWkt(String val) {
-            wkt = val;
+        public Builder withIsInFence(Boolean val) {
+            isInFence = val;
             return this;
         }
 
@@ -71,8 +71,8 @@ public class Fence {
             return this;
         }
 
-        public Fence build() {
-            return new Fence(this);
+        public FenceIntersectionStatus build() {
+            return new FenceIntersectionStatus(this);
         }
     }
 }

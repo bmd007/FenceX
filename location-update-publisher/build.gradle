@@ -51,7 +51,6 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine'
     implementation 'com.github.javafaker:javafaker:1.0.2'
 

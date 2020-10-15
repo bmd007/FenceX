@@ -1,13 +1,17 @@
 package statefull.geofencing.faas.bench.marking.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,21 +41,20 @@ public class TripDocument {
         routeWkt = builder.routeWkt;
     }
 
-//    @JsonIgnore
-//    public TripDocument populateWktRoute(){
-//        return locationReports.stream()
-//                .map(report -> new Coordinate(report.getLatitude(), report.getLongitude()))
-//                .collect(toList())
-//
-//                .map(coordinates -> {
-//                    var array = new Coordinate[coordinates.size()];
-//                    coordinates.toArray(array);
-//                    return array;
-//                })
-//                .map(GEOMETRY_FACTORY::createLineString)
-//                .map(lineString -> lineString.toText())
-//                .map(wkt -> cloneBuilder().withRouteWkt(wkt).build());
-//    }
+    @JsonIgnore
+    public Mono<TripDocument> populateWktRoute(){
+        return Flux.fromIterable(locationReports)
+                .map(report -> new Coordinate(report.getLatitude(), report.getLongitude()))
+                .collectList()
+                .map(coordinates -> {
+                    var array = new Coordinate[coordinates.size()];
+                    coordinates.toArray(array);
+                    return array;
+                })
+                .map(GEOMETRY_FACTORY::createLineString)
+                .map(lineString -> lineString.toText())
+                .map(wkt -> cloneBuilder().withRouteWkt(wkt).build());
+    }
 
     public static TripDocument define(String tripId) {
         return TripDocument.newBuilder()

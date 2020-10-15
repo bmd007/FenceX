@@ -21,8 +21,10 @@ import java.util.stream.BaseStream;
 @SpringBootApplication
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
     @Autowired
     TripDocumentRepository repository;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -44,7 +46,7 @@ public class Application {
                 })
                 .bufferUntilChanged(tripDataDto -> tripDataDto.getTripRefNumber())//be careful: this approach only make
                 // senses when in the source file, all of the records related to one trip are all after each other
-                // and different trips do not intervene each other sequence of rows.
+                // and different trips do not intervene each other's sequence of rows.
                 .filter(tripDataDtos -> tripDataDtos.size() >= 6)
                 .doOnNext(tripDataDtos -> {
                             var tripId = tripDataDtos.get(0).getTripRefNumber();
@@ -53,7 +55,7 @@ public class Application {
                                     .sort((o1, o2) -> o1.getTimestamp().isAfter(o2.getTimestamp()) ? 1 : -1)
                                     .collectList()
                                     .map(locationReports -> TripDocument.newBuilder().withLocationReports(locationReports).withTripId(tripId).build())
-//                            .map(TripDocument::populateWktRoute)
+                                    .flatMap(TripDocument::populateWktRoute)
                                     .flatMap(repository::save)
                                     .subscribe(tripDocument -> LOGGER.info("saved {} with report size {}", tripDocument.getTripId(),
                                             tripDocument.getLocationReports().size()));

@@ -27,11 +27,13 @@ public class TripDocument {
     private String tripId;
     private List<LocationReport> locationReports = List.of();
     private String routeWkt;
+    private String middleRouteRingWkt;
 
     @PersistenceConstructor
-    public TripDocument(String tripId, List<LocationReport> locationReports, String routeWkt) {
+    public TripDocument(String tripId, List<LocationReport> locationReports, String routeWkt, String middleRouteRingWkt) {
         this.tripId = tripId;
         this.routeWkt = routeWkt;
+        this.middleRouteRingWkt = middleRouteRingWkt;
         this.locationReports = locationReports;
     }
 
@@ -39,12 +41,13 @@ public class TripDocument {
         tripId = builder.tripId;
         locationReports = builder.locationReports;
         routeWkt = builder.routeWkt;
+        middleRouteRingWkt = builder.middleRouteRingWkt;
     }
 
     @JsonIgnore
     public Mono<TripDocument> populateWktRoute(){
         return Flux.fromIterable(locationReports)
-                .map(report -> new Coordinate(report.getLatitude(), report.getLongitude()))
+                .map(report -> new Coordinate(report.getLongitude(), report.getLatitude()))
                 .collectList()
                 .map(coordinates -> {
                     var array = new Coordinate[coordinates.size()];
@@ -56,11 +59,15 @@ public class TripDocument {
                 .map(wkt -> cloneBuilder().withRouteWkt(wkt).build());
     }
 
-    public static TripDocument define(String tripId) {
-        return TripDocument.newBuilder()
-                .withTripId(tripId)
-                .withRouteWkt("EMPTY")
-                .build();
+    @JsonIgnore
+    public TripDocument populateMiddleRouteRingWkt(){
+        //todo throw error on empty list
+        var middleOfLocationReportsList = (Integer) locationReports.size()/2;
+        var middleOfRoutePoint = locationReports.get(middleOfLocationReportsList);
+        var coordinate = new Coordinate(middleOfRoutePoint.getLongitude(), middleOfRoutePoint.getLatitude());
+        var ringInTheMiddleOfRoute = GEOMETRY_FACTORY.createPoint(coordinate).buffer(0.0005);
+        var ringWkt = ringInTheMiddleOfRoute.toString();
+        return cloneBuilder().withMiddleRouteRingWkt(ringWkt).build();
     }
 
     public static Builder newBuilder() {
@@ -72,6 +79,7 @@ public class TripDocument {
         builder.tripId = copy.getTripId();
         builder.locationReports = copy.getLocationReports();
         builder.routeWkt = copy.getRouteWkt();
+        builder.middleRouteRingWkt = copy.getMiddleRouteRingWkt();
         return builder;
     }
 
@@ -87,6 +95,10 @@ public class TripDocument {
         return routeWkt;
     }
 
+    public String getMiddleRouteRingWkt() {
+        return routeWkt;
+    }
+
     public List<LocationReport> getLocationReports() {
         return locationReports;
     }
@@ -96,6 +108,7 @@ public class TripDocument {
         return MoreObjects.toStringHelper(this)
                 .add("tripId", tripId)
                 .add("routeWkt", routeWkt)
+                .add("middleRouteRingWkt", middleRouteRingWkt)
                 .add("locationReports", locationReports)
                 .toString();
     }
@@ -107,17 +120,19 @@ public class TripDocument {
         TripDocument that = (TripDocument) o;
         return Objects.equal(tripId, that.tripId) &&
                 Objects.equal(routeWkt, that.routeWkt) &&
+                Objects.equal(middleRouteRingWkt, that.middleRouteRingWkt) &&
                 Objects.equal(locationReports, that.locationReports);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(tripId, locationReports, routeWkt);
+        return Objects.hashCode(tripId, locationReports, routeWkt, middleRouteRingWkt);
     }
 
     public static final class Builder {
         private String tripId;
         private String routeWkt;
+        private String middleRouteRingWkt;
         private List<LocationReport> locationReports = new ArrayList<>();
 
         private Builder() {
@@ -130,6 +145,10 @@ public class TripDocument {
 
         public Builder withRouteWkt(String val) {
             routeWkt = val;
+            return this;
+        }
+        public Builder withMiddleRouteRingWkt(String val) {
+            middleRouteRingWkt = val;
             return this;
         }
 

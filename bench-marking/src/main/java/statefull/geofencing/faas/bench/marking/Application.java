@@ -47,7 +47,7 @@ public class Application {
                 .bufferUntilChanged(tripDataDto -> tripDataDto.getTripRefNumber())//be careful: this approach only make
                 // senses when in the source file, all of the records related to one trip are all after each other
                 // and different trips do not intervene each other's sequence of rows.
-                .filter(tripDataDtos -> tripDataDtos.size() >= 6)
+                .filter(tripDataDtos -> tripDataDtos.size() >= 15)
                 .doOnNext(tripDataDtos -> {
                             var tripId = tripDataDtos.get(0).getTripRefNumber();
                             Flux.fromIterable(tripDataDtos)
@@ -56,6 +56,7 @@ public class Application {
                                     .collectList()
                                     .map(locationReports -> TripDocument.newBuilder().withLocationReports(locationReports).withTripId(tripId).build())
                                     .flatMap(TripDocument::populateWktRoute)
+                                    .map(TripDocument::populateMiddleRouteRingWkt)
                                     .flatMap(repository::save)
                                     .subscribe(tripDocument -> LOGGER.info("saved {} with report size {}", tripDocument.getTripId(),
                                             tripDocument.getLocationReports().size()));

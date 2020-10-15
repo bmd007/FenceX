@@ -20,10 +20,7 @@ import statefull.geofencing.faas.bench.marking.repository.TripDocumentRepository
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.BaseStream;
 
@@ -61,6 +58,7 @@ public class Application {
                     var tripId = tripDataDtos.get(0).getTripRefNumber();
                     Flux.fromIterable(tripDataDtos)
                             .map(tripDataDto -> LocationReport.define(tripDataDto.getTimestamp(), tripDataDto.getLatitude(), tripDataDto.getLongitude()))
+                            .sort((o1, o2) -> o1.getTimestamp().isBefore(o2.getTimestamp()) ? 1 : -1)
                             .collectList()
                             .map(locationReports -> TripDocument.newBuilder().withLocationReports(locationReports).withTripId(tripId).build())
                             .flatMap(repository::save)

@@ -7,3 +7,14 @@ spring:
       enabled: true
       discovery:
         enabled: true
+
+---
+spring:
+  profiles: local
+  cloud:
+    consul:
+      config:
+        enabled: false
+      enabled: false
+      discovery:
+        enabled: false

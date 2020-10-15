@@ -1,0 +1,45 @@
+server.port: 9522
+
+management:
+  server.port: 9523
+  health:
+    defaults.enabled: true
+    diskspace.enabled: false
+  endpoints:
+    web:
+      base-path: /
+      exposure.include: "*"
+  endpoint:
+    health:
+      enabled: true
+      show-details: never
+    auditevents.enabled: false
+  metrics:
+    enable.jvm: false
+    enable.jvm.gc.pause: true
+    enable.jvm.memory: true
+    enable.jvm.threads: true
+    enable.process: false
+    enable.process.files: true
+    enable.http: false
+    enable.http.server.requests: true
+    enable.logback: false
+    enable.system: false
+
+
+---
+spring:
+  profiles: local
+  zipkin:
+    enabled: false
+  cloud:
+    consul:
+      host: localhost
+      discovery:
+        health-check-path: /health
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/trips?maxPoolSize=1
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration

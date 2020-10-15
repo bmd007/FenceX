@@ -37,6 +37,20 @@ spring:
         num.stream.threads: 1
     bootstrap-servers: "localhost:9092"
 
+  sleuth:
+    sampler.probability: 1.0
+    scheduled.skip-pattern: .*ConfigWatch|.*ConsulCatalogWatch|.*/api/v1/spans
+  zipkin.base-url: http://system-zipkin/
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        health-check-path: /health
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+
   h2:
     console:
       enabled: true

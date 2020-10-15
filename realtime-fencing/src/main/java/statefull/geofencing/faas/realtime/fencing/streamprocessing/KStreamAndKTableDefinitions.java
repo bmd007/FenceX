@@ -24,6 +24,8 @@ import javax.annotation.PostConstruct;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import static java.lang.Boolean.FALSE;
+
 @Configuration
 public class KStreamAndKTableDefinitions {
 
@@ -70,6 +72,9 @@ public class KStreamAndKTableDefinitions {
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .filterNot((key, value) -> value.isNotDefined())
                 .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
+                .groupByKey()
+                .aggregate(() -> FALSE, (moverId, newFenceIntersectionStatus, currentFenceIntersectionStatus) -> currentFenceIntersectionStatus)
+                .toStream()
                 .foreach((moverId, intersects) -> System.out.println(moverId + " intersection status with its " +
                         "corresponding fence is: "+ intersects));
         //todo

@@ -14,6 +14,10 @@ public class ErrorsDto {
     public ErrorsDto() {
     }
 
+    private ErrorsDto(Builder builder) {
+        this.errors = unmodifiableList(builder.errors);
+    }
+
     public static ErrorsDto singleError(String code, String message) {
         return ErrorsDto.builder()
                 .withError(ErrorDto.builder()
@@ -23,8 +27,8 @@ public class ErrorsDto {
                 .build();
     }
 
-    private ErrorsDto(Builder builder) {
-        this.errors = unmodifiableList(builder.errors);
+    public static Builder builder() {
+        return new Builder();
     }
 
     public List<ErrorDto> getErrors() {
@@ -36,10 +40,6 @@ public class ErrorsDto {
         return MoreObjects.toStringHelper(this)
                 .add("errors", errors)
                 .toString();
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

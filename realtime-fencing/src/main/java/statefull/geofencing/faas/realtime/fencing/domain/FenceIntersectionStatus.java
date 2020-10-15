@@ -15,11 +15,11 @@ public class FenceIntersectionStatus {
         moverId = builder.moverId;
     }
 
-    public static FenceIntersectionStatus define(Boolean isInFence, String moverId){
+    public static FenceIntersectionStatus define(Boolean isInFence, String moverId) {
         return newBuilder().withMoverId(moverId).withIsInFence(isInFence).build();
     }
 
-    public static FenceIntersectionStatus defineEmpty(){
+    public static FenceIntersectionStatus defineEmpty() {
         return newBuilder().withMoverId("").withIsInFence(Boolean.FALSE).build();
     }
 
@@ -27,15 +27,15 @@ public class FenceIntersectionStatus {
         return new Builder();
     }
 
-    public Builder cloneBuilder(){
-        return newBuilder(this);
-    }
-
     public static Builder newBuilder(FenceIntersectionStatus copy) {
         Builder builder = new Builder();
         builder.isInFence = copy.getIsInFence();
         builder.moverId = copy.getMoverId();
         return builder;
+    }
+
+    public Builder cloneBuilder() {
+        return newBuilder(this);
     }
 
     public Boolean getIsInFence() {

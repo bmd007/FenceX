@@ -13,16 +13,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import statefull.geofencing.faas.realtime.fencing.config.Stores;
 import statefull.geofencing.faas.realtime.fencing.util.KafkaStreamsAwait;
 
-import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @EmbeddedKafka(partitions = 1, topics = {
         "mover-position-updates",
-        "${spring.application.name}"+"-changelog-"+Stores.FENCE_STATE_STORE,
+        "${spring.application.name}" + "-changelog-" + Stores.FENCE_STATE_STORE,
         "event_log"
 })
 @DirtiesContext

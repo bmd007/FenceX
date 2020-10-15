@@ -4,11 +4,12 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.kstream.Aggregator;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,33 +21,24 @@ import statefull.geofencing.faas.realtime.fencing.config.Stores;
 import statefull.geofencing.faas.realtime.fencing.config.Topics;
 import statefull.geofencing.faas.realtime.fencing.domain.Fence;
 import statefull.geofencing.faas.realtime.fencing.domain.FenceIntersectionStatus;
-import statefull.geofencing.faas.realtime.fencing.dto.FenceDto;
 
 import javax.annotation.PostConstruct;
-import java.util.Optional;
 import java.util.function.BiFunction;
-
-import static java.lang.Boolean.FALSE;
 
 @Configuration
 public class KStreamAndKTableDefinitions {
 
+    public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
+    public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
     private static final Logger LOGGER = LoggerFactory.getLogger(KStreamAndKTableDefinitions.class);
     private static final Consumed<String, Mover> MOVER_CONSUMED = Consumed.with(Serdes.String(), CustomSerdes.MOVER_JSON_SERDE);
     private static final Consumed<String, String> WKT_CONSUMED = Consumed.with(Serdes.String(), Serdes.String());
-    public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
-    public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
-
     private static final Materialized<String, Fence, KeyValueStore<Bytes, byte[]>> FENCE_KTABLE = Materialized
             .<String, Fence, KeyValueStore<Bytes, byte[]>>as(Stores.FENCE_STATE_STORE)
             .withKeySerde(Serdes.String())
             .withValueSerde(new JsonSerde<Fence>(Fence.class));
 
     private final StreamsBuilder streamsBuilder;
-
-    public KStreamAndKTableDefinitions(StreamsBuilder streamsBuilder) {
-        this.streamsBuilder = streamsBuilder;
-    }
     BiFunction<Mover, Fence, KeyValue<String, FenceIntersectionStatus>> moverFenceIntersectionChecker = (mover, fence) -> {
         try {
             var point = GEOMETRY_FACTORY.createPoint(new Coordinate(mover.getLastLocation().getLatitude(),
@@ -60,6 +52,10 @@ public class KStreamAndKTableDefinitions {
             return KeyValue.pair(mover.getId(), null);
         }
     };
+
+    public KStreamAndKTableDefinitions(StreamsBuilder streamsBuilder) {
+        this.streamsBuilder = streamsBuilder;
+    }
 
     @PostConstruct
     public void configureStores() {

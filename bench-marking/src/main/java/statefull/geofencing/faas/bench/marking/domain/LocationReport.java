@@ -5,23 +5,32 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @JsonDeserialize(builder = LocationReport.Builder.class)
 public class LocationReport {
+    final static DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of(
+                    "UTC"));
     private Instant timestamp;
     private double latitude;
     private double longitude;
 
-    final static DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of(
-            "UTC"));
     @PersistenceConstructor
     public LocationReport(Instant timestamp, double latitude, double longitude) {
         this.timestamp = timestamp;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    private LocationReport(Builder builder) {
+        timestamp = builder.timestamp;
+        latitude = builder.latitude;
+        longitude = builder.longitude;
     }
 
     public static LocationReport define(String timestamp, double latitude, double longitude) {
@@ -33,14 +42,16 @@ public class LocationReport {
                 .build();
     }
 
-    private LocationReport(Builder builder) {
-        timestamp = builder.timestamp;
-        latitude = builder.latitude;
-        longitude = builder.longitude;
-    }
-
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    public static Builder newBuilder(LocationReport copy) {
+        Builder builder = new Builder();
+        builder.timestamp = copy.getTimestamp();
+        builder.latitude = copy.getLatitude();
+        builder.longitude = copy.getLongitude();
+        return builder;
     }
 
     @Override
@@ -48,7 +59,7 @@ public class LocationReport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LocationReport that = (LocationReport) o;
-        return  Objects.equal(timestamp, that.timestamp) &&
+        return Objects.equal(timestamp, that.timestamp) &&
                 Objects.equal(latitude, that.latitude) &&
                 Objects.equal(longitude, that.longitude);
     }
@@ -79,14 +90,6 @@ public class LocationReport {
         return longitude;
     }
 
-    public static Builder newBuilder(LocationReport copy) {
-        Builder builder = new Builder();
-        builder.timestamp = copy.getTimestamp();
-        builder.latitude = copy.getLatitude();
-        builder.longitude = copy.getLongitude();
-        return builder;
-    }
-
     public static final class Builder {
         private Instant timestamp;
         private double latitude;
@@ -94,7 +97,7 @@ public class LocationReport {
 
         private Builder() {
         }
-        
+
         public Builder withTimestamp(Instant val) {
             timestamp = val;
             return this;

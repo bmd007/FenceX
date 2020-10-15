@@ -3,7 +3,10 @@ package statefull.geofencing.faas.location.update.publisher.resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 import statefull.geofencing.faas.location.update.publisher.config.Topics;
 import statefull.geofencing.faas.location.update.publisher.dto.TimeLessMoverLocationUpdate;
@@ -31,7 +34,7 @@ public class LocationUpdateResource {
 
     @PostMapping("/update/now")
     public void locationUpdate(@RequestBody TimeLessMoverLocationUpdate timeLessLocationUpdate) {
-    var locationUpdate = MoverLocationUpdate.newBuilder()
+        var locationUpdate = MoverLocationUpdate.newBuilder()
                 .withLatitude(timeLessLocationUpdate.getLatitude())
                 .withLongitude(timeLessLocationUpdate.getLongitude())
                 .withMoverId(timeLessLocationUpdate.getMoverId())

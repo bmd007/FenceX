@@ -20,6 +20,7 @@ public class CoordinateDto {
     public double getLatitude() {
         return latitude;
     }
+
     public double getLongitude() {
         return longitude;
     }

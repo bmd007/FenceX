@@ -14,7 +14,7 @@ import statefull.geofencing.faas.realtime.fencing.config.Stores;
 @ActiveProfiles("test")
 @EmbeddedKafka(partitions = 1, topics = {
         "mover-updates",
-        "${spring.application.name}"+"-changelog-"+Stores.FENCE_STATE_STORE,
+        "${spring.application.name}" + "-changelog-" + Stores.FENCE_STATE_STORE,
         "event_log"
 })
 public class ApplicationTests {

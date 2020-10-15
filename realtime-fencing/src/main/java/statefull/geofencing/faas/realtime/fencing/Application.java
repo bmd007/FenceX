@@ -6,8 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.EventListener;
 
-import java.sql.SQLException;
-
 @SpringBootApplication//(scanBasePackages = {"statefull.geofencing.faas"})
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);

@@ -13,9 +13,9 @@ services:
       - "9092:9092"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
-#      KAFKA_CREATE_TOPICS: >-
-#        mover-position-updates:1:1,
-#        event_log:1:1
+      #      KAFKA_CREATE_TOPICS: >-
+      #        mover-position-updates:1:1,
+      #        event_log:1:1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

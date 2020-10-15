@@ -16,6 +16,10 @@ public class ErrorDto {
         this.message = builder.message;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public String getCode() {
         return code;
     }
@@ -30,10 +34,6 @@ public class ErrorDto {
                 .add("code", code)
                 .add("message", message)
                 .toString();
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

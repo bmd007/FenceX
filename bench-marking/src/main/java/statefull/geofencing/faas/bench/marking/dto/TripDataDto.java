@@ -22,6 +22,15 @@ public class TripDataDto {
         return new Builder();
     }
 
+    public static Builder newBuilder(TripDataDto copy) {
+        Builder builder = new Builder();
+        builder.tripRefNumber = copy.getTripRefNumber();
+        builder.timestamp = copy.getTimestamp();
+        builder.latitude = copy.getLatitude();
+        builder.longitude = copy.getLongitude();
+        return builder;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,15 +71,6 @@ public class TripDataDto {
 
     public double getLongitude() {
         return longitude;
-    }
-
-    public static Builder newBuilder(TripDataDto copy) {
-        Builder builder = new Builder();
-        builder.tripRefNumber = copy.getTripRefNumber();
-        builder.timestamp = copy.getTimestamp();
-        builder.latitude = copy.getLatitude();
-        builder.longitude = copy.getLongitude();
-        return builder;
     }
 
     public static final class Builder {

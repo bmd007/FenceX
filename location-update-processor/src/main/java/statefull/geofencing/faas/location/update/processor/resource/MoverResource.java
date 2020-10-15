@@ -41,7 +41,7 @@ public class MoverResource {
     public MoversDto queryBox(@RequestParam double latitude,
                               @RequestParam double longitude,
                               @RequestParam(required = false) Long maxAge) {
-         var polygon = wrapLocationByPolygonFunction.apply(latitude, longitude);
+        var polygon = wrapLocationByPolygonFunction.apply(latitude, longitude);
         var results =
 //                repository.query(polygon)
                 polygonalGeoFencingFunction.apply(repository, polygon)
@@ -59,9 +59,9 @@ public class MoverResource {
         var results =
 //                repository.query(polygon)
                 polygonalGeoFencingFunction.apply(repository, polygon)
-                .stream()
-                .map(this::map)
-                .collect(Collectors.toList());
+                        .stream()
+                        .map(this::map)
+                        .collect(Collectors.toList());
         return new MoversDto(results);
     }
 

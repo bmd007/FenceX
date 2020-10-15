@@ -2,7 +2,6 @@ package statefull.geofencing.faas.realtime.fencing.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
-import org.locationtech.jts.geom.Geometry;
 
 @JsonDeserialize(builder = Fence.Builder.class)
 public class Fence {
@@ -15,11 +14,11 @@ public class Fence {
         moverId = builder.moverId;
     }
 
-    public static Fence define(String wkt, String moverId){
+    public static Fence define(String wkt, String moverId) {
         return newBuilder().withMoverId(moverId).withWkt(wkt).build();
     }
 
-    public static Fence defineEmpty(){
+    public static Fence defineEmpty() {
         return newBuilder().withMoverId("").withWkt("EMPTY").build();
     }
 
@@ -27,15 +26,15 @@ public class Fence {
         return new Builder();
     }
 
-    public Builder cloneBuilder(){
-        return newBuilder(this);
-    }
-
     public static Builder newBuilder(Fence copy) {
         Builder builder = new Builder();
         builder.wkt = copy.getWkt();
         builder.moverId = copy.getMoverId();
         return builder;
+    }
+
+    public Builder cloneBuilder() {
+        return newBuilder(this);
     }
 
     public String getWkt() {

@@ -1,9 +1,10 @@
 package statefull.geofencing.faas.realtime.fencing.exception;
 
 import org.springframework.http.HttpStatus;
-import java.util.List;
 import statefull.geofencing.faas.realtime.fencing.dto.ErrorDto;
 import statefull.geofencing.faas.realtime.fencing.dto.ErrorsDto;
+
+import java.util.List;
 
 
 public class ApplicationException extends RuntimeException {
@@ -35,7 +36,7 @@ public class ApplicationException extends RuntimeException {
 
     @Override
     public String toString() {
-        return this.getClass().getCanonicalName()+"{" + "status=" + status + ", errors=" + errors + '}';
+        return this.getClass().getCanonicalName() + "{" + "status=" + status + ", errors=" + errors + '}';
     }
 
     public HttpStatus getStatus() {

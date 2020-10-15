@@ -16,9 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 import statefull.geofencing.faas.common.repository.MoverJdbcRepository;
+import statefull.geofencing.faas.location.update.processor.CustomSerdes;
 import statefull.geofencing.faas.location.update.processor.config.TopicCreator;
 import statefull.geofencing.faas.location.update.processor.config.Topics;
-import statefull.geofencing.faas.location.update.processor.CustomSerdes;
 
 import javax.annotation.PostConstruct;
 import java.util.function.BiFunction;

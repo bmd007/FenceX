@@ -15,6 +15,10 @@ public class FencesDto {
     public FencesDto() {
     }
 
+    private FencesDto(Builder builder) {
+        this.fences = List.copyOf(builder.fences);
+    }
+
     public static FencesDto singleFence(String wkt, String moverID) {
         return FencesDto.builder()
                 .withFence(FenceDto.newBuilder()
@@ -30,8 +34,8 @@ public class FencesDto {
                 .build();
     }
 
-    private FencesDto(Builder builder) {
-        this.fences = List.copyOf(builder.fences);
+    public static Builder builder() {
+        return new Builder();
     }
 
     public List<FenceDto> getFences() {
@@ -43,10 +47,6 @@ public class FencesDto {
         return MoreObjects.toStringHelper(this)
                 .add("fences", fences)
                 .toString();
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

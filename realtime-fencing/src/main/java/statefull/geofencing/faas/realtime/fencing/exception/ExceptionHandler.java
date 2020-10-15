@@ -26,10 +26,9 @@ import static com.google.common.base.Strings.nullToEmpty;
 @Component
 public class ExceptionHandler implements WebExceptionHandler {
 
-    private ObjectMapper jsonMapper;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
     public static final String SERVICE_FAILED = "SERVICE_FAILED";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
+    private ObjectMapper jsonMapper;
 
     public ExceptionHandler(ObjectMapper jsonMapper) {
         this.jsonMapper = jsonMapper;
@@ -37,7 +36,7 @@ public class ExceptionHandler implements WebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable e) {
-        if (e instanceof ApplicationException){
+        if (e instanceof ApplicationException) {
             return handleApplicationException(exchange, (ApplicationException) e);
         } else if (e instanceof ResponseStatusException) {
             return handleResponseStatusException(exchange, (ResponseStatusException) e);

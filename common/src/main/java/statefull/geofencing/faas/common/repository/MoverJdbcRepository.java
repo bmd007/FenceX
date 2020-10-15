@@ -6,7 +6,6 @@ import org.locationtech.jts.io.WKTReader;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import statefull.geofencing.faas.common.domain.Coordinate;
 import statefull.geofencing.faas.common.domain.Mover;
 
 import javax.annotation.Nullable;

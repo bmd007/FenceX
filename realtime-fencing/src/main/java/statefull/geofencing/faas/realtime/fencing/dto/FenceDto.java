@@ -3,7 +3,6 @@ package statefull.geofencing.faas.realtime.fencing.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
-import statefull.geofencing.faas.realtime.fencing.exception.IllegalInputException;
 
 @JsonDeserialize(builder = FenceDto.Builder.class)
 //todo add support for went into and left the fence (needs another KTable of MoverAndFenceIntersectionUpdate(events) --(state: boolean isInAFence))
@@ -17,17 +16,8 @@ public class FenceDto {
         moverId = builder.moverId;
     }
 
-    @JsonIgnore
-    public boolean isEmpty(){
-        return  moverId == null || moverId.isEmpty() || moverId.isBlank() ||  wkt == null || wkt.isEmpty() || wkt.isBlank();
-    }
-
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public Builder cloneBuilder(){
-        return newBuilder(this);
     }
 
     public static Builder newBuilder(FenceDto copy) {
@@ -35,6 +25,15 @@ public class FenceDto {
         builder.wkt = copy.getWkt();
         builder.moverId = copy.getMoverId();
         return builder;
+    }
+
+    @JsonIgnore
+    public boolean isEmpty() {
+        return moverId == null || moverId.isEmpty() || moverId.isBlank() || wkt == null || wkt.isEmpty() || wkt.isBlank();
+    }
+
+    public Builder cloneBuilder() {
+        return newBuilder(this);
     }
 
     public String getWkt() {

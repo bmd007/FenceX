@@ -78,6 +78,7 @@ public class ViewService<E, M, I> {
             return localData.collectList().map(listOfDtosToDtoListContainer);
         }
     }
+
     //**
     // Use this method for fetching all of data ONLY if the assinged store is GLOBAL
     // **//

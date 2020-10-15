@@ -24,15 +24,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.BaseStream;
 
-@SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas"})
+@SpringBootApplication
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
-    static Map<String, TripDocument> MAP = new ConcurrentHashMap<>();
 
     @Autowired
     TripDocumentRepository repository;
@@ -44,7 +42,6 @@ public class Application {
     public void onStart() {
         var file = new File("H:\\JAVA ProgRAming\\Intellij_workSpace\\statefull-geofencing-faas\\bench-marking\\trip-data.json").toPath();
         Flux.using(() -> Files.lines(file), Flux::fromStream, BaseStream::close)
-//        .subscribeOn(Schedulers.single())
         .map(line -> {
             try {
                 return objectMapper.reader().forType(TripDataDto.class).<TripDataDto>readValue(line);
@@ -64,6 +61,7 @@ public class Application {
                             .sort((o1, o2) -> o1.getTimestamp().isAfter(o2.getTimestamp()) ? 1 : -1)
                             .collectList()
                             .map(locationReports -> TripDocument.newBuilder().withLocationReports(locationReports).withTripId(tripId).build())
+                            .map(TripDocument::populateWktRoute)
                             .flatMap(repository::save)
                             .subscribe(tripDocument -> LOGGER.info("saved {} with report size {}", tripDocument.getTripId(),
                                     tripDocument.getLocationReports().size()));

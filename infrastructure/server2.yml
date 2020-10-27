@@ -1,11 +1,11 @@
 version: '3.7'
 services:
   consul-client:
-    network_mode: bridge
+    network_mode: host
     container_name: "consul-client"
     hostname: consul-client
     image: consul:latest
-    command: "agent -node=client-1 -join=192.168.1.24"
+    command: "agent -node=client-1 -join=192.168.1.24 -bind=192.168.1.12"
     ports:
       - '8500:8500'
       - '8600:8600'

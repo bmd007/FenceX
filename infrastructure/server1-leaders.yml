@@ -7,7 +7,16 @@ services:
     image: consul:latest
     command: "agent -server -ui -node=server-1 -bootstrap-expect=1 -advertise=192.168.1.24"
     ports:
+      - target: 8600
+        published: 8600
+        protocol: udp
+        mode: host
+      - target: 8301
+        published: 8301
+        protocol: udp
+        mode: host
       - '8500:8500'
       - '8600:8600'
       - '8301:8301'
+      - '8302:8302'
       - '8300:8300'

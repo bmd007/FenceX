@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   consul-client:
     network_mode: host
@@ -7,7 +7,17 @@ services:
     image: consul:latest
     command: "agent -node=client-1 -join=192.168.1.24 -advertise=192.168.1.12"
     ports:
+      - target: 8600
+        published: 8600
+        protocol: udp
+        mode: host
+      - target: 8301
+        published: 8301
+        protocol: udp
+        mode: host
       - '8500:8500'
       - '8600:8600'
       - '8301:8301'
+      - '8302:8302'
       - '8300:8300'
+

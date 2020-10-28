@@ -21,6 +21,7 @@ services:
       - "7946:7946/tcp"
 
   zookeeper:
+    network_mode: bridge
     hostname: zookeeper
 #    container_name: zookeeper
     image: zookeeper
@@ -34,6 +35,7 @@ services:
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=${SERVER2_IP}:2888:3888;2181
 
   kafka:
+    network_mode: bridge
     image: wurstmeister/kafka
     depends_on:
       - zookeeper
@@ -41,14 +43,10 @@ services:
       - "9092:9092"
       - "9094:9094"
     environment:
-      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
-#      KAFKA_CREATE_TOPICS: >-
-#        mover-position-updates:3:3,
-#        event_log:5:3
       KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://${SERVER1_IP}:9092, OUTSIDE://${SERVER1_IP}:9094
-      KAFKA_LISTENERS: INSIDE://${SERVER1_IP}:9092, OUTSIDE://${SERVER1_IP}:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092, OUTSIDE://${SERVER1_IP}:9094
+      KAFKA_LISTENERS: INSIDE://:9092, OUTSIDE://:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ADVERTISED_PORT: 9092
       JMX_PORT: 9997

@@ -45,7 +45,6 @@ services:
       - "9092:9092"
       - "9094:9094"
     environment:
-      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181,${SERVER2_IP}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: OUTSIDE://:9094

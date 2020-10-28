@@ -1,3 +1,4 @@
+#usgae of bridge is due to testing party being window, otherwise host should be default for everything
 version: '3.7'
 services:
   consul-server:
@@ -45,9 +46,9 @@ services:
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181,${SERVER2_IP}:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://:9094
-      KAFKA_LISTENERS: OUTSIDE://:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://${SERVER1_IP}:9094
+      KAFKA_LISTENERS: OUTSIDE://${SERVER1_IP}:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: OUTSIDE
       JMX_PORT: 9997
     volumes:

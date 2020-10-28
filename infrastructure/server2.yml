@@ -34,8 +34,9 @@ services:
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=${SERVER1_IP}:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181
 
-  kafka:
-    network_mode: host
+  kafka2:
+    hostname: kafka2
+    network_mode: bridge
     image: wurstmeister/kafka
     depends_on:
       - zookeeper
@@ -45,7 +46,7 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: ${SERVER2_IP}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://0.0.0.0:9092, OUTSIDE://${SERVER2_IP}:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka2:9092, OUTSIDE://${SERVER2_IP}:9094
       KAFKA_LISTENERS: INSIDE://:9092, OUTSIDE://${SERVER2_IP}:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ADVERTISED_PORT: 9092

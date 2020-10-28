@@ -5,7 +5,7 @@ services:
     container_name: "consul-server"
     hostname: consul-server
     image: consul:latest
-    command: "agent -server -ui -node=server-1 -advertise=192.168.1.24  -bootstrap-expect=1"
+    command: "agent -server -ui -node=server-1 -advertise=192.168.1.24 -bootstrap-expect=1"
     ports:
       - "8300:8300/tcp"
       - "8300:8300/udp"
@@ -17,3 +17,5 @@ services:
       - "8500:8500"
       - "8600:8600/udp"
       - "8600:8600/tcp"
+      - "7946:7946/udp"
+      - "7946:7946/tcp"

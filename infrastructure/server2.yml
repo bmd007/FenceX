@@ -1,5 +1,4 @@
 #usgae of bridge is due to testing party being window, otherwise host should be default for everything
-#also kafka broker is different here than leaders file due to windows limitations to bind to 192.168.1.12:X
 version: "3.7"
 services:
   consul-client:
@@ -47,8 +46,8 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181,${SERVER2_IP}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://:9094
-      KAFKA_LISTENERS: OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://${SERVER2_IP}:9094
+      KAFKA_LISTENERS: OUTSIDE://${SERVER2_IP}:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: OUTSIDE
       JMX_PORT: 9997
     volumes:

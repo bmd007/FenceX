@@ -8,6 +8,9 @@ spring:
       discovery:
         enabled: true
 
+    loadbalancer:
+      ribbon:
+        enabled: false
 ---
 spring:
   profiles: local

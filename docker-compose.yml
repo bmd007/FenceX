@@ -1,5 +1,16 @@
 version: "3.8"
 services:
+
+  consul-server:
+    hostname: consul
+    image: consul
+    ports:
+      - "8500:8500"
+      - "8300:8300"
+    volumes:
+      - ./metrics/consul.json:/consul/config/consul.json
+
+
   # Zookeeper for kafka
   zookeeper:
     image: wurstmeister/zookeeper

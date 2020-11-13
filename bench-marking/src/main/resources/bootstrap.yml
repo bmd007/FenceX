@@ -8,7 +8,6 @@ spring:
       discovery:
         enabled: true
 
-
 ---
 spring:
   profiles: local

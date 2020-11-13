@@ -17,6 +17,8 @@ management:
       show-details: never
     auditevents.enabled: false
   metrics:
+    tags:
+      application: ${spring.application.name}
     enable.jvm: false
     enable.jvm.gc.pause: true
     enable.jvm.memory: true
@@ -71,6 +73,8 @@ kafka:
 ---
 spring:
   profiles: local
+  application:
+    name: location-update-processor
   kafka:
     streams:
       replication-factor: 1

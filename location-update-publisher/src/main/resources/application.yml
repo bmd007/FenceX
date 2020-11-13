@@ -14,9 +14,11 @@ management:
       enabled: true
     health:
       enabled: true
-      show-details: always
+      show-details: never
     auditevents.enabled: false
   metrics:
+    tags:
+      application: ${spring.application.name}
     enable.jvm: false
     enable.jvm.gc.pause: true
     enable.jvm.memory: true
@@ -34,6 +36,7 @@ management:
 spring:
   datasource:
     initialization-mode: always
+
   kafka:
     bootstrap-servers: "localhost:9092"
     producer:
@@ -42,3 +45,9 @@ spring:
 #      properties:
 #        - spring.json.type.mapping: MoverLocationUpdate:statefull.geofencing.faas.common.dto.MoverLocationUpdate
 
+
+---
+spring:
+  profiles: local
+  application:
+    name: location-update-publisher

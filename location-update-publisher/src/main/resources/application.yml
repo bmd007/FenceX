@@ -10,9 +10,11 @@ management:
       base-path: /
       exposure.include: "*"
   endpoint:
+    prometheus:
+      enabled: true
     health:
       enabled: true
-      show-details: never
+      show-details: always
     auditevents.enabled: false
   metrics:
     enable.jvm: false
@@ -25,6 +27,9 @@ management:
     enable.http.server.requests: true
     enable.logback: false
     enable.system: false
+    export:
+      prometheus:
+        enabled: true
 
 spring:
   datasource:

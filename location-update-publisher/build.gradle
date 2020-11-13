@@ -37,6 +37,7 @@ ext {
 dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     //todo use function-web instead. then it will be easy to just copy paste for function-rabbitMq
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools'

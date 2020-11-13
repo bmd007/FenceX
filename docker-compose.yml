@@ -20,15 +20,5 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  kafka-manager:
-    image: rafabsb/kafka-manager-docker
-    ports:
-      - "9000:9000"
-    links:
-      - zookeeper
-      - kafka
-    environment:
-      ZK_HOSTS: zookeeper:2181
-      APPLICATION_SECRET: letmein
-      KM_ARGS: -Djava.net.preferIPv4Stack=true
+
 

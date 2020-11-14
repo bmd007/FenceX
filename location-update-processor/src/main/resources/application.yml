@@ -19,16 +19,16 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-    enable.jvm: false
+    enable.jvm: true
     enable.jvm.gc.pause: true
     enable.jvm.memory: true
     enable.jvm.threads: true
-    enable.process: false
+    enable.process: true
     enable.process.files: true
-    enable.http: false
+    enable.http: true
     enable.http.server.requests: true
-    enable.logback: false
-    enable.system: false
+    enable.logback: true
+    enable.system: true
     export:
       prometheus:
         enabled: true

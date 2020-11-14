@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.realtime.fencing.CustomSerdes;
+import statefull.geofencing.faas.realtime.fencing.config.MetricsFacade;
 import statefull.geofencing.faas.realtime.fencing.config.Stores;
 import statefull.geofencing.faas.realtime.fencing.config.Topics;
 import statefull.geofencing.faas.realtime.fencing.domain.Fence;
@@ -29,7 +30,7 @@ import java.util.function.BiFunction;
 public class KStreamAndKTableDefinitions {
 
     public final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
-    public final static WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
+    public final static WKTReader WKT_READER = new WKTReader(GEOMETRY_FACTORY);
     private static final Logger LOGGER = LoggerFactory.getLogger(KStreamAndKTableDefinitions.class);
     private static final Consumed<String, Mover> MOVER_CONSUMED = Consumed.with(Serdes.String(), CustomSerdes.MOVER_JSON_SERDE);
     private static final Consumed<String, String> WKT_CONSUMED = Consumed.with(Serdes.String(), Serdes.String());
@@ -38,12 +39,13 @@ public class KStreamAndKTableDefinitions {
             .withKeySerde(Serdes.String())
             .withValueSerde(new JsonSerde<Fence>(Fence.class));
 
-    private final StreamsBuilder streamsBuilder;
-    BiFunction<Mover, Fence, KeyValue<String, FenceIntersectionStatus>> moverFenceIntersectionChecker = (mover, fence) -> {
+    private final static BiFunction<Mover, Fence, KeyValue<String, FenceIntersectionStatus>> moverFenceIntersectionChecker
+            = (mover,
+                                                                                                          fence) -> {
         try {
             var point = GEOMETRY_FACTORY.createPoint(new Coordinate(mover.getLastLocation().getLatitude(),
                     mover.getLastLocation().getLongitude()));
-            var fenceGeometry = wktReader.read(fence.getWkt());
+            var fenceGeometry = WKT_READER.read(fence.getWkt());
             var intersects = fenceGeometry.intersects(point);
             var intersectionStatus = FenceIntersectionStatus.define(intersects, mover.getId());
             return KeyValue.pair(mover.getId(), intersectionStatus);
@@ -53,8 +55,12 @@ public class KStreamAndKTableDefinitions {
         }
     };
 
-    public KStreamAndKTableDefinitions(StreamsBuilder streamsBuilder) {
+    private final StreamsBuilder streamsBuilder;
+    private final MetricsFacade metrics;
+
+    public KStreamAndKTableDefinitions(StreamsBuilder streamsBuilder, MetricsFacade metrics) {
         this.streamsBuilder = streamsBuilder;
+        this.metrics = metrics;
     }
 
     @PostConstruct
@@ -70,7 +76,12 @@ public class KStreamAndKTableDefinitions {
         streamsBuilder.stream(Topics.MOVER_UPDATES_TOPIC, MOVER_CONSUMED)
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .filterNot((key, value) -> value.isNotDefined())
-                .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
+                .join(moversFenceKTable, (mover, fence) ->  moverFenceIntersectionChecker
+                        .andThen(dontTouch -> {
+                            metrics.incrementMoverFenceIntersectionCounter();
+                            return dontTouch;
+                        })
+                        .apply(mover, fence))
                 .foreach((moverId, intersects) -> System.out.println(intersects));//todo integrate alarming function
         // here.
     }

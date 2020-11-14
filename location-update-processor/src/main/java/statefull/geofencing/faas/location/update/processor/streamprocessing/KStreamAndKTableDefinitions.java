@@ -17,6 +17,9 @@ import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
 import statefull.geofencing.faas.common.repository.MoverJdbcRepository;
 import statefull.geofencing.faas.location.update.processor.CustomSerdes;
+import statefull.geofencing.faas.location.update.processor.config.MetricsFacade;
+import statefull.geofencing.faas.location.update.processor.config.TopicCreator;
+import statefull.geofencing.faas.location.update.processor.config.Topics;
 
 import javax.annotation.PostConstruct;
 import java.util.function.BiFunction;
@@ -42,16 +45,18 @@ public class KStreamAndKTableDefinitions {
     private final StreamsBuilder builder;
     private final MoverJdbcRepository repository;
     private final String applicationName;
+    private final MetricsFacade metrics;
 
     public KStreamAndKTableDefinitions(Predicate<MoverLocationUpdate> moverLocationUpdateFilterFunction,
                                        BiFunction<Mover, MoverLocationUpdate, Mover> moverAggregateFunction,
                                        StreamsBuilder builder, MoverJdbcRepository repository,
-                                       @Value("${spring.application.name}") String applicationName) {
+                                       @Value("${spring.application.name}") String applicationName, MetricsFacade metrics) {
         this.moverLocationUpdateFilterFunction = moverLocationUpdateFilterFunction;
         this.moverAggregateFunction = moverAggregateFunction;
         this.builder = builder;
         this.repository = repository;
         this.applicationName = applicationName;
+        this.metrics = metrics;
     }
 
     @PostConstruct
@@ -65,7 +70,13 @@ public class KStreamAndKTableDefinitions {
                 .filter((key, value) -> moverLocationUpdateFilterFunction.test(value))
                 .groupByKey()
                 // Aggregate status into a in-memory KTable as a source for global KTable
-                .aggregate(Mover::defineEmpty, (key, value, aggregate) -> moverAggregateFunction.apply(aggregate, value),
+                .aggregate(Mover::defineEmpty,
+                        (key, value, aggregate) -> moverAggregateFunction
+                                .andThen(mover -> {
+                                    metrics.incrementAggregationCounter();
+                                    return mover;
+                                })
+                                .apply(aggregate, value),
                         IN_MEMORY_TEMP_KTABLE)
                 .toStream()
                 .to(Topics.MOVER_UPDATES_TOPIC, MOVER_PRODUCED);

@@ -2,6 +2,7 @@ package statefull.geofencing.faas.bench.marking.resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class Resource {
         this.fencingClient = fencingClient;
     }
 
-    @PostMapping("/load")
+    @GetMapping("/load")
     public void loadTest() {
             repository.findAll()
                     .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()

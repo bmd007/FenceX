@@ -1,9 +1,12 @@
 package statefull.geofencing.faas.location.update.processor;
 
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 
 import java.sql.SQLException;
@@ -11,6 +14,12 @@ import java.sql.SQLException;
 @SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas"})
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
+    }
+
     private org.h2.tools.Server webServer;
     private org.h2.tools.Server server;
 

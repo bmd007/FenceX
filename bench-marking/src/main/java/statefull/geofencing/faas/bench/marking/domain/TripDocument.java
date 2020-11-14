@@ -24,10 +24,10 @@ public class TripDocument {
             new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue), 4326);
 
     @Id
-    private String tripId;
-    private List<LocationReport> locationReports = List.of();
-    private String routeWkt;
-    private String middleRouteRingWkt;
+    private final String tripId;
+    private final List<LocationReport> locationReports;
+    private final String routeWkt;
+    private final String middleRouteRingWkt;
 
     @PersistenceConstructor
     public TripDocument(String tripId, List<LocationReport> locationReports, String routeWkt, String middleRouteRingWkt) {

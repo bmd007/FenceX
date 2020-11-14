@@ -47,10 +47,10 @@ public class Application {
                 .bufferUntilChanged(tripDataDto -> tripDataDto.getTripRefNumber())//be careful: this approach only make
                 // senses when in the source file, all of the records related to one trip are all after each other
                 // and different trips do not intervene each other's sequence of rows.
-                .filter(tripDataDtos -> tripDataDtos.size() >= 10)
-                .doOnNext(tripDataDtos -> {
-                            var tripId = tripDataDtos.get(0).getTripRefNumber();
-                            Flux.fromIterable(tripDataDtos)
+                .filter(tripData -> tripData.size() >= 10)
+                .doOnNext(tripData -> {
+                            var tripId = tripData.get(0).getTripRefNumber();
+                            Flux.fromIterable(tripData)
                                     .map(tripDataDto -> LocationReport.define(tripDataDto.getTimestamp(), tripDataDto.getLatitude(), tripDataDto.getLongitude()))
                                     .sort((o1, o2) -> o1.getTimestamp().isAfter(o2.getTimestamp()) ? 1 : -1)
                                     .collectList()

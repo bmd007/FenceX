@@ -38,11 +38,6 @@ spring:
   profiles: local
   zipkin:
     enabled: false
-  cloud:
-    consul:
-      host: localhost
-      discovery:
-        health-check-path: /health
   data:
     mongodb:
       uri: mongodb://localhost:27017/trips?maxPoolSize=1

@@ -52,7 +52,7 @@ spring:
     consul:
       discovery:
         prefer-ip-address: true
-        health-check-path: /health
+#        health-check-path: /health
     loadbalancer:
       ribbon:
         enabled: false

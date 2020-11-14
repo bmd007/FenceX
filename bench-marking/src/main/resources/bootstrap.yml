@@ -13,8 +13,7 @@ spring:
         enabled: false
 ---
 spring:
-  profiles: local
-
+  profiles: no-consul
   cloud:
     consul:
       config:

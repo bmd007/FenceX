@@ -46,8 +46,4 @@ spring:
 #        - spring.json.type.mapping: MoverLocationUpdate:statefull.geofencing.faas.common.dto.MoverLocationUpdate
 
 
----
-spring:
-  profiles: local
-  application:
-    name: location-update-publisher
+

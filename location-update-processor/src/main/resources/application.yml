@@ -73,6 +73,18 @@ kafka:
 ---
 spring:
   profiles: local
+  kafka:
+    streams:
+      replication-factor: 1
+
+kafka:
+  topic-partitions:
+    eventTopic: '1:1'
+    changeLogTopic: '1:1'
+
+---
+spring:
+  profiles: no-consul
   application:
     name: location-update-processor
   kafka:

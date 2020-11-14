@@ -36,8 +36,6 @@ management:
 ---
 spring:
   profiles: local
-  application:
-    name: bench-marking
   zipkin:
     enabled: false
   cloud:
@@ -45,6 +43,20 @@ spring:
       host: localhost
       discovery:
         health-check-path: /health
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/trips?maxPoolSize=1
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration
+
+---
+spring:
+  profiles: no-consul
+  application:
+    name: bench-marking
+  zipkin:
+    enabled: false
   data:
     mongodb:
       uri: mongodb://localhost:27017/trips?maxPoolSize=1

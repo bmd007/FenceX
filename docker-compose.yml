@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.7"
 services:
 
   consul-server:
@@ -9,7 +9,6 @@ services:
       - "8300:8300"
     volumes:
       - ./metrics/consul.json:/consul/config/consul.json
-
 
   # Zookeeper for kafka
   zookeeper:
@@ -33,7 +32,6 @@ services:
 
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
     hostname: prometheus
     volumes:
       - ./metrics/prometheus.yml:/etc/prometheus/prometheus.yml

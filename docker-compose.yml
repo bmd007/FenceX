@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 services:
 
   consul-server:
@@ -31,7 +31,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   prometheus:
-    user: "1000"
     image: prom/prometheus
     hostname: prometheus
     volumes:

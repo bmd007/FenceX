@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
 import statefull.geofencing.faas.bench.marking.client.model.FenceDto;
@@ -34,6 +36,7 @@ public class Resource {
     @GetMapping("/load")
     public void loadTest() {
             repository.findAll()
+                    .subscribeOn(Schedulers.parallel())
                     .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
                             .withMoverId(tripDocument.getTripId())
                             .withWkt(tripDocument.getMiddleRouteRingWkt())

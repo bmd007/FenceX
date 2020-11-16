@@ -1,0 +1,218 @@
+version: "3.8"
+services:
+
+  consul:
+    hostname: consul
+    image: consul
+    ports:
+      - "8500:8500"
+      - "8300:8300"
+    volumes:
+      - ./metrics/consul.json:/consul/config/consul.json
+    environment:
+      SERVICE_IGNORE: any_value
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      SERVICE_IGNORE: any_value
+
+  kafka:
+    image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - target: 9094
+        published: 9094
+        protocol: tcp
+        mode: host
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_CREATE_TOPICS: >-
+        mover-position-updates:3:2,
+        mover-updates:3:2,
+        fence_event_log:3:2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092, OUTSIDE://localhost:9094
+      KAFKA_LISTENERS: INSIDE://:9092, OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ADVERTISED_PORT: 9092
+      JMX_PORT: 9997
+      #     KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  kafka2:
+    image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
+      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ADVERTISED_PORT: 9092
+      JMX_PORT: 9997
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  kafka3:
+    image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
+      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ADVERTISED_PORT: 9092
+      JMX_PORT: 9997
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  prometheus:
+    depends_on:
+      - consul
+    image: prom/prometheus
+    hostname: prometheus
+    volumes:
+      - ./metrics/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./metrics/prometheus_db:/var/lib/prometheus
+      - ./metrics/prometheus_db:/prometheus
+      - ./metrics/prometheus_db:/etc/prometheus
+      - ./metrics/alert.rules:/etc/prometheus/alert.rules
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.route-prefix=/'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+    environment:
+      SERVICE_IGNORE: any_value
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      SERVICE_IGNORE: ignore
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./metrics/grafana_db:/var/lib/grafana
+    depends_on:
+      - prometheus
+    ports:
+      - '3000:3000'
+
+  registrator:
+    image: gliderlabs/registrator
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-internal consul://consul:8500"
+    depends_on:
+      - consul
+
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      SERVICE_IGNORE: any_value
+
+  location-update-publisher:
+    cpu_shares: 2
+    mem_limit: 700mb
+    image: statefull-geofencing-faas-location-update-publisher:beta
+    ports:
+      - "9566:9566"
+      - "9567:9567"
+    depends_on:
+      - kafka
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-publisher
+      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9566
+      SERVICE_9566_NAME: location-update-publisher
+      SERVICE_9567_NAME: location-update-publisher-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
+
+  location-update-processor:
+    cpu_shares: 2
+    mem_limit: 800mb
+    image: statefull-geofencing-faas-location-update-processor:beta
+    ports:
+      - "9585:9585"
+      - "9586:9586"
+      - "8084:8084"
+      - "9097:9097"
+    depends_on:
+      - kafka
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-processor
+      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
+      SERVICE_9585_NAME: location-update-processor
+      SERVICE_9586_NAME: location-update-processor-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
+
+  realtime-fencing:
+    cpu_shares: 3
+    mem_limit: 500mb
+    image: statefull-geofencing-faas-realtime-fencing:beta
+    ports:
+      - "7474:9535"
+      - "7475:9536"
+    depends_on:
+      - kafka
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
+      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
+      SERVICE_9535_NAME: realtime-fencing
+      SERVICE_9536_NAME: realtime-fencing-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
+
+  realtime-fencing2:
+    cpu_shares: 3
+    mem_limit: 500mb
+    image: statefull-geofencing-faas-realtime-fencing:beta
+    ports:
+      - "7476:9535"
+      - "7477:9536"
+    depends_on:
+      - kafka
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
+      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
+      SERVICE_9535_NAME: realtime-fencing
+      SERVICE_9536_NAME: realtime-fencing-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
+
+

@@ -2,6 +2,7 @@ version: "3.8"
 services:
 
   consul:
+    container_name: consul
     hostname: consul
     image: consul
     ports:
@@ -11,12 +12,14 @@ services:
       - ./metrics/consul.json:/consul/config/consul.json
 
   zookeeper:
+    container_name: zookeeper
     image: wurstmeister/zookeeper
     hostname: zookeeper
     ports:
       - "2181:2181"
 
   kafka:
+    container_name: kafka
     hostname: kafka
     image: wurstmeister/kafka
     depends_on:
@@ -35,8 +38,8 @@ services:
         mover-global-state-store:3:2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092, OUTSIDE://localhost:9094
-      KAFKA_LISTENERS: INSIDE://:9092, OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092, OUTSIDE://localhost:9094
+      KAFKA_LISTENERS: INSIDE://kafka:9092, OUTSIDE://:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ADVERTISED_PORT: 9092
       JMX_PORT: 9997
@@ -48,6 +51,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   kafka2:
+    container_name: kafka2
     hostname: kafka2
     image: wurstmeister/kafka
     depends_on:
@@ -55,8 +59,8 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
-      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka2:9092
+      KAFKA_LISTENERS: INSIDE://kafka2:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ADVERTISED_PORT: 9092
       JMX_PORT: 9997
@@ -64,6 +68,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   kafka3:
+    container_name: kafka3
     hostname: kafka3
     image: wurstmeister/kafka
     depends_on:
@@ -71,8 +76,8 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
-      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka3:9092
+      KAFKA_LISTENERS: INSIDE://kafka3:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ADVERTISED_PORT: 9092
       JMX_PORT: 9997
@@ -80,6 +85,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   prometheus:
+    container_name: prometheus
     depends_on:
       - consul
     image: prom/prometheus
@@ -100,6 +106,7 @@ services:
       - "9090:9090"
 
   grafana:
+    container_name: grafana
     image: grafana/grafana
     environment:
       SERVICE_IGNORE: ignore
@@ -113,14 +120,14 @@ services:
       - "3000:3000"
 
   mongo:
+    container_name: mongo
     hostname: mongo
     image: mongo
     ports:
       - "27017:27017"
-#    environment:
-#      SERVICE_IGNORE: any_value
 
   location-update-publisher:
+    container_name: location-update-publisher
     cpu_shares: 30
     mem_limit: 700mb
     image: statefull-geofencing-faas-location-update-publisher:beta
@@ -136,12 +143,10 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-publisher
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9566
-#      SERVICE_9566_NAME: location-update-publisher
-#      SERVICE_9567_NAME: location-update-publisher-management
       SPRING_CLOUD_CONSUL_HOST: consul
-#      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
   location-update-processor:
+    container_name: location-update-processor
     hostname: location-update-processor
     cpu_shares: 50
     mem_limit: 800mb
@@ -163,6 +168,7 @@ services:
       SPRING_CLOUD_CONSUL_HOST: consul
 
   location-update-processor2:
+    container_name: location-update-processor2
     hostname: location-update-processor2
     cpu_shares: 50
     mem_limit: 800mb
@@ -184,6 +190,7 @@ services:
       SPRING_CLOUD_CONSUL_HOST: consul
 
   realtime-fencing:
+    container_name: realtime-fencing
     hostname: realtime-fencing
     cpu_shares: 40
     mem_limit: 500mb
@@ -203,6 +210,7 @@ services:
       SPRING_CLOUD_CONSUL_HOST: consul
 
   realtime-fencing2:
+    container_name: realtime-fencing2
     hostname: realtime-fencing2
     cpu_shares: 40
     mem_limit: 500mb
@@ -222,6 +230,7 @@ services:
       SPRING_CLOUD_CONSUL_HOST: consul
 
   bench-marking:
+    container_name: bench-marking
     hostname: bench-marking
     cpu_shares: 30
     mem_limit: 500mb

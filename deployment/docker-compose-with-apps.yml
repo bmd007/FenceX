@@ -31,7 +31,10 @@ services:
         mode: host
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
-#      KAFKA_CREATE_TOPICS: event_log:5:3
+      KAFKA_CREATE_TOPICS: >-
+        mover-position-updates:3:2,
+        mover-updates:3:2,
+        fence_event_log:3:2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT, OUTSIDE:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092, OUTSIDE://localhost:9094
@@ -101,9 +104,9 @@ services:
   grafana:
     image: grafana/grafana
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - SERVICE_IGNORE=any_value
+      SERVICE_IGNORE: ignore
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
       - ./metrics/grafana_db:/var/lib/grafana
     depends_on:
@@ -128,7 +131,7 @@ services:
 
   location-update-publisher:
     cpu_shares: 2
-    mem_limit: 400mb
+    mem_limit: 700mb
     image: statefull-geofencing-faas-location-update-publisher:beta
     ports:
       - "9566:9566"
@@ -169,7 +172,6 @@ services:
       SERVICE_9586_NAME: location-update-processor-management
       SPRING_CLOUD_CONSUL_HOST: consul
       SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
-
 
   realtime-fencing:
     cpu_shares: 3

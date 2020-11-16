@@ -32,3 +32,4 @@ HELP.md
 ###local config###
 /metrics
 !/metrics/prometheus.yml
+/deployment/docker-compose/metrics/

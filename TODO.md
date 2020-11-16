@@ -1,3 +1,5 @@
+### rename topic related application property files and use them in 
+docker-compose-apps.yml
 ### use maven instead of local library
 ### kafka streams idle instance research
 ### using spring boot bootBuildImage with combination of container aware java memory and cpu configs

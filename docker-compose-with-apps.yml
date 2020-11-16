@@ -1,7 +1,7 @@
 version: "3.8"
 services:
 
-  consul-server:
+  consul:
     hostname: consul
     image: consul
     ports:
@@ -9,12 +9,16 @@ services:
       - "8300:8300"
     volumes:
       - ./metrics/consul.json:/consul/config/consul.json
+    environment:
+      SERVICE_IGNORE: any_value
 
   zookeeper:
     image: wurstmeister/zookeeper
     hostname: zookeeper
     ports:
       - "2181:2181"
+    environment:
+      SERVICE_IGNORE: any_value
 
   kafka:
     image: wurstmeister/kafka
@@ -74,7 +78,7 @@ services:
 
   prometheus:
     depends_on:
-      - consul-server
+      - consul
     image: prom/prometheus
     hostname: prometheus
     volumes:
@@ -91,12 +95,15 @@ services:
     restart: unless-stopped
     ports:
       - '9090:9090'
+    environment:
+      SERVICE_IGNORE: any_value
 
   grafana:
     image: grafana/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - SERVICE_IGNORE=any_value
     volumes:
       - ./metrics/grafana_db:/var/lib/grafana
     depends_on:
@@ -104,10 +111,20 @@ services:
     ports:
       - '3000:3000'
 
+  registrator:
+    image: gliderlabs/registrator
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: "-internal consul://consul:8500"
+    depends_on:
+      - consul
+
   mongo:
     image: mongo
     ports:
       - 27017:27017
+    environment:
+      SERVICE_IGNORE: any_value
 
   location-update-publisher:
     cpu_shares: 2
@@ -118,13 +135,17 @@ services:
       - "9567:9567"
     depends_on:
       - kafka
-      - consul-server
+      - consul
       - prometheus
       - grafana
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-publisher
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9566
+      SERVICE_9566_NAME: location-update-publisher
+      SERVICE_9567_NAME: location-update-publisher-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
   location-update-processor:
     cpu_shares: 2
@@ -137,13 +158,18 @@ services:
       - "9097:9097"
     depends_on:
       - kafka
-      - consul-server
+      - consul
       - prometheus
       - grafana
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-processor
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
+      SERVICE_9585_NAME: location-update-processor
+      SERVICE_9586_NAME: location-update-processor-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
+
 
   realtime-fencing:
     cpu_shares: 3
@@ -154,13 +180,17 @@ services:
       - "7475:9536"
     depends_on:
       - kafka
-      - consul-server
+      - consul
       - prometheus
       - grafana
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
+      SERVICE_9535_NAME: realtime-fencing
+      SERVICE_9536_NAME: realtime-fencing-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
   realtime-fencing2:
     cpu_shares: 3
@@ -171,12 +201,16 @@ services:
       - "7477:9536"
     depends_on:
       - kafka
-      - consul-server
+      - consul
       - prometheus
       - grafana
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka2:9092
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing2
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
+      SERVICE_9535_NAME: realtime-fencing
+      SERVICE_9536_NAME: realtime-fencing-management
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
 

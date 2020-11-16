@@ -9,16 +9,12 @@ services:
       - "8300:8300"
     volumes:
       - ./metrics/consul.json:/consul/config/consul.json
-    environment:
-      SERVICE_IGNORE: any_value
 
   zookeeper:
     image: wurstmeister/zookeeper
     hostname: zookeeper
     ports:
       - "2181:2181"
-    environment:
-      SERVICE_IGNORE: any_value
 
   kafka:
     hostname: kafka
@@ -101,9 +97,7 @@ services:
       - '--web.enable-lifecycle'
     restart: unless-stopped
     ports:
-      - '9090:9090'
-    environment:
-      SERVICE_IGNORE: any_value
+      - "9090:9090"
 
   grafana:
     image: grafana/grafana
@@ -116,22 +110,15 @@ services:
     depends_on:
       - prometheus
     ports:
-      - '3000:3000'
-
-#  registrator:
-#    image: gliderlabs/registrator
-#    volumes:
-#      - /var/run/docker.sock:/tmp/docker.sock
-#    command: "-internal consul://consul:8500"
-#    depends_on:
-#      - consul
+      - "3000:3000"
 
   mongo:
+    hostname: mongo
     image: mongo
     ports:
       - "27017:27017"
-    environment:
-      SERVICE_IGNORE: any_value
+#    environment:
+#      SERVICE_IGNORE: any_value
 
   location-update-publisher:
     cpu_shares: 30
@@ -149,12 +136,13 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-publisher
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9566
-      SERVICE_9566_NAME: location-update-publisher
-      SERVICE_9567_NAME: location-update-publisher-management
+#      SERVICE_9566_NAME: location-update-publisher
+#      SERVICE_9567_NAME: location-update-publisher-management
       SPRING_CLOUD_CONSUL_HOST: consul
 #      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
   location-update-processor:
+    hostname: location-update-processor
     cpu_shares: 50
     mem_limit: 800mb
     image: statefull-geofencing-faas-location-update-processor:beta
@@ -172,12 +160,31 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-processor
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
-      SERVICE_9585_NAME: location-update-processor
-      SERVICE_9586_NAME: location-update-processor-management
       SPRING_CLOUD_CONSUL_HOST: consul
-#      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
+
+  location-update-processor2:
+    hostname: location-update-processor2
+    cpu_shares: 50
+    mem_limit: 800mb
+    image: statefull-geofencing-faas-location-update-processor:beta
+    ports:
+      - "7585:9585"
+      - "7586:9586"
+      - "6084:8084"
+      - "7097:9097"
+    depends_on:
+      - kafka
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-processor2
+      KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
+      SPRING_CLOUD_CONSUL_HOST: consul
 
   realtime-fencing:
+    hostname: realtime-fencing
     cpu_shares: 40
     mem_limit: 500mb
     image: statefull-geofencing-faas-realtime-fencing:beta
@@ -193,12 +200,10 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
-      SERVICE_9535_NAME: realtime-fencing
-      SERVICE_9536_NAME: realtime-fencing-management
       SPRING_CLOUD_CONSUL_HOST: consul
-#      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
   realtime-fencing2:
+    hostname: realtime-fencing2
     cpu_shares: 40
     mem_limit: 500mb
     image: statefull-geofencing-faas-realtime-fencing:beta
@@ -212,11 +217,8 @@ services:
       - grafana
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing2
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
-      SERVICE_9535_NAME: realtime-fencing
-      SERVICE_9536_NAME: realtime-fencing-management
       SPRING_CLOUD_CONSUL_HOST: consul
-#      SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED: "false"
 
 

@@ -221,4 +221,19 @@ services:
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
       SPRING_CLOUD_CONSUL_HOST: consul
 
+  bench-marking:
+    hostname: bench-marking
+    cpu_shares: 30
+    mem_limit: 500mb
+    image: statefull-geofencing-faas-bench-marking:beta
+    ports:
+      - "9511:9511"
+      - "9512:9512"
+    depends_on:
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: consul
+
 

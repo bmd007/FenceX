@@ -15,6 +15,7 @@ import statefull.geofencing.faas.bench.marking.dto.TripDataDto;
 import statefull.geofencing.faas.bench.marking.repository.TripDocumentRepository;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.stream.BaseStream;
 
@@ -34,7 +35,9 @@ public class Application {
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStart() {
-        var file = new File("H:\\JAVA ProgRAming\\Intellij_workSpace\\statefull-geofencing-faas\\bench-marking\\trip-data.json").toPath();
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = classLoader.getResource("trip-data.json");
+        var file = new File(resource.getFile()).toPath();
         Flux.using(() -> Files.lines(file), Flux::fromStream, BaseStream::close)
                 .map(line -> {
                     try {

@@ -150,8 +150,8 @@ services:
     mem_limit: 500mb
     image: statefull-geofencing-faas-realtime-fencing:beta
     ports:
-      - "9535:9535"
-      - "9536:9536"
+      - "7474:9535"
+      - "7475:9536"
     depends_on:
       - kafka
       - consul-server
@@ -167,8 +167,8 @@ services:
     mem_limit: 500mb
     image: statefull-geofencing-faas-realtime-fencing:beta
     ports:
-      - "9535:9535"
-      - "9536:9536"
+      - "7476:9535"
+      - "7477:9536"
     depends_on:
       - kafka
       - consul-server

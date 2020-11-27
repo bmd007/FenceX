@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.realtime.fencing.config;
+package statefull.geofencing.faas.location.aggregate.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Profile;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.apache.kafka.common.config.TopicConfig.*;
+import static org.apache.kafka.common.config.TopicConfig.CLEANUP_POLICY_COMPACT;
+import static org.apache.kafka.common.config.TopicConfig.CLEANUP_POLICY_CONFIG;
 
 /**
  * Configuration class to automatically create the topics with the configured partitions and replication factor.
@@ -36,15 +37,21 @@ public class TopicCreator {
         return String.format("%s-%s-changelog", applicationName, storeName);
     }
 
+//    @Bean
+//    public NewTopic eventsTopic() {
+//        return new NewTopic(Topics.EVENT_LOG, eventTopicDefinition.numPartitions, eventTopicDefinition.replicationFactor)
+//                .configs(Map.of(RETENTION_MS_CONFIG, "-1", RETENTION_BYTES_CONFIG, "-1"));
+//    }
+
     @Bean
-    public NewTopic fenceEventsTopic() {
-        return new NewTopic(Topics.FENCE_EVENT_LOG, eventTopicDefinition.numPartitions, eventTopicDefinition.replicationFactor)
-                .configs(Map.of(RETENTION_MS_CONFIG, "-1", RETENTION_BYTES_CONFIG, "-1"));
+    public NewTopic moverPositionUpdatesTopic() {
+        return new NewTopic(Topics.MOVER_POSITION_UPDATES_TOPIC, changeLogTopicDefinition.numPartitions, changeLogTopicDefinition.replicationFactor)
+                .configs(Map.of(CLEANUP_POLICY_CONFIG, CLEANUP_POLICY_COMPACT));
     }
 
     @Bean
-    public NewTopic fenceStateStoreTopic() {
-        return new NewTopic(storeTopicName(Stores.FENCE_STATE_STORE, applicationName), changeLogTopicDefinition.numPartitions, changeLogTopicDefinition.replicationFactor)
+    public NewTopic moverStateStoreTopic() {
+        return new NewTopic(storeTopicName(Stores.MOVER_IN_MEMORY_STATE_STORE, applicationName), changeLogTopicDefinition.numPartitions, changeLogTopicDefinition.replicationFactor)
                 .configs(Map.of(CLEANUP_POLICY_CONFIG, CLEANUP_POLICY_COMPACT));
     }
 

@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.realtime.fencing;
+package statefull.geofencing.faas.location.aggregate;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -9,9 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 
-@SpringBootApplication//(scanBasePackages = {"statefull.geofencing.faas"})
+import java.sql.SQLException;
+
+@SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas"})
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+    private org.h2.tools.Server webServer;
+    private org.h2.tools.Server server;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -23,12 +27,18 @@ public class Application {
     }
 
     @EventListener(org.springframework.context.event.ContextRefreshedEvent.class)
-    public void start() {
-
+    public void setupH2Console() {
+        try {
+            this.webServer = org.h2.tools.Server.createWebServer("-webAllowOthers", "-webPort", "8084").start();
+            this.server = org.h2.tools.Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9097").start();
+        } catch (SQLException throwable) {
+            LOGGER.error("", throwable);
+        }
     }
 
     @EventListener(org.springframework.context.event.ContextClosedEvent.class)
     public void stop() {
-
+        this.webServer.stop();
+        this.server.stop();
     }
 }

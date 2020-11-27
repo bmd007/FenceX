@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.realtime.fencing.config;
+package statefull.geofencing.faas.location.aggregate.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;

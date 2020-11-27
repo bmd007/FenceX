@@ -11,9 +11,9 @@ public class MetricsFacade {
     public MetricsFacade(MeterRegistry registry) {
         moverFenceIntersectionCounter = registry.counter("geofencing.mover.fence.intersection.counter");
     }
-    
-    public void incrementMoverFenceIntersectionCounter(){
+
+    public void incrementMoverFenceIntersectionCounter() {
         moverFenceIntersectionCounter.increment();
-    } 
+    }
 
 }

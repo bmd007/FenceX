@@ -85,7 +85,7 @@ services:
 
   prometheus:
     container_name: prometheus
-    user: "1000"
+    user: "0"
     depends_on:
       - consul
     image: prom/prometheus
@@ -106,7 +106,7 @@ services:
       - "9090:9090"
 
   grafana:
-    user: "1000"
+    user: "0"
     container_name: grafana
     image: grafana/grafana
     environment:

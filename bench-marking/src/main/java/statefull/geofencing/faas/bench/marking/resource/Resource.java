@@ -55,4 +55,29 @@ public class Resource {
                         LOGGER.info("trip document {} info published", tripDocument.getTripId());
                     });
     }
+
+    @GetMapping("/load/one")
+    public void loadTestForOne() {
+            repository.findById("15391233")
+                    .doOnNext(System.out::println)
+                    .subscribeOn(Schedulers.parallel())
+                    .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
+                            .withMoverId(tripDocument.getTripId())
+                            .withWkt(tripDocument.getMiddleRouteRingWkt())
+                            .build()))
+                    .delayUntil(tripDocument ->
+                        Flux.fromIterable(tripDocument.getLocationReports())
+                                .doOnNext(System.out::println)
+                                .delayUntil(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
+                                        .withLatitude(report.getLatitude())
+                                        .withLongitude(report.getLongitude())
+                                        .withMoverId(tripDocument.getTripId())
+                                        .withTimestamp(Instant.now())
+                                        .build()))
+                                .map(unused -> tripDocument))
+                    //todo query location update processor for last location being on the trip route
+                    .subscribe(tripDocument -> {
+                        LOGGER.info("trip document {} info published", tripDocument.getTripId());
+                    });
+    }
 }

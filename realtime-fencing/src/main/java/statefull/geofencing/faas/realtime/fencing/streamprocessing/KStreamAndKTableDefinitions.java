@@ -44,7 +44,7 @@ public class KStreamAndKTableDefinitions {
     private final static BiFunction<MoverLocationUpdate, Fence, KeyValue<String, FenceIntersectionStatus>> moverFenceIntersectionChecker =
             (moverLocationUpdate, fence) -> {
                 try {
-                    var point = GEOMETRY_FACTORY.createPoint(new Coordinate(moverLocationUpdate.getLatitude(), moverLocationUpdate.getLongitude()));
+                    var point = GEOMETRY_FACTORY.createPoint(new Coordinate(moverLocationUpdate.getLongitude(), moverLocationUpdate.getLatitude()));
                     var fenceGeometry = WKT_READER.read(fence.getWkt());
                     var intersects = fenceGeometry.intersects(point);
                     var intersectionStatus = FenceIntersectionStatus.define(intersects, moverLocationUpdate.getMoverId());

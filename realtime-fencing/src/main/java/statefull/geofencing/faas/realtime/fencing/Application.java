@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 
-@SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas"})
+@SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas.common.domain",
+"statefull.geofencing.faas.common.dto", "statefull.geofencing.faas.function", "statefull.geofencing.faas.realtime.fencing"})
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 

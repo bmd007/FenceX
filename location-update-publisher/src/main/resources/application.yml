@@ -45,5 +45,37 @@ spring:
 #      properties:
 #        - spring.json.type.mapping: MoverLocationUpdate:statefull.geofencing.faas.common.dto.MoverLocationUpdate
 
+kafka:
+  topic:
+    config:
+      event: '3:2'
+      changelog: '3:2'
 
+---
+spring:
+  profiles: local
+  kafka:
+    streams:
+      replication-factor: 1
+
+kafka:
+  topic:
+    config:
+      event: '1:1'
+      changelog: '1:1'
+
+---
+spring:
+  profiles: no-consul
+  application:
+    name: location-update-processor
+  kafka:
+    streams:
+      replication-factor: 1
+
+kafka:
+  topic:
+    config:
+      event: '1:1'
+      changelog: '1:1'
 

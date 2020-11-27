@@ -49,10 +49,9 @@ public class MoverResource {
                         .map(this::map)
                         .collect(Collectors.toList());
         return new MoversDto(results);
-
     }
 
-    @PostMapping("/kwt")
+    @PostMapping("/wkt")
     public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
         var polygon = (Polygon) repository.getWktReader().read(kwtString);

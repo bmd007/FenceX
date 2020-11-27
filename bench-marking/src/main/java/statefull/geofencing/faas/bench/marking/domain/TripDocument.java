@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.annotation.Id;
@@ -55,7 +56,7 @@ public class TripDocument {
                     return array;
                 })
                 .map(GEOMETRY_FACTORY::createLineString)
-                .map(lineString -> lineString.toText())
+                .map(Geometry::toText)
                 .map(wkt -> cloneBuilder().withRouteWkt(wkt).build());
     }
 
@@ -96,7 +97,7 @@ public class TripDocument {
     }
 
     public String getMiddleRouteRingWkt() {
-        return routeWkt;
+        return middleRouteRingWkt;
     }
 
     public List<LocationReport> getLocationReports() {
@@ -130,9 +131,9 @@ public class TripDocument {
     }
 
     public static final class Builder {
-        private String tripId;
-        private String routeWkt;
-        private String middleRouteRingWkt;
+        private String tripId = null;
+        private String routeWkt = null;
+        private String middleRouteRingWkt = null;
         private List<LocationReport> locationReports = new ArrayList<>();
 
         private Builder() {

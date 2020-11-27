@@ -3,11 +3,10 @@ package statefull.geofencing.faas.bench.marking.resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
@@ -22,7 +21,6 @@ import java.time.Instant;
 public class Resource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Resource.class);
-
     private final TripDocumentRepository repository;
     private final LocationUpdatePublisherClient updatePublisherClient;
     private final RealTimeFencingClient fencingClient;
@@ -35,13 +33,13 @@ public class Resource {
 
     @GetMapping("/load")
     public void loadTest() {
-            repository.findAll()
-                    .subscribeOn(Schedulers.parallel())
-                    .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
-                            .withMoverId(tripDocument.getTripId())
-                            .withWkt(tripDocument.getMiddleRouteRingWkt())
-                            .build()))
-                    .delayUntil(tripDocument ->
+        repository.findAll()
+                .subscribeOn(Schedulers.parallel())
+                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
+                        .withMoverId(tripDocument.getTripId())
+                        .withWkt(tripDocument.getMiddleRouteRingWkt())
+                        .build()))
+                .delayUntil(tripDocument ->
                         Flux.fromIterable(tripDocument.getLocationReports())
                                 .delayUntil(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                         .withLatitude(report.getLatitude())
@@ -50,24 +48,21 @@ public class Resource {
                                         .withTimestamp(Instant.now())
                                         .build()))
                                 .map(unused -> tripDocument))
-                    //todo query location update processor for last location being on the trip route
-                    .subscribe(tripDocument -> {
-                        LOGGER.info("trip document {} info published", tripDocument.getTripId());
-                    });
+                //todo query location update processor for last location being on the trip route
+                .subscribe(tripDocument -> {
+                    LOGGER.info("trip document {} info published", tripDocument.getTripId());
+                });
     }
 
-    @GetMapping("/load/one")
-    public void loadTestForOne() {
-            repository.findById("15391233")
-                    .doOnNext(System.out::println)
-                    .subscribeOn(Schedulers.parallel())
-                    .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
-                            .withMoverId(tripDocument.getTripId())
-                            .withWkt(tripDocument.getMiddleRouteRingWkt())
-                            .build()))
-                    .delayUntil(tripDocument ->
+    @GetMapping("/load/{id}")
+    public void loadTestForOne(@PathVariable String id) {
+        repository.findById(id)
+                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
+                        .withMoverId(tripDocument.getTripId())
+                        .withWkt(tripDocument.getMiddleRouteRingWkt())
+                        .build()))
+                .delayUntil(tripDocument ->
                         Flux.fromIterable(tripDocument.getLocationReports())
-                                .doOnNext(System.out::println)
                                 .delayUntil(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                         .withLatitude(report.getLatitude())
                                         .withLongitude(report.getLongitude())
@@ -75,9 +70,9 @@ public class Resource {
                                         .withTimestamp(Instant.now())
                                         .build()))
                                 .map(unused -> tripDocument))
-                    //todo query location update processor for last location being on the trip route
-                    .subscribe(tripDocument -> {
-                        LOGGER.info("trip document {} info published", tripDocument.getTripId());
-                    });
+                //todo query location update processor for last location being on the trip route
+                .subscribe(tripDocument -> {
+                    LOGGER.info("trip document {} info published", tripDocument.getTripId());
+                });
     }
 }

@@ -17,6 +17,6 @@ public class WrapLocationByPolygonFunction implements BiFunction<Double, Double,
     public Polygon apply(Double latitude, Double longitude) {
         //implement me below is an example
         var point = geometryFactory.createPoint(new Coordinate(latitude, longitude));
-        return (Polygon) point.buffer(10);
+        return (Polygon) point.buffer(0.0005);
     }
 }

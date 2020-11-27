@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import statefull.geofencing.faas.common.domain.Coordinate;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.realtime.fencing.config.Topics;
+import statefull.geofencing.faas.realtime.fencing.serialization.CustomSerdes;
 
 import java.time.Instant;
 import java.util.Properties;

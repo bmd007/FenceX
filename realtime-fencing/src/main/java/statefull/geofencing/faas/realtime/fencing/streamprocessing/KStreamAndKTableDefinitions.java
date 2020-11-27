@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import statefull.geofencing.faas.common.dto.MoverLocationUpdate;
-import statefull.geofencing.faas.realtime.fencing.CustomSerdes;
 import statefull.geofencing.faas.realtime.fencing.config.MetricsFacade;
 import statefull.geofencing.faas.realtime.fencing.config.Stores;
 import statefull.geofencing.faas.realtime.fencing.config.Topics;
 import statefull.geofencing.faas.realtime.fencing.domain.Fence;
 import statefull.geofencing.faas.realtime.fencing.domain.FenceIntersectionStatus;
+import statefull.geofencing.faas.realtime.fencing.serialization.CustomSerdes;
 
 import javax.annotation.PostConstruct;
 import java.util.function.BiFunction;

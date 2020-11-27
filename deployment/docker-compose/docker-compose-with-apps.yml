@@ -33,7 +33,6 @@ services:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_CREATE_TOPICS: >-
         mover-position-updates:3:2,
-        mover-updates:3:2,
         fence_event_log:3:2,
         mover-global-state-store:3:2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -145,12 +144,12 @@ services:
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9566
       SPRING_CLOUD_CONSUL_HOST: consul
 
-  location-update-processor:
-    container_name: location-update-processor
-    hostname: location-update-processor
+  location-aggregate:
+    container_name: location-aggregate
+    hostname: location-aggregate
     cpu_shares: 50
     mem_limit: 800mb
-    image: statefull-geofencing-faas-location-update-processor:beta
+    image: statefull-geofencing-faas-location-aggregate:beta
     ports:
       - "9585:9585"
       - "9586:9586"
@@ -163,16 +162,16 @@ services:
       - grafana
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-processor
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-aggregate
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
       SPRING_CLOUD_CONSUL_HOST: consul
 
-  location-update-processor2:
-    container_name: location-update-processor2
-    hostname: location-update-processor2
+  location-aggregate2:
+    container_name: location-aggregate2
+    hostname: location-aggregate2
     cpu_shares: 50
     mem_limit: 800mb
-    image: statefull-geofencing-faas-location-update-processor:beta
+    image: statefull-geofencing-faas-location-aggregate:beta
     ports:
       - "7585:9585"
       - "7586:9586"
@@ -185,7 +184,7 @@ services:
       - grafana
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
-      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-update-processor2
+      KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-aggregate2
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
       SPRING_CLOUD_CONSUL_HOST: consul
 

@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import statefull.geofencing.faas.common.domain.Mover;
+import statefull.geofencing.faas.common.domain.Coordinate;
 
 import javax.annotation.Nullable;
 import java.sql.ResultSet;

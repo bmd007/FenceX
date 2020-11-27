@@ -84,12 +84,10 @@ public class KStreamAndKTableDefinitions {
                 .filterNot((key, value) -> key == null || key.isEmpty() || key.isBlank())
                 .filterNot((key, value) -> value.isNotDefined())
                 .filter((key, value) -> moverLocationUpdateFilterFunction.test(value))
-                .join(moversFenceKTable, (mover, fence) -> moverFenceIntersectionChecker
-                        .andThen(dontTouch -> {
-                            metrics.incrementMoverFenceIntersectionCounter();
-                            return dontTouch;
-                        }).apply(mover, fence))
-                .foreach((moverId, intersects) -> System.out.println(intersects));//todo integrate alarming function
-        // here.
+                .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
+                .foreach((moverId, intersects) -> {
+                    metrics.incrementMoverFenceIntersectionCounter();
+                    System.out.println(intersects);
+                });//todo integrate alarming function here.
     }
 }

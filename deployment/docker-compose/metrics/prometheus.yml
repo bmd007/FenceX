@@ -3,7 +3,7 @@ scrape_configs:
     scrape_interval: 5s
     metrics_path: '/actuator/prometheus'
     consul_sd_configs:
-      - server: '192.168.1.12:8500'
+      - server: 'consul:8500'
     relabel_configs:
       - source_labels: [__meta_consul_service]
         target_label: job

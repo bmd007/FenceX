@@ -1,4 +1,4 @@
-package statefull.geofencing.faas.location.update.processor.function;
+package statefull.geofencing.faas.function;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

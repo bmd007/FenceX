@@ -80,10 +80,66 @@ __Parallelism__ has two dimensions of `task` and `data` in stream processing.
  
  ## I ♥ Logs (chapter 1)
    book, 2015, Jay Kreps
-   
+
+__State__ is a value for something like balance of bank account. And state has a value like 5 SEK.
+
+__Event__s represent what has happened like a bank account transaction. I have paid 3 SEK. 
+Events can be defined in slightly different ways as well. Like latest snapshot of a state. Or a command with expected side effect.
+Examples respectively are `my latest balance is 5 SEK` and `dear bank, pay this bill using my account`.
+
+__Table__ is a data/state holder (usually in shape of key:value/map) that contains the latest/updated states. 
+An example of table is collection of customers' accounts (balances) in a bank application.
+
+Assuming we have an initial value for a state, we can rebuild any state by processing the events which built that state at first palce.
+We can also generate those events as we change the state during the natural life cycle of application. 
+So we can use events to (re)build a table of states. We can also express changes of table as a stream of events. 
+This is called __Duality of state and event__. 
+
+Examples:
+    * Initial state of bank account balance = 0
+    * Command (event): Deposit 5 SEK
+	* Event: Deposited 5 SEK
+    * Resulted state: balance = 5
+    * Change log (event): Balance increased from 0 to 5 SEK
+	* State Update Style event: Latest balance is 5 SEK
+Please note that commands are meaningful only in certain architectural patterns like CQRS (Command and Query Responsibility Segregation). 
+
+__Log__ (commit log) is like a queue or journal, a sequence of records ordered by time. It can be used to keep track of
+ events (what has happened) in addition to when they happened (relative to each other). Logs can be used to replicate of data over 
+ instances of database, different systems, different indexes and ... without facing inconsistency (eventual-occasional consistency). 
+ Without a log, an orchestrator should be in place that implements distributed transactions (double writes).
+ Which is proven to be practically impossible to do right. With commit log, master changes it's own state and then publishes 
+ those changes as logs. Slaves subscribe to them and by processing ordered logs eventually become consistent with master.
+ However, replication can be achieved using logs without masters.
+ When there is no master, all instances of an application subscribe to the log of events and process them until eventually reach same state.
+The approach involving master and slaves is called `primary backup` and the other one is `state machine replication`. 
+Both of them require deterministic subscribers.
 
 
+## On the FaaS Track: Building Stateful Distributed Applications with Serverless Architectures,2019
+https://dl.acm.org/doi/10.1145/3361525.3361535
+
+This article introduces a serverless stateful function as a service platform. 
+There has been successful Faas platforms like AWS lambda and Google cloud Function already out there. However, they don't
+support stateful operations in a low latency and flexible manner. 
+They achieved stateful Faas using a global in memory strongly consistent data layer for state mutation. 
+This data layer can be accessed by all the functions (parallel workers/cloud threads).
+For work load distribution, they partitioned the data layer using hashing.
+For durability, they allow replication of data in the data layer. By default, no data is replicated (replication factor is 1).
+Fault tolerance comes from data replication and possibility of making functions execute again when facing failure (retry).
+Apparently this platform is best suited for computations that require direct state mutations
+ (rather than immutable state). 
  
+## glue them all together
+In this thesis we are going to build a highly scalable low latency high throughput geofencing system that supports both push and
+poll styles. In order to achieve those properties, we will use an in memory (to remove IO latency) data base.
+The system will include a operator that run the in memory data base and that operator is scaled out into multiple tasks (instances).
+All the tasks will have same similar view of world (state). To achieve such replication we use kafka topics
+as a commit log with kafka streams on top.
+Kafka Streams is a stream processing framework (library) that apart from making occasional/eventual consistent data replication
+possible, allows for complex stream processing. Stream processing helps us to support push based geofencing in a 
+highly scalable manner. Kafka Streams allows defining processors over stream of events, tables as aggregates of a stream of events,
+joining such tables and streams and so on. 
 
-
-
+Also, kafka topics are partitioned which allows for word load sharing (data parallelism). 
+Each partition of a kafka topic can be replicated over different instances of kafka which brings fault tolerance.

@@ -49,7 +49,7 @@ What CEPs can do with events is pretty much similar to functional programming op
 ### Stream processing with apache flink fundamentals (chapter1) 
 book, 2017, Fabian Hueske and Vasiliki Kalavri
 
-Data flow graph is a useful tool to express and study how data is flown in a stream processing system.
+__Data flow graph__ is a useful tool to express and study how data is flown in a stream processing system.
 There are two type of data flow graph: logical and physical. 
 In a logical data flow graph nodes represent `operators` like sum, count, filter, aggregate and ... .
 It doesn't tell anything about deployment.
@@ -58,9 +58,32 @@ Like how many instances of each `task` will be deployed. Not to forget that node
      
 
 ![Physical data flow](/work-report/physical-data-flow-graph.png)
-Format: ![Alt Text](url)
 
 
+__Parallelism__ has two dimensions of `task` and `data` in stream processing. 
+ * task: Tasks from different operators process same data.
+ * data: Tasks from same operator process different data (partitioning). Same data ends up in same task.
+ 
+ __Latency__ is defined as the time takes for ONE event to be processed. In an ideal stream processing system, the latency reflects
+ the actual processing work on the events which means events don't wait to be processed. Events get processed as soon as they arrive.
+ `95th-percentile latency value of 10ms` is an example of expressing latency of system. It means 95 percent of events are processed within 10 ms.
+ 
+ __Throughput__ is dependent on both latency and input rate. So low throughput doesn't necessarily mean high latency. 
+ A better metric is `peak throughput` which shows the limit on the performance of system at maximum load. When system reaches 
+ peak throughput, increasing input load, will reduce throughput and can even lead to data loss (due to buffer over flow).
+ 
+ __Operations__ are logical representation of tasks. They process ONE event at a time. `Stateless` operations like filter and map
+ are not concerned with past. They are easier to scale and more resilient. While `stateful` operations keep a snapshot of past (state).
+ The state may mutate after processing each event. operations like sum, count, average, ... are stateful. Such operations are harder to scale.
+ For example partitioning geospatial data is not easy and partitioning policy may differ based on the use case. 
+ 
+ 
+ ### I ♥ Logs (chapter 1)
+   book, 2015, Jay Kreps
+   
+
+
+ 
 
 
 

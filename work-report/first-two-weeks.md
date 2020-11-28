@@ -23,7 +23,7 @@ In push style of geofencing, fences are less changing. Once a new position
 update arrives for a mover, new position gets checked against being inside a
 previously defined fence.
  
-### Large Scale Indexing of Geofences, 2014
+## Large Scale Indexing of Geofences, 2014
 https://ieeexplore.ieee.org/abstract/document/6910110
 
 In this article, a poll style geofencing system is introduced that supports large scales
@@ -33,7 +33,7 @@ responsible for indexing a region of the world, which allows for lower query and
 Each worker instance has only one thread which removed the need for thread safe data structures and synchronization solutions.
 Also, each worker instance takes care of areas around it's dedicated region as a solution for border problems.
 
-### Using Complex Event Processing for implementing a geofencing service, 2013
+## Using Complex Event Processing for implementing a geofencing service, 2013
 https://ieeexplore.ieee.org/abstract/document/6662608
 
 This article illustrates a push style geofencing system that relies on a CEP (complex event processing) 
@@ -46,7 +46,7 @@ The unit of concurrency of the system was not clear in the article. So it's not 
 What CEPs can do with events is pretty much similar to functional programming operations like:
  filtering, translation, splitting, aggregation, composition
  
-### Stream processing with apache flink fundamentals (chapter1) 
+## Stream processing with apache flink fundamentals (chapter1) 
 book, 2017, Fabian Hueske and Vasiliki Kalavri
 
 __Data flow graph__ is a useful tool to express and study how data is flown in a stream processing system.
@@ -78,7 +78,7 @@ __Parallelism__ has two dimensions of `task` and `data` in stream processing.
  For example partitioning geospatial data is not easy and partitioning policy may differ based on the use case. 
  
  
- ### I ♥ Logs (chapter 1)
+ ## I ♥ Logs (chapter 1)
    book, 2015, Jay Kreps
    
 

@@ -34,7 +34,6 @@ management:
         enabled: true
 
 spring:
-  application.name: location-update-processor
   datasource:
     initialization-mode: always
   kafka:
@@ -92,7 +91,7 @@ kafka:
 spring:
   profiles: no-consul
   application:
-    name: location-update-processor
+    name: location-aggregate
   kafka:
     streams:
       replication-factor: 1

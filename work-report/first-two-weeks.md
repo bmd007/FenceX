@@ -83,7 +83,7 @@ __Parallelism__ has two dimensions of `task` and `data` in stream processing.
 
 __State__ is a value for something like balance of bank account. And state has a value like 5 SEK.
 
-__Event__s represent what has happened like a bank account transaction. I have paid 3 SEK. 
+__Event__ s represent what has happened like a bank account transaction. I have paid 3 SEK. 
 Events can be defined in slightly different ways as well. Like latest snapshot of a state. Or a command with expected side effect.
 Examples respectively are `my latest balance is 5 SEK` and `dear bank, pay this bill using my account`.
 
@@ -95,13 +95,13 @@ We can also generate those events as we change the state during the natural life
 So we can use events to (re)build a table of states. We can also express changes of table as a stream of events. 
 This is called __Duality of state and event__. 
 
-Examples:
-    * Initial state of bank account balance = 0
-    * Command (event): Deposit 5 SEK
-	* Event: Deposited 5 SEK
-    * Resulted state: balance = 5
-    * Change log (event): Balance increased from 0 to 5 SEK
-	* State Update Style event: Latest balance is 5 SEK
+##### Examples:
+* Initial state of bank account balance = 0
+* Command (event): Deposit 5 SEK
+* Event: Deposited 5 SEK
+* Resulted state: balance = 5
+* Change log (event): Balance increased from 0 to 5 SEK
+* State Update Style event: Latest balance is 5 SEK
 Please note that commands are meaningful only in certain architectural patterns like CQRS (Command and Query Responsibility Segregation). 
 
 __Log__ (commit log) is like a queue or journal, a sequence of records ordered by time. It can be used to keep track of

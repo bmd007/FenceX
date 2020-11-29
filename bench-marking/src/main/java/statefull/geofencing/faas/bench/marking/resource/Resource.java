@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
@@ -33,10 +34,9 @@ public class Resource {
     }
 
     @GetMapping("/all")
-    public Flux loadTest() {
-        return repository.findAll()
-                .subscribeOn(Schedulers.parallel())
-                .doOnNext(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
+    public void loadTest() {
+        repository.findAll()
+                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
                         .withMoverId(tripDocument.getTripId())
                         .withWkt(tripDocument.getMiddleRouteRingWkt())
                         .build()))
@@ -49,7 +49,9 @@ public class Resource {
                                 .withLongitude(report.getLongitude())
                                 .withMoverId(tripDocument.getTripId())
                                 .withTimestamp(Instant.now())
-                                .build())));
+                                .build())
+                                .subscribe()))
+                .subscribe(locationReport -> System.out.println(locationReport + ": is published"));
     }
 
     @GetMapping("/one/{id}")

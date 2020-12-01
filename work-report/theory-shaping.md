@@ -114,5 +114,16 @@ The units with same shape correspond to same operations.
 ![Physical data flow](/work-report/physical%20data%20flow%20diagram.png)
 
 ### Expectations
+FenseX is expected to 
+ * handle varying loads successfully and smoothly
+ * low latency queries 
+ * low latency high throughput process of fence:location intersections
+ * be highly available (resiliency, failure isolation)
+ * easy to scale out and scale in? (even automatic)
+ * using resources optimally (local and overall) (like not relaying on blocking communication)
+ * meet the non-functional requirements of mission critical geofencing use cases as well as casual ones
+ * flexible (for example: any in-memory co-locatable database can be replaced by H2)
+ * can recovery from major failure (kafka topics are source of truth that are persisted durably on disk. Any state can
+ be re-build just by re deploying the system and re iterating over the events in kafka topics). 
 
 ### three four research question (higher throughput, eventual consistency achieved, resiliency?, ...) *based ( on what) (and why)

@@ -20,7 +20,7 @@ update arrives for a mover, new position gets checked against being inside a pre
 ### Our suggested system with a little back ground
 In this thesis we design a geofencing system that supports both poll and push styles of geofencing.
 For convenience from now on we call our system FenceX.
-FenceX is designed based on microservices[] and stream processing principles[]. It also conforms to reactive manifesto[].
+FenceX is designed based on microservices[1] and stream processing principles. It also conforms to reactive manifesto[2].
 As a consequence FenceX has an elastic, responsive and resilient nature 
 that handles with high scales of load very well while keeping the operational latency low. 
 
@@ -32,8 +32,8 @@ processor, subscriber, publisher and subsystems` to the express pretty much same
 Same goes for instance and task. Unless we are talking explicitly about a microservice that is not involved in 
 the stream processing part of the system. 
 
-The key component in our architecture is an event streaming tool called Kafka[]. Kafka is a highly available
-distributed implementation of commit-log/journal[]. Using Kafka in a distributed architecture means
+The key component in our architecture is an event streaming tool called Kafka[3]. Kafka is a highly available
+distributed implementation of commit-log/journal[4]. Using Kafka in a distributed architecture means
 applying publish-subscribe pattern for inter service communication (asynchronous). 
 A reactive system relays on asynchronous messaging to achieve loosely coupled isolated sub systems.
 Kafka gives the asynchronous messaging touch of reactive ness to FenseX.
@@ -49,7 +49,7 @@ Kafka topics have a replication factor that events from each topic will get repl
 accordingly. Such event replication helps with availability and resiliency of FenseX.
 
 We also have different operations subscribing to the same topic (task parallelism). Those operators are
-loosely coupled by sharing as little as possible (share nothing principle[]).
+loosely coupled by sharing as little as possible (share nothing principle).
 They achieve it by having their own databases. Such isolation of operations and data, makes the system 
 more resilient. Because local errors in one operation do not bring the whole system down.
 
@@ -130,7 +130,7 @@ FenseX is expected to
  * FenseX allows high throughput poll style geofencing (query by fence). 
  It is a consequence of using in-memory co-located database engine (no IO).
  Here throughput is __number of handled queries per second__. 
-Such throughput for FenseX should be at least in part with [Large Scale Indexing of Geofences] evaluations. 
+Such throughput for FenseX should be at least in part with [5] evaluations. 
 That system has applied load sharing and is using special indexes 
 that most probably are implemented in an in-memory manner. 
 
@@ -141,11 +141,10 @@ kill the throughput. The possible decrease in the throughput, should be avoidabl
  * FenceX allows high throughput push style fencing (location fence intersection).
  In the context of push style fencing we define throughput as __number of fence location intersections__ per second.
  FenseX is relaying on stream processing style load sharing combined with a geospatial library (no database index/query)
-  to achieve high throughput push style fencing. In this regard, FenseX can be compared with 
-  [Using Complex Event Processing for implementing a geofencing service]. 
+  to achieve high throughput push style fencing. In this regard, FenseX can be compared with [6]. 
   That system is using an event processing engine that is somewhat similar to a 
   stream processing framework (kafka streams in case of FenseX). 
-  Our expectation is to achieve an even higher throughput than what [] has achieved, since FenseX has simpler approach
+  Our expectation is to achieve an even higher throughput than what [6] has achieved, since FenseX has simpler approach
   to fence and location intersections.
   
   For testing push style throughput, we will define plenty of fences for movers.
@@ -181,4 +180,19 @@ kill the throughput. The possible decrease in the throughput, should be avoidabl
   which we will do any ways. Type of computation is not a concern when testing Faas. 
   Also, geofencing related computations and state accesses are good enough type of computation for
    testing a Fass platform. 
+   
+   Instead we will compare the throughputs evalutaed in previous experiments with the throughput data expressed
+   in [7]
+   
+   
+### References:
+* [1]: Microservices.io: www.microservices.io
+* [2]: Reactive manifesto: www.reactivemanifesto.org
+* [3]: Kafka: www.kafka.apache.org
+* [4]: I ♥ Logs, book, 2015, Jay Kreps
+* [5]: Large Scale Indexing of Geofences, 2014: www.ieeexplore.ieee.org/abstract/document/6910110
+* [6]: Using Complex Event Processing for implementing a geofencing service: www.ieeexplore.ieee.org/abstract/document/6662608
+* [7]: On the FaaS Track: Building Stateful Distributed Applications with Serverless Architectures,2019: www.dl.acm.org/doi/10.1145/3361525.3361535
+
+
    

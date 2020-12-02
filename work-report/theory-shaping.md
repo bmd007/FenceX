@@ -27,8 +27,8 @@ that handles with high scales of load very well while keeping the operational la
 Since we are mixing stream processing and microservices together, the modules in the FenseX architecture
 can be called both micro-services and operations (logically speaking). When we talk in more physical terms, they 
 are called instances and tasks respectively. 
-So from now on, we will use words `operation, microservice, services, event processor, 
-processor, subscriber, publisher and subsystems` to the express pretty much same thing. 
+So from now on, we will use words `operation, microservice, service, event processor, 
+processor, subscriber, publisher and subsystem` to the express pretty much same thing. 
 Same goes for instance and task. Unless we are talking explicitly about a microservice that is not involved in 
 the stream processing part of the system. 
 

@@ -126,4 +126,59 @@ FenseX is expected to
  * can recovery from major failure (kafka topics are source of truth that are persisted durably on disk. Any state can
  be re-build just by re deploying the system and re iterating over the events in kafka topics). 
 
-### three four research question (higher throughput, eventual consistency achieved, resiliency?, ...) *based ( on what) (and why)
+### to be tested scientifically
+ * FenseX allows high throughput poll style geofencing (query by fence). 
+ It is a consequence of using in-memory co-located database engine (no IO).
+ Here throughput is __number of handled queries per second__. 
+Such throughput for FenseX should be at least in part with [Large Scale Indexing of Geofences] evaluations. 
+That system has applied load sharing and is using special indexes 
+that most probably are implemented in an in-memory manner. 
+
+In order to test this, we will send a load of location updates and queries (fence) to FenseX pretty much at the
+same time. Then we calculate rate of successful queries. Increasing number of parallel queries drastically, should not
+kill the throughput. The possible decrease in the throughput, should be avoidable by scaling out the poll leg of FenseX.
+
+ * FenceX allows high throughput push style fencing (location fence intersection).
+ In the context of push style fencing we define throughput as __number of fence location intersections__ per second.
+ FenseX is relaying on stream processing style load sharing combined with a geospatial library (no database index/query)
+  to achieve high throughput push style fencing. In this regard, FenseX can be compared with 
+  [Using Complex Event Processing for implementing a geofencing service]. 
+  That system is using an event processing engine that is somewhat similar to a 
+  stream processing framework (kafka streams in case of FenseX). 
+  Our expectation is to achieve an even higher throughput than what [] has achieved, since FenseX has simpler approach
+  to fence and location intersections.
+  
+  For testing push style throughput, we will define plenty of fences for movers.
+  Then we send a load of location updates. FenseX counts the intersections it carries out. 
+  So we can calculate rate of intersections. Increasing number of location updates drastically, should not
+  kill the throughput. The possible decrease in the throughput,
+   can be healed by scaling out the push leg of FenseX. At best, we should be able to calculate the `peak throuhghput`
+   for a fixed number of deployed instances. It is worthy to mention that selecting right number of kafka topic partitions
+   can have a direct effect on throughput and scalability. 
+   
+   * FenseX has high resiliency due to having data replicated over different instance. So loosing an instance won't make
+   the system go down. In fact in theory no difference or down time should be experienced. However, since we are using
+   Kafka and size of subscriber group affects the partition assignment, loosing or adding instances to the system,
+   will result in re-balancing of partitions. When it comes to poll leg, since we are relaying on global store, 
+   re-balancing of topic partitions should not have a major affect. On the other hand the push leg might face
+   low throughout until re-balancing finishes. A remedy to this issue is  to deploy extra push leg instances as
+   Kafka stream idea instances. When won't take part in the work until another instace goes down, but they have a 
+   good enough view of the world regardless. 
+   
+   For testing high resiliency, we need to define some fences and send a fixed rate of location updates and
+   queries (fences) to FenseX. When the throughput of both legs gains a stable fix number, we should bring one instance
+   of poll leg down. We expect low changes in poll leg throughput during re-balancing. Then we add that instance back,
+   and expect same result.
+   
+   Then we bring one instance of push leg down (no idea instances available). At this moment I don't have an idea
+   how bad the effect of re-balancing will be on push throughput. I expect the throughput become stable again
+   after a few minutes (but lower due to lacking a worker node).
+   
+ ### testing the Faas aspect
+ At this moment I don't think that we should design a special test scenario for the Faas aspect of the thesis.
+  Because we will test it by "geofencing related" tests anyways. The major role of a Faas is to
+  execute some code with high availability and scalability with a highly abstract deployment model, 
+  which we will do any ways. Type of computation is not a concern when testing Faas. 
+  Also, geofencing related computations and state accesses are good enough type of computation for
+   testing a Fass platform. 
+   

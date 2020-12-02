@@ -92,16 +92,16 @@ will have different data. So in our case each, the __location aggregate__ instan
 a different portion of location updates. Consequently, when querying different instances, 
 we will get different results. Which means inconsistency. 
 What if we are querying the database against a fence the involves positions spread around different instances?
-One solution is to design an aggregator on top of __location aggregator__ instances 
+One solution is to design an aggregator on top of __location aggregate__ instances 
 that deals with the issue of querying their partial view of world. Which means that this aggregator should
 be aware of how data is partitioned by kafka among those instance. Such approach has plenty of problems that is out of the
 context of this document.
-To avoid it, we will save the __location aggregator__ state into a global store. 
+To avoid it, we will save the __location aggregate__ state into a global store. 
 Which means all the tasks of this operator will have the same view of the world. 
 As a result all the H2 databases will have the same data. 
 So regardless of which instance a query hits, the response will be the same.
 
-Also, state of __location aggregator__ tasks are eventually consistent. 
+Also, state of __location aggregate__ tasks are eventually consistent. 
 Because they relay on a commit-log (change log topic) for data replication. 
 More details about Kafka streams and how we used it to achieve eventual consistency will be
 provided in report later. 

@@ -176,7 +176,7 @@ kill the throughput. The possible decrease in the throughput, should be avoidabl
    how bad the effect of re-balancing will be on push throughput. I expect the throughput become stable again
    after a few minutes (but lower due to lacking a worker node).
    
- ### testing the Faas aspect
+ ### Testing the Faas aspect
  At this moment I don't think that we should design a special test scenario for the Faas aspect of the thesis.
   Because we will test it by "geofencing related" tests anyways. The major role of a Faas is to
   execute some code with high availability and scalability with a highly abstract deployment model, 
@@ -186,8 +186,27 @@ kill the throughput. The possible decrease in the throughput, should be avoidabl
    
    Instead we will compare the throughputs evalutaed in previous experiments with the throughput data expressed
    in [7]
-   
-   
+  
+### Test data  
+We will use real production level data borrowed from Cabonline. Cabonline is a taxi company serving plenty of travelers
+all over the Scandinavian counties. Their cars report theirs locations frequently. Joining these reports with 
+Cabonline order history, results in meaning full set of coordinates. That each set represent a
+journey that a taxi went through to serve a customer. To respect privacy of customers, drivers and Cabonline,
+the data that we receive is totally anonymous and no does not involve any real identification. 
+Since we have data that represent meaningful actions, apart from load related tests, we can test the system
+from acceptance point of view. 
+
+Each trip is represented into a list of (ordered by time) coordinates. We can find the coordinate in the middle of 
+the list and draw a circle around it. The resulted polygon can be used a fence that can be saved in FenseX with the
+trip id. From then on, we can publish location reports for that trip id and get inside/outside fence events.
+Since the fence is drawn using one of the points in the list, we expect several `outside fence` events and a few `inside fence` ones.
+The smaller the fence, the fewer `inside fence` events we will get.
+
+The explained scenario helps us test the push leg of FenseX deterministically. However the poll leg can not be
+tested deterministically at least in the same way. 
+It will be easier to test the poll leg regarding acceptance and load separately.
+
+    
 ### References:
 * [1]: Microservices.io: www.microservices.io
 * [2]: Reactive manifesto: www.reactivemanifesto.org

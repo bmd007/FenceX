@@ -78,7 +78,7 @@ In this function, we intersect the new location coordinates with the predefined 
 the fence or not. This is computed using a geo library so no geo index or geo query is involved in the push leg.
 
 
-### distributed system challenges and pros
+### Distributed system challenges and pros
 One of the main sources of latency is IO. It can be network IO or disk IO. Consider, as an example, querying a 
 database record over network that has its records persisted on disk. Or triggering an update that makes a change
 in the indexes in that database. The solution to such latencies is using an in-memory embedded(co-located) database.
@@ -126,8 +126,9 @@ FenseX is expected to
  * can recovery from major failure (kafka topics are source of truth that are persisted durably on disk. Any state can
  be re-build just by re deploying the system and re iterating over the events in kafka topics). 
 
-### to be tested scientifically
- * FenseX allows high throughput poll style geofencing (query by fence). 
+## To be tested scientifically
+ ### Poll leg throughput
+  FenseX allows high throughput poll style geofencing (query by fence). 
  It is a consequence of using in-memory co-located database engine (no IO).
  Here throughput is __number of handled queries per second__. 
 Such throughput for FenseX should be at least in part with [5] evaluations. 
@@ -138,7 +139,8 @@ In order to test this, we will send a load of location updates and queries (fenc
 same time. Then we calculate rate of successful queries. Increasing number of parallel queries drastically, should not
 kill the throughput. The possible decrease in the throughput, should be avoidable by scaling out the poll leg of FenseX.
 
- * FenceX allows high throughput push style fencing (location fence intersection).
+### Push leg throughput
+  FenceX allows high throughput push style fencing (location fence intersection).
  In the context of push style fencing we define throughput as __number of fence location intersections__ per second.
  FenseX is relaying on stream processing style load sharing combined with a geospatial library (no database index/query)
   to achieve high throughput push style fencing. In this regard, FenseX can be compared with [6]. 
@@ -154,8 +156,9 @@ kill the throughput. The possible decrease in the throughput, should be avoidabl
    can be healed by scaling out the push leg of FenseX. At best, we should be able to calculate the `peak throuhghput`
    for a fixed number of deployed instances. It is worthy to mention that selecting right number of kafka topic partitions
    can have a direct effect on throughput and scalability. 
-   
-   * FenseX has high resiliency due to having data replicated over different instance. So loosing an instance won't make
+ 
+ ### Resiliency and availability 
+  FenseX has high resiliency due to having data replicated over different instance. So loosing an instance won't make
    the system go down. In fact in theory no difference or down time should be experienced. However, since we are using
    Kafka and size of subscriber group affects the partition assignment, loosing or adding instances to the system,
    will result in re-balancing of partitions. When it comes to poll leg, since we are relaying on global store, 

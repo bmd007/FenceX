@@ -35,6 +35,13 @@ public class Resource {
         this.locationAggregateClient = locationAggregateClient;
     }
 
+    @GetMapping("/all/times/{times}")
+    public void leadTestNumberOfTimes(@PathVariable Integer times){
+        for (int i = 0; i<times; i++){
+            loadTest();
+        }
+    }
+
     @GetMapping("/all")
     public void loadTest() {
         repository.findAll()

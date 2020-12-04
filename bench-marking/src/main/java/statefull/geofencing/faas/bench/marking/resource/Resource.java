@@ -36,7 +36,7 @@ public class Resource {
     }
 
     @GetMapping("/all/times/{times}")
-    public void leadTestNumberOfTimes(@PathVariable Integer times){
+    public void loadTestNumberOfTimes(@PathVariable Integer times){
         for (int i = 0; i<times; i++){
             loadTest();
         }

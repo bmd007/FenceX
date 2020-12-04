@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import statefull.geofencing.faas.common.domain.Mover;
 import statefull.geofencing.faas.common.repository.MoverJdbcRepository;
+import statefull.geofencing.faas.location.aggregate.config.MetricsFacade;
 import statefull.geofencing.faas.location.aggregate.dto.CoordinateDto;
 import statefull.geofencing.faas.location.aggregate.dto.MoverDto;
 import statefull.geofencing.faas.location.aggregate.dto.MoversDto;
@@ -23,13 +24,15 @@ public class MoverResource {
     private final MoverJdbcRepository repository;
     private final BiFunction<MoverJdbcRepository, Polygon, List<Mover>> polygonalGeoFencingFunction;
     private final BiFunction<Double, Double, Polygon> wrapLocationByPolygonFunction;
+    private final MetricsFacade metricsFacade;
 
     public MoverResource(MoverJdbcRepository repository,
                          BiFunction<MoverJdbcRepository, Polygon, List<Mover>> polygonalGeoFencingFunction,
-                         BiFunction<Double, Double, Polygon> wrapLocationByPolygonFunction) {
+                         BiFunction<Double, Double, Polygon> wrapLocationByPolygonFunction, MetricsFacade metricsFacade) {
         this.repository = repository;
         this.polygonalGeoFencingFunction = polygonalGeoFencingFunction;
         this.wrapLocationByPolygonFunction = wrapLocationByPolygonFunction;
+        this.metricsFacade = metricsFacade;
     }
 
     @GetMapping("/{id}")
@@ -48,6 +51,7 @@ public class MoverResource {
                         .stream()
                         .map(this::map)
                         .collect(Collectors.toList());
+        metricsFacade.incrementQueryByFenceCounter();
         return new MoversDto(results);
     }
 
@@ -61,9 +65,9 @@ public class MoverResource {
                         .stream()
                         .map(this::map)
                         .collect(Collectors.toList());
+        metricsFacade.incrementQueryByFenceCounter();
         return new MoversDto(results);
     }
-
 
     private MoverDto map(Mover v) {
         return new MoverDto(v.getId(), new CoordinateDto(v.getLastLocation().getLatitude(), v.getLastLocation().getLongitude()));

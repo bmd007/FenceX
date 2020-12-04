@@ -9,13 +9,18 @@ import org.springframework.stereotype.Component;
 public class MetricsFacade {
 
     private final Counter moverAggregationCounter;
+    private final Counter queryByFenceCounter;
 
     public MetricsFacade(MeterRegistry registry) {
         moverAggregationCounter = registry.counter("geofencing.mover.aggregation.counter");
+        queryByFenceCounter = registry.counter("geofencing.mover.query.by.fence.counter");
     }
 
     public void incrementAggregationCounter() {
         moverAggregationCounter.increment();
     }
 
+    public void incrementQueryByFenceCounter() {
+        queryByFenceCounter.increment();
+    }
 }

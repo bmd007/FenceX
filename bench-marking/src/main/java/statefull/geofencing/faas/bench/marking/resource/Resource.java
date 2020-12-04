@@ -55,7 +55,7 @@ public class Resource {
                                 .subscribe())
                         .doOnNext(locationReport -> locationAggregateClient.queryMoverLocationsByFence(
                                 tripDocument.getMiddleRouteRingWkt()).subscribe()))
-                .subscribe(locationReport -> System.out.println(locationReport + ": is published and queried"));
+                .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
     }
 
     @GetMapping("/one/{id}")
@@ -79,3 +79,5 @@ public class Resource {
                         LOGGER.info("trip document {} info published and queried", tripDocument.getTripId()));
     }
 }
+
+

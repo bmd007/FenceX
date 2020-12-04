@@ -31,7 +31,7 @@ public class LocationAggregateClient {
         return webClientBuilder
                 .build()
                 .post()
-                .uri("http://locaiton-aggregate/api/movers/wkt")
+                .uri("http://location-aggregate/api/movers/wkt")
                 .bodyValue(wkt)
                 .retrieve()
                 .bodyToMono(String.class)

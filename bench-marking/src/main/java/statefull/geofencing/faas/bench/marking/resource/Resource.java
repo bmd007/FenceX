@@ -52,7 +52,7 @@ public class Resource {
                 .collectList()
                 .flatMapIterable(Function.identity())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
-                        .subscribeOn(Schedulers.parallel())
+                        .subscribeOn(Schedulers.elastic())
                         .doOnNext(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(report.getLatitude())
                                 .withLongitude(report.getLongitude())

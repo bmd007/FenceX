@@ -200,6 +200,7 @@ services:
       - "8084:8084"
       - "9097:9097"
     depends_on:
+      - location-update-publisher
       - kafka
       - consul
       - prometheus
@@ -224,6 +225,7 @@ services:
       - "6084:8084"
       - "7097:9097"
     depends_on:
+      - location-update-publisher2
       - kafka
       - consul
       - prometheus
@@ -248,6 +250,7 @@ services:
       - "7474:9535"
       - "7475:9536"
     depends_on:
+      - location-update-publisher3
       - kafka
       - consul
       - prometheus
@@ -270,6 +273,7 @@ services:
       - "7476:9445"
       - "7477:9446"
     depends_on:
+      - location-update-publisher
       - kafka
       - consul
       - prometheus
@@ -294,6 +298,7 @@ services:
       - "9511:9511"
       - "9512:9512"
     depends_on:
+      - location-update-publisher3
       - consul
       - prometheus
       - grafana

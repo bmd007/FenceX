@@ -244,14 +244,16 @@ services:
     mem_limit: 500mb
     image: statefull-geofencing-faas-realtime-fencing:beta
     ports:
-      - "7476:9535"
-      - "7477:9536"
+      - "7476:9445"
+      - "7477:9446"
     depends_on:
       - kafka
       - consul
       - prometheus
       - grafana
     environment:
+      SERVER_PORT: 9445
+      MANAGEMENT_SERVER_PORT: 9446
       KAFKA_TOPIC_CONFIG_EVENT: "5:3"
       KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"

@@ -56,9 +56,9 @@ public class MoverResource {
     }
 
     @PostMapping("/wkt")
-    public MoversDto queryPolygon(@RequestBody String kwtString, @RequestParam(required = false) Long maxAge) throws ParseException {
-        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, kwtString);
-        var polygon = (Polygon) repository.getWktReader().read(kwtString);
+    public MoversDto queryPolygon(@RequestBody String wktString, @RequestParam(required = false) Long maxAge) throws ParseException {
+        LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, wktString);
+        var polygon = (Polygon) repository.getWktReader().read(wktString);
         var results =
 //                repository.query(polygon)
                 polygonalGeoFencingFunction.apply(repository, polygon)

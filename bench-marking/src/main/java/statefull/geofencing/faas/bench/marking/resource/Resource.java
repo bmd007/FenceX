@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
+import statefull.geofencing.faas.bench.marking.client.LocationAggregateClient;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
 import statefull.geofencing.faas.bench.marking.client.model.FenceDto;
@@ -26,11 +26,13 @@ public class Resource {
     private final TripDocumentRepository repository;
     private final LocationUpdatePublisherClient updatePublisherClient;
     private final RealTimeFencingClient fencingClient;
+    private final LocationAggregateClient locationAggregateClient;
 
-    public Resource(TripDocumentRepository repository, LocationUpdatePublisherClient updatePublisherClient, RealTimeFencingClient fencingClient) {
+    public Resource(TripDocumentRepository repository, LocationUpdatePublisherClient updatePublisherClient, RealTimeFencingClient fencingClient, LocationAggregateClient locationAggregateClient) {
         this.repository = repository;
         this.updatePublisherClient = updatePublisherClient;
         this.fencingClient = fencingClient;
+        this.locationAggregateClient = locationAggregateClient;
     }
 
     @GetMapping("/all")
@@ -50,8 +52,10 @@ public class Resource {
                                 .withMoverId(tripDocument.getTripId())
                                 .withTimestamp(Instant.now())
                                 .build())
-                                .subscribe()))
-                .subscribe(locationReport -> System.out.println(locationReport + ": is published"));
+                                .subscribe())
+                        .doOnNext(locationReport -> locationAggregateClient.queryMoverLocationsByFence(
+                                tripDocument.getMiddleRouteRingWkt()).subscribe()))
+                .subscribe(locationReport -> System.out.println(locationReport + ": is published and queried"));
     }
 
     @GetMapping("/one/{id}")
@@ -63,16 +67,15 @@ public class Resource {
                         .build()))
                 .delayUntil(tripDocument ->
                         Flux.fromIterable(tripDocument.getLocationReports())
-                                .delayUntil(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
+                                .doOnNext(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                         .withLatitude(report.getLatitude())
                                         .withLongitude(report.getLongitude())
                                         .withMoverId(tripDocument.getTripId())
                                         .withTimestamp(Instant.now())
-                                        .build()))
-                                .map(unused -> tripDocument))
-                //todo query location update processor for last location being on the trip route
-                .subscribe(tripDocument -> {
-                    LOGGER.info("trip document {} info published", tripDocument.getTripId());
-                });
+                                        .build()).subscribe())
+                                .doOnNext(locationReport -> locationAggregateClient.queryMoverLocationsByFence(
+                                        tripDocument.getMiddleRouteRingWkt()).subscribe()))
+                .subscribe(tripDocument ->
+                        LOGGER.info("trip document {} info published and queried", tripDocument.getTripId()));
     }
 }

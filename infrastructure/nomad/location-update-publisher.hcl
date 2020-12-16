@@ -31,6 +31,12 @@ job "location-update-publisher" {
       mode =  "delay"
     }
 
+    network {
+      mbits = 1
+      port "http" {}
+      port "management" {}
+    }
+
     task "location-update-publisher" {
       driver = "docker"
 
@@ -91,11 +97,6 @@ job "location-update-publisher" {
       resources {
         cpu =    256
         memory = 512
-        network {
-          mbits = 1
-          port "http" {}
-          port "management" {}
-        }
       }
     }
   }

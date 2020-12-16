@@ -1,6 +1,5 @@
 job "location-update-publisher" {
-  region =      "aws"
-  datacenters = ["eu-west-1"]
+  datacenters = ["dc1"]
   type =        "service"
 
   meta {

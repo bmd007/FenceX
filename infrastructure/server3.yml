@@ -2,10 +2,10 @@ version: "3.7"
 services:
   consul-client:
     network_mode: host
-    container_name: consul-client1
+    container_name: consul-client2
     hostname: consul-client
     image: consul:latest
-    command: "agent -node=client-1 -join=${SERVER1_IP} -advertise=${SERVER2_IP}"
+    command: "agent -node=client-2 -join=${SERVER1_IP} -advertise=${SERVER3_IP}"
     ports:
       - "8300:8300/tcp"
       - "8300:8300/udp"
@@ -21,7 +21,7 @@ services:
       - "7946:7946/tcp"
 
   zookeeper:
-    container_name: zookeeper2
+    container_name: zookeeper3
     network_mode: host
     hostname: zookeeper
 #    container_name: zookeeper
@@ -32,12 +32,12 @@ services:
       - "3888:3888"
       - "2888:2888"
     environment:
-      ZOO_MY_ID: 2
-      ZOO_SERVERS: server.1=${SERVER1_IP}:2888:3888;2181 server.3=${SERVER3_IP}:2888:3888;2181 server.2=0.0.0
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=${SERVER1_IP}:2888:3888;2181 server.2=${SERVER2_IP}:2888:3888;2181 server.3=0.0.0
       .0:2888:3888;2181
 
   kafka:
-    container_name: kafka2
+    container_name: kafka3
     network_mode: host
     image: confluentinc/cp-kafka
     depends_on:
@@ -48,8 +48,8 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181,${SERVER2_IP}:2181,${SERVER3_IP}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://${SERVER2_IP}:9094
-      KAFKA_LISTENERS: OUTSIDE://${SERVER2_IP}:9094
+      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://${SERVER3_IP}:9094
+      KAFKA_LISTENERS: OUTSIDE://${SERVER3_IP}:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: OUTSIDE
       JMX_PORT: 9997
     volumes:

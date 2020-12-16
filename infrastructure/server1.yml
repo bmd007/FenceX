@@ -2,7 +2,7 @@ version: '3.7'
 services:
   consul-server:
     network_mode: host
-    container_name: "consul-server"
+    container_name: consul-server
     hostname: consul-server
     image: consul:latest
     command: "agent -server -ui -node=server-1 -advertise=${SERVER1_IP} -bootstrap-expect=1"
@@ -33,7 +33,8 @@ services:
       - "2888:2888"
     environment:
       ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=${SERVER2_IP}:2888:3888;2181
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=${SERVER2_IP}:2888:3888;2181 server
+      .3=${SERVER3_IP}:2888:3888;2181
 
   kafka:
     container_name: kafka1
@@ -45,7 +46,7 @@ services:
       - "9092:9092"
       - "9094:9094"
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181,${SERVER2_IP}:2181
+      KAFKA_ZOOKEEPER_CONNECT: ${SERVER1_IP}:2181,${SERVER2_IP}:2181,${SERVER3_IP}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: OUTSIDE:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: OUTSIDE://${SERVER1_IP}:9094
       KAFKA_LISTENERS: OUTSIDE://${SERVER1_IP}:9094

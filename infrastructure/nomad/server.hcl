@@ -1,3 +1,5 @@
+bind_addr = "0.0.0.0"
+
 # Increase log verbosity
 log_level = "DEBUG"
 
@@ -10,4 +12,9 @@ server {
 
   # Self-elect, should be 3 or 5 for production
   bootstrap_expect = 3
+}
+advertise {
+  http = "192.168.1.6"
+  rpc = "192.168.1.6"
+  serf = "192.168.1.6"
 }

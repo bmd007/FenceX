@@ -1,3 +1,5 @@
+bind_addr = "0.0.0.0"
+
 # Increase log verbosity
 log_level = "DEBUG"
 
@@ -17,17 +19,10 @@ client {
   servers = ["192.168.1.6:4647"]
 }
 
-ports {
-  http = 5656
+addresses {
+  rpc  = "192.168.1.28"
+  serf = "192.168.1.28"
 }
-
-# Disable the dangling container cleanup to avoid interaction with other clients
-plugin "docker" {
-  config {
-    gc {
-      dangling_containers {
-        enabled = false
-      }
-    }
-  }
+advertise {
+  http = "192.168.1.28:4646"
 }

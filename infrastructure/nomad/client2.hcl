@@ -5,7 +5,7 @@ log_level = "DEBUG"
 data_dir = "/tmp/client1"
 
 # Give the agent a unique name. Defaults to hostname
-name = "client1"
+name = "client2"
 
 # Enable the client
 client {

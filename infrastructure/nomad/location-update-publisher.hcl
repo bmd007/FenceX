@@ -32,7 +32,6 @@ job "location-update-publisher" {
     }
 
     network {
-      mbits = 1
       port "http" {}
       port "management" {}
     }

@@ -131,7 +131,7 @@ services:
     container_name: location-update-publisher
 #    cpu_shares: 30
 #    mem_limit: 700mb
-    image: statefull-geofencing-faas-location-update-publisher:beta
+    image: bmd007/location-update-publisherlocation-update-publisher
     ports:
       - "9566:9566"
       - "9567:9567"
@@ -150,7 +150,7 @@ services:
     container_name: location-update-publisher2
 #    cpu_shares: 30
 #    mem_limit: 700mb
-    image: statefull-geofencing-faas-location-update-publisher:beta
+    image: bmd007/location-update-publisherlocation-update-publisher
     ports:
       - "9516:9766"
       - "9517:9767"
@@ -171,7 +171,7 @@ services:
     container_name: location-update-publisher3
 #    cpu_shares: 30
 #    mem_limit: 700mb
-    image: statefull-geofencing-faas-location-update-publisher:beta
+    image: bmd007/location-update-publisherlocation-update-publisher
     ports:
       - "9526:9746"
       - "9527:9747"
@@ -193,7 +193,7 @@ services:
     hostname: location-aggregate
 #    cpu_shares: 50
 #    mem_limit: 800mb
-    image: statefull-geofencing-faas-location-aggregate:beta
+    image: bmd007/location-aggregatelocation-update-publisher
     ports:
       - "9585:9585"
       - "9586:9586"
@@ -218,7 +218,7 @@ services:
     hostname: location-aggregate2
 #    cpu_shares: 50
 #    mem_limit: 800mb
-    image: statefull-geofencing-faas-location-aggregate:beta
+    image: bmd007/location-aggregatelocation-update-publisher
     ports:
       - "7585:9285"
       - "7586:9286"
@@ -245,7 +245,7 @@ services:
     hostname: realtime-fencing
 #    cpu_shares: 40
 #    mem_limit: 500mb
-    image: statefull-geofencing-faas-realtime-fencing:beta
+    image: bmd007/realtime-fencinglocation-update-publisher
     ports:
       - "7474:9535"
       - "7475:9536"
@@ -268,7 +268,7 @@ services:
     hostname: realtime-fencing2
 #    cpu_shares: 40
 #    mem_limit: 500mb
-    image: statefull-geofencing-faas-realtime-fencing:beta
+    image: bmd007/realtime-fencinglocation-update-publisher
     ports:
       - "7476:9445"
       - "7477:9446"
@@ -293,7 +293,7 @@ services:
     hostname: bench-marking
 #    cpu_shares: 30
 #    mem_limit: 500mb
-    image: statefull-geofencing-faas-bench-marking:beta
+    image: bmd007/bench-markinglocation-update-publisher
     ports:
       - "9511:9511"
       - "9512:9512"

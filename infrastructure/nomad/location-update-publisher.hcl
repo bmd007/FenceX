@@ -32,6 +32,7 @@ job "location-update-publisher" {
     }
 
     network {
+      mode = "host"
       port "http" {}
       port "management" {}
     }
@@ -70,6 +71,9 @@ job "location-update-publisher" {
             ignore_warnings = true
           }
         }
+        connect {
+          native = true
+        }
       }
 
       service {
@@ -81,6 +85,9 @@ job "location-update-publisher" {
           interval = "10s"
           timeout =  "5s"
           path =     "/health"
+        }
+        connect {
+          native = true
         }
       }
       env {

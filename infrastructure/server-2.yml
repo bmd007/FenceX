@@ -1,8 +1,7 @@
-#usgae of bridge is due to testing party being window, otherwise host should be default for everything
 version: "3.7"
 services:
   consul-client:
-    network_mode: bridge
+    network_mode: host
     container_name: "consul-client"
     hostname: consul-client
     image: consul:latest
@@ -22,7 +21,7 @@ services:
       - "7946:7946/tcp"
 
   zookeeper:
-    network_mode: bridge
+    network_mode: host
     hostname: zookeeper
 #    container_name: zookeeper
     image: zookeeper

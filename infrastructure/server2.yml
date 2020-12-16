@@ -21,6 +21,7 @@ services:
       - "7946:7946/tcp"
 
   zookeeper:
+    container_name: zookeeper2
     network_mode: host
     hostname: zookeeper
 #    container_name: zookeeper
@@ -35,6 +36,7 @@ services:
       ZOO_SERVERS: server.1=${SERVER1_IP}:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181
 
   kafka:
+    container_name: kafka2
     network_mode: host
     image: confluentinc/cp-kafka
     depends_on:

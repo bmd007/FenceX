@@ -24,7 +24,6 @@ services:
     container_name: zookeeper2
     network_mode: host
     hostname: zookeeper
-#    container_name: zookeeper
     image: zookeeper
     restart: always
     ports:
@@ -33,8 +32,7 @@ services:
       - "2888:2888"
     environment:
       ZOO_MY_ID: 2
-      ZOO_SERVERS: "server.1=${SERVER1_IP}:2888:3888;2181 server.3=${SERVER3_IP}:2888:3888;2181 server.2=0.0.0
-      .0:2888:3888;2181"
+      ZOO_SERVERS: "server.1=${SERVER1_IP}:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=${SERVER3_IP}:2888:3888;2181"
 
   kafka:
     container_name: kafka2

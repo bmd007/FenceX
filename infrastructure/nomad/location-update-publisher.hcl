@@ -32,7 +32,7 @@ job "location-update-publisher" {
     }
 
     network {
-      mode = "bridge"
+      mode = "host"
       port "http" {
 		  to = 9566
 	  }

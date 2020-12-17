@@ -53,7 +53,7 @@ job "location-update-publisher" {
 //          password = ""
 //        }
 
-		ports = ["http", "management]
+		ports = ["http", "management"]
       }
 
       service {

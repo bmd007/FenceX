@@ -49,7 +49,7 @@ job "location-update-publisher" {
 //          password = ""
 //        }
 
-        port_map {
+        ports {
           http =       9566
           management = 9567
         }

@@ -33,8 +33,12 @@ job "location-update-publisher" {
 
     network {
       mode = "host"
-      port "http" {}
-      port "management" {}
+      port "http" {
+		  to = 9566
+	  }
+      port "management" {
+		  to = 9567
+	  }
     }
 
     task "location-update-publisher" {
@@ -49,10 +53,7 @@ job "location-update-publisher" {
 //          password = ""
 //        }
 
-        ports {
-          http =       9566
-          management = 9567
-        }
+		ports = ["http", "management]
       }
 
       service {

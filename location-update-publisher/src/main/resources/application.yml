@@ -34,8 +34,11 @@ management:
         enabled: true
 
 spring:
-  datasource:
-    initialization-mode: always
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+          health-check-path: /health
 
   kafka:
     bootstrap-servers: "localhost:9092"
@@ -44,6 +47,8 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 #      properties:
 #        - spring.json.type.mapping: MoverLocationUpdate:statefull.geofencing.faas.common.dto.MoverLocationUpdate
+
+
 
 kafka:
   topic:

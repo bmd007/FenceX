@@ -51,10 +51,7 @@ spring:
     consul:
       discovery:
         prefer-ip-address: true
-            health-check-path: /actuator/health
-    loadbalancer:
-      ribbon:
-        enabled: false
+            health-check-path: /health
 
   h2:
     console:

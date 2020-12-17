@@ -38,6 +38,12 @@ spring:
     mongodb:
       uri: mongodb://mongo:27017/geofencing
 
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+          health-check-path: /health
+
 ---
 spring:
   profiles: local

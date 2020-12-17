@@ -53,7 +53,6 @@ job "location-update-publisher" {
 
       service {
         name = "location-update-publisher"
-//        tags = ["version:IMAGE_NAME"]
         port = "http"
         check {
           type =     "http"

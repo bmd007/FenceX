@@ -102,4 +102,6 @@ tasks.named('wrapper') {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-bootBuildImage {}
+bootBuildImage {
+    imageName = "bmd007/location-aggregate"
+}

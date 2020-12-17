@@ -89,7 +89,7 @@ job "location-aggregate" {
       env {
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
-        SPRING_KAFKA_BOOTSTRAP_SERVERS= "localhost:9092"
+        SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
         SPRING_CLOUD_CONSUL_HOST =                                "localhost"
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"

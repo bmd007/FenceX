@@ -80,7 +80,7 @@ job "location-update-publisher" {
           type =     "http"
           interval = "10s"
           timeout =  "5s"
-          path =     "/health"
+          path =     "/actuator/health"
         }
         connect {
           native = true

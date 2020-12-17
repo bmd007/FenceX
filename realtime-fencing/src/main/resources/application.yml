@@ -38,8 +38,7 @@ spring:
     consul:
       discovery:
         prefer-ip-address: true
-          health-check-path: /health
-
+        health-check-path: /actuator/health
 
   kafka:
     streams:
@@ -51,7 +50,6 @@ spring:
       key-serializer: org.springframework.kafka.support.serializer.StringOrBytesSerializer
       value-serializer: org.springframework.kafka.support.serializer.StringOrBytesSerializer
       ##JsonSerializer
-
 
 kafka:
   topic:

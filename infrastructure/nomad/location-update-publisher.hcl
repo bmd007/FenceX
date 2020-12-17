@@ -43,19 +43,12 @@ job "location-update-publisher" {
 
     task "location-update-publisher" {
       driver = "docker"
-
       # Configuration is specific to each driver.
       config {
         image =      "bmd007/location-update-publisher"
-
         network_mode = "host"
-
+        hostname = "location-update-publisher"
         force_pull = true
-//        auth {
-//          username = "bmd007"
-//          password = ""
-//        }
-
 		ports = ["http", "management"]
       }
 
@@ -101,7 +94,7 @@ job "location-update-publisher" {
         SPRING_PROFILES_ACTIVE =                                  "nomad"
         SPRING_CLOUD_CONSUL_HOST =                                "localhost"
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
-//        SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
+        SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
 //        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"
       }
       resources {

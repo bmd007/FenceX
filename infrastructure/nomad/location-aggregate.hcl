@@ -60,7 +60,7 @@ job "location-aggregate" {
           port =     "management"
           interval = "10s"
           timeout =  "5s"
-          path =     "/actuator/health"
+          path =     "/health"
           check_restart {
             limit =           4
             grace =           "15m"

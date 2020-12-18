@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+
+  mongo:
+    network_mode: host
+    container_name: mongo
+    hostname: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  bench-marking:
+    network_mode: host
+    container_name: bench-marking
+    hostname: bench-marking
+#    cpu_shares: 30
+#    mem_limit: 500mb
+    image: bmd007/bench-marking
+    ports:
+      - "9511:9511"
+      - "9512:9512"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: localhost
+
+

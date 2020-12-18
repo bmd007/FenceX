@@ -66,7 +66,6 @@ job "location-update-publisher" {
             ignore_warnings = true
           }
         }
-        connect { native = false }
       }
 
       service {
@@ -79,7 +78,7 @@ job "location-update-publisher" {
           timeout =  "5s"
           path =     "/health"
         }
-        connect { native = false }
+        connect { native = true }
       }
       env {
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"
@@ -88,7 +87,7 @@ job "location-update-publisher" {
         SPRING_PROFILES_ACTIVE =                                  "nomad"
         SPRING_CLOUD_CONSUL_HOST =                                "localhost"
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
-        SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "true"
+        SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
 //        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"
       }
       resources {

@@ -32,7 +32,7 @@ job "location-aggregate" {
     }
 
     network {
-      mode = "host"
+      mode = "bridge"
       port "http" {
 		  to = 9585
 	  }

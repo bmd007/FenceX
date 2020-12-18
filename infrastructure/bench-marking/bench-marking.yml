@@ -14,7 +14,7 @@ services:
     container_name: bench-marking
     hostname: bench-marking
     cpu_shares: 512
-    mem_limit: 3056mb
+    mem_limit: 4056mb
     image: bmd007/bench-marking
     ports:
       - "9511:9511"

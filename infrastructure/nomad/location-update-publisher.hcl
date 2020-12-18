@@ -66,9 +66,7 @@ job "location-update-publisher" {
             ignore_warnings = true
           }
         }
-        connect {
-          native = true
-        }
+        connect { native = false }
       }
 
       service {
@@ -81,9 +79,7 @@ job "location-update-publisher" {
           timeout =  "5s"
           path =     "/health"
         }
-//  #      connect {
-//   #       native = true
-//    #    }
+        connect { native = false }
       }
       env {
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"

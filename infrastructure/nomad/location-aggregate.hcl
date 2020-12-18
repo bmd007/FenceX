@@ -32,7 +32,7 @@ job "location-aggregate" {
     }
 
     network {
-      mode = "bridge"
+      mode = "host"
       port "http" {
 		  to = 9585
 	  }
@@ -67,9 +67,9 @@ job "location-aggregate" {
             ignore_warnings = true
           }
         }
-        connect {
-          native = true
-        }
+//#        connect {
+// #         native = true
+//  #      }
       }
 
       service {
@@ -82,9 +82,9 @@ job "location-aggregate" {
           timeout =  "5s"
           path =     "/health"
         }
-        connect {
-          native = true
-        }
+//#        connect {
+// #         native = false
+//  #      }
       }
       env {
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"

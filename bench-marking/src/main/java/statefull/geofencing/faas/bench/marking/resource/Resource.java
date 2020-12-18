@@ -64,6 +64,30 @@ public class Resource {
                 .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
     }
 
+
+    @GetMapping("/all/repeat/{times}")
+    public void loadTestRepeat(@PathVariable Long times) {
+        repository.findAll()
+                .repeat(times)
+                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
+                        .withMoverId(tripDocument.getTripId())
+                        .withWkt(tripDocument.getMiddleRouteRingWkt())
+                        .build()))
+                .collectList()
+                .flatMapIterable(Function.identity())
+                .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
+                        .doOnNext(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
+                                .withLatitude(report.getLatitude())
+                                .withLongitude(report.getLongitude())
+                                .withMoverId(tripDocument.getTripId())
+                                .withTimestamp(Instant.now())
+                                .build())
+                                .subscribe())
+                        .doOnNext(locationReport -> locationAggregateClient.queryMoverLocationsByFence(
+                                tripDocument.getMiddleRouteRingWkt()).subscribe()))
+                .subscribe();
+    }
+
     @GetMapping("/one/{id}")
     public void loadTestForOne(@PathVariable String id) {
         repository.findById(id)

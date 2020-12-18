@@ -92,7 +92,7 @@ job "location-aggregate" {
 //        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"
       }
       resources {
-        cpu =    256
+        cpu =    1024
         memory = 2048
       }
     }

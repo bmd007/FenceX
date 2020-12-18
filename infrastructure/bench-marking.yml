@@ -22,6 +22,7 @@ services:
     depends_on:
       - mongo
     environment:
+      SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/geofencing
       SPRING_CLOUD_CONSUL_HOST: localhost
 
 

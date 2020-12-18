@@ -34,11 +34,11 @@ job "location-update-publisher" {
     network {
       mode = "host"
       port "http" {
-		  to = 9566
+        static = "9566"
 	  }
       port "management" {
-		  to = 9567
-	  }
+        static = "9567"
+      }
     }
 
     task "location-update-publisher" {

@@ -34,10 +34,10 @@ job "location-aggregate" {
     network {
       mode = "host"
       port "http" {
-		  to = 9585
+        static = "9585"
 	  }
       port "management" {
-		  to = 9586
+        static = "9586"
 	  }
     }
 

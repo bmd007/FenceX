@@ -59,6 +59,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   kafka-manager:
+    network_mode: host
     depends_on:
       - kafka
     image: rafabsb/kafka-manager-docker

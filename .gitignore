@@ -30,6 +30,6 @@ HELP.md
 .vscode/
 
 ###local config###
-/metrics
-!/metrics/prometheus.yml
-/deployment/docker-compose/metrics/
+/deployment/docker/metrics/
+!/deployment/docker/metrics/prometheus.yml
+!/deployment/docker/metrics/consul.json

@@ -13,3 +13,4 @@ scrape_configs:
         regex: '(^consul)'
         target_label: job
         action: drop
+

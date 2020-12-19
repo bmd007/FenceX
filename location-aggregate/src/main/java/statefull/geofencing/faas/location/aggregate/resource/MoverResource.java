@@ -72,4 +72,10 @@ public class MoverResource {
     private MoverDto map(Mover v) {
         return new MoverDto(v.getId(), new CoordinateDto(v.getLastLocation().getLatitude(), v.getLastLocation().getLongitude()));
     }
+
+    @GetMapping("/delete/all")
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
 }

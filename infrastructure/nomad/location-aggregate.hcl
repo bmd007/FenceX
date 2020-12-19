@@ -33,6 +33,9 @@ job "location-aggregate" {
 
     network {
       mode = "host"
+      port "h2" {
+        static = "8084"
+	  }
       port "http" {
         static = "9585"
 	  }

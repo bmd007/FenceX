@@ -93,7 +93,7 @@ job "location-aggregate" {
       }
       resources {
         cpu =    1024
-        memory = 3056
+        memory = 2048
       }
     }
   }

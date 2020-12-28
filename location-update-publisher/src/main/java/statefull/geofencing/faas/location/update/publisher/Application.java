@@ -22,9 +22,9 @@ public class Application {
     }
 
     public static void main(String[] args) throws UnknownHostException {
-//        var inetAddress = InetAddress.getLocalHost();
-//        System.out.println("IP Address:- " + inetAddress.getHostAddress());
-//        System.out.println("Host Name:- " + inetAddress.getHostName());
+        var inetAddress = InetAddress.getLocalHost();
+        System.out.println("IP Address:- " + inetAddress.getHostAddress());
+        System.out.println("Host Name:- " + inetAddress.getHostName());
         SpringApplication.run(Application.class, args);
     }
 

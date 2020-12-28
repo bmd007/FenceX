@@ -65,8 +65,8 @@ job "location-update-publisher" {
             grace =           "15m"
             ignore_warnings = true
           }
-          connect { native = true }
         }
+        connect { native = true }
       }
 
       service {

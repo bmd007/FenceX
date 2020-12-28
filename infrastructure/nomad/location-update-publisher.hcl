@@ -85,7 +85,7 @@ job "location-update-publisher" {
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
-        SPRING_CLOUD_CONSUL_HOST =                                "${NOMAD_IP_http}"
+        SPRING_CLOUD_CONSUL_HOST =                                "0.0.0.0"
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
 //        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"

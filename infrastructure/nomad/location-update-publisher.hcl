@@ -34,10 +34,10 @@ job "location-update-publisher" {
     network {
       mode = "host"
       port "http" {
-        static = "9566"
+        to = "9566"
 	  }
       port "management" {
-        static = "9567"
+        to = "9567"
       }
     }
 
@@ -46,7 +46,7 @@ job "location-update-publisher" {
       # Configuration is specific to each driver.
       config {
         image =      "bmd007/location-update-publisher"
-        network_mode = "host"
+        network_mode = "bridge"
         force_pull = true
 		ports = ["http", "management"]
       }

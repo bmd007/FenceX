@@ -79,7 +79,7 @@ job "realtime-fencing" {
       }
       resources {
         cpu =    715
-        memory = 1500
+        memory = 2500
       }
     }
   }

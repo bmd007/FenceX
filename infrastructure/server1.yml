@@ -66,6 +66,6 @@ services:
     ports:
       - "9000:9000"
     environment:
-      ZK_HOSTS: ${SERVER1_IP}:2181
+      ZK_HOSTS: ${SERVER1_IP}:2181,${SERVER2_IP}:2181,${SERVER3_IP}:2181
       APPLICATION_SECRET: letmein
       KM_ARGS: -Djava.net.preferIPv4Stack=true

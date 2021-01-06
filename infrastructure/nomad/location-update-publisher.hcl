@@ -15,7 +15,7 @@ job "location-update-publisher" {
 
 
   group "location-update-publisher" {
-    count = 3
+    count = 5
 
     restart {
       delay = "15s"
@@ -24,12 +24,8 @@ job "location-update-publisher" {
 
     network {
       mode = "host"
-      port "http" {
-//        to = "9566"
-	  }
-      port "management" {
-//        to = "9567"
-      }
+      port "http" {}
+      port "management" {}
     }
 
     task "location-update-publisher" {
@@ -80,9 +76,7 @@ job "location-update-publisher" {
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
         SPRING_CLOUD_CONSUL_HOST =                                "localhost"
-        #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
-//        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"
       }
       resources {
         cpu =    400

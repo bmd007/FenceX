@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @SpringBootApplication
@@ -21,15 +20,12 @@ public class Application {
         return new TimedAspect(registry);
     }
 
-    public static void main(String[] args) throws UnknownHostException {
-//        var inetAddress = InetAddress.getLocalHost();
-//        System.out.println("IP Address:- " + inetAddress.getHostAddress());
-//        System.out.println("Host Name:- " + inetAddress.getHostName());
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @EventListener(org.springframework.context.event.ContextRefreshedEvent.class)
-    public void start() throws UnknownHostException {
+    public void start() {
     }
 
     @EventListener(org.springframework.context.event.ContextClosedEvent.class)

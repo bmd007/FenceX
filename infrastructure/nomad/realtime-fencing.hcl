@@ -24,12 +24,8 @@ job "realtime-fencing" {
 
     network {
       mode = "host"
-      port "http" {
-        static = "9535"
-	  }
-      port "management" {
-        static = "9536"
-      }
+      port "http" {}
+      port "management" {}
     }
 
     task "realtime-fencing" {
@@ -72,14 +68,14 @@ job "realtime-fencing" {
         connect { native = true }
       }
       env {
+        SERVER_PORT= "${NOMAD_PORT_http}"
+        MANAGEMENT_SERVER_PORT= "${NOMAD_PORT_management}"
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
         SPRING_CLOUD_CONSUL_HOST =                                "localhost"
-        #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
-//        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"
       }
       resources {
         cpu =    715

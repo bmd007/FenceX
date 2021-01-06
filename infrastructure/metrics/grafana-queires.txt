@@ -1,5 +1,5 @@
 sum by (job) (rate(geofencing_location_update_published_counter_total[$__rate_interval]))
 
-sum by (job) (rate(geofencing_location_update_published_counter_total[$__rate_interval]))
+sum by (job) (rate(geofencing_mover_query_by_fence_counter_total[$__rate_interval]))
 
 sum by (job) (rate(geofencing_mover_fence_intersection_counter_total[$__rate_interval]))

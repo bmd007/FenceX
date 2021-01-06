@@ -25,10 +25,10 @@ job "location-update-publisher" {
     network {
       mode = "host"
       port "http" {
-//        to = "9566"
+        to = "9566"
 	  }
       port "management" {
-//        to = "9567"
+        to = "9567"
       }
     }
 

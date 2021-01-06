@@ -45,28 +45,38 @@ public class MoverResource {
                               @RequestParam double longitude,
                               @RequestParam(required = false) Long maxAge) {
         var polygon = wrapLocationByPolygonFunction.apply(latitude, longitude);
-        var results =
+        try {
+            var results =
 //                repository.query(polygon)
-                polygonalGeoFencingFunction.apply(repository, polygon)
-                        .stream()
-                        .map(this::map)
-                        .collect(Collectors.toList());
-        metricsFacade.incrementQueryByFenceCounter();
-        return new MoversDto(results);
+                    polygonalGeoFencingFunction.apply(repository, polygon)
+                            .stream()
+                            .map(this::map)
+                            .collect(Collectors.toList());
+            metricsFacade.incrementQueryByFenceCounter();
+            return new MoversDto(results);
+        } catch (Exception e) {
+            LOGGER.error("error while querying by coordinate", e);
+            return MoversDto.builder().withMovers(List.of()).build();
+        }
     }
 
     @PostMapping("/wkt")
     public MoversDto queryPolygon(@RequestBody String wktString, @RequestParam(required = false) Long maxAge) throws ParseException {
         LOGGER.debug("Executing query. MaxAge: {}, Polygon: {}", maxAge, wktString);
         var polygon = (Polygon) repository.getWktReader().read(wktString);
-        var results =
+        try {
+            var results =
 //                repository.query(polygon)
-                polygonalGeoFencingFunction.apply(repository, polygon)
-                        .stream()
-                        .map(this::map)
-                        .collect(Collectors.toList());
-        metricsFacade.incrementQueryByFenceCounter();
-        return new MoversDto(results);
+                    polygonalGeoFencingFunction.apply(repository, polygon)
+                            .stream()
+                            .map(this::map)
+                            .collect(Collectors.toList());
+            metricsFacade.incrementQueryByFenceCounter();
+            return new MoversDto(results);
+        } catch (Exception e) {
+            LOGGER.error("error while querying by wkt", e);
+            return MoversDto.builder().withMovers(List.of()).build();
+        }
     }
 
     private MoverDto map(Mover v) {

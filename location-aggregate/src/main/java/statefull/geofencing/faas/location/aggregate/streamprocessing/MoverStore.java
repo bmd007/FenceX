@@ -121,7 +121,7 @@ public class MoverStore implements KeyValueStore<String, Mover> {
         } else if (value.getId() == null || value.getId().isBlank() || value.getId().isEmpty()) {
             return;
         } else {
-            repository.save(value);
+            errorSuppressedSave(value);
         }
     }
 
@@ -130,9 +130,17 @@ public class MoverStore implements KeyValueStore<String, Mover> {
         LOGGER.info("Updating {} if absent", key);
         var original = get(key);
         if (original == null) {
-            repository.save(value);
+            errorSuppressedSave(value);
         }
         return original;
+    }
+
+    private void errorSuppressedSave(Mover value) {
+       try {
+           repository.save(value);
+       }catch (Exception e){
+           LOGGER.error("Problem while saving {}", value, e);
+       }
     }
 
     @Override

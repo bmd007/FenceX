@@ -11,7 +11,7 @@ public class DataSourceConfig {
 
     @Bean
     public DataSource dataSource() {
-        return new SimpleDriverDataSource(new org.h2.Driver(), "jdbc:h2:nioMemFS:");
+        return new SimpleDriverDataSource(new org.h2.Driver(), "jdbc:h2:nioMemFS:movers;DB_CLOSE_DELAY=-1");
     }
 
 }

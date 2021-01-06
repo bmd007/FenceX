@@ -24,7 +24,7 @@ job "location-aggregate" {
 //  }
 
   group "location-aggregate" {
-    count = 2
+    count = 3
 
     restart {
       delay = "15s"
@@ -94,7 +94,7 @@ job "location-aggregate" {
       }
       resources {
         cpu =    1024
-        memory = 3000
+        memory = 2000
       }
     }
   }

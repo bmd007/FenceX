@@ -25,10 +25,10 @@ job "location-update-publisher" {
     network {
       mode = "host"
       port "http" {
-        to = "9566"
+//        to = "9566"
 	  }
       port "management" {
-        to = "9567"
+//        to = "9567"
       }
     }
 
@@ -73,6 +73,8 @@ job "location-update-publisher" {
         connect { native = true }
       }
       env {
+        SERVER_PORT= "${NOMAD_PORT_http}"
+        MANAGEMENT_SERVER_PORT= "${NOMAD_PORT_management}"
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"

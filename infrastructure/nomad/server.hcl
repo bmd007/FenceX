@@ -17,7 +17,7 @@ server {
   bootstrap_expect = 1
 }
 advertise {
-  http = "192.168.1.6"
-  rpc = "192.168.1.6"
-  serf = "192.168.1.6"
+  http = "192.168.1.25"
+  rpc = "192.168.1.25"
+  serf = "192.168.1.25"
 }

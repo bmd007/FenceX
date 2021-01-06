@@ -16,7 +16,7 @@ client {
   # For demo assume we are talking to server1. For production,
   # this should be like "nomad.service.consul:4647" and a system
   # like Consul used for service discovery.
-  servers = ["192.168.1.6:4647"]
+  servers = ["192.168.1.25:4647"]
 }
 
 addresses {

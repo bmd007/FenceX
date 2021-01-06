@@ -15,7 +15,7 @@ job "realtime-fencing" {
 
 
   group "realtime-fencing" {
-    count = 2
+    count = 3
 
     restart {
       delay = "15s"
@@ -79,7 +79,7 @@ job "realtime-fencing" {
       }
       resources {
         cpu =    715
-        memory = 2500
+        memory = 2000
       }
     }
   }

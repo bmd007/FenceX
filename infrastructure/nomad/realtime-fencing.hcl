@@ -13,15 +13,6 @@ job "realtime-fencing" {
     min_healthy_time = "30s"
   }
 
-//  constraint {
-//    attribute = "${node.class}"
-//    value =     "Worker_Node"
-//  }
-//  constraint {
-//    operator =  "distinct_property"
-//    attribute = "${meta.AvailabilityZone}"
-//    value =     "1"
-//  }
 
   group "realtime-fencing" {
     count = 2

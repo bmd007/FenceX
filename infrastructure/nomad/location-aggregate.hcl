@@ -37,10 +37,10 @@ job "location-aggregate" {
         static = "8084"
 	  }
       port "http" {
-        static = "9585"
+        to = "9585"
 	  }
       port "management" {
-        static = "9586"
+        to = "9586"
 	  }
     }
 
@@ -89,7 +89,7 @@ job "location-aggregate" {
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
-        SPRING_CLOUD_CONSUL_HOST =                                "localhost"
+        SPRING_CLOUD_CONSUL_HOST =                                "${NOMAD_IP_http}"
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
 //        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"

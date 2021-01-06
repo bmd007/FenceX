@@ -23,7 +23,7 @@ job "location-update-publisher" {
     }
 
     network {
-      mode = "host"
+      mode = "bridge"
       port "http" {
         to = "9566"
 	  }

@@ -23,12 +23,12 @@ job "location-update-publisher" {
     }
 
     network {
-      mode = "bridge"
+      mode = "host"
       port "http" {
-        to = "9566"
+//        to = "9566"
 	  }
       port "management" {
-        to = "9567"
+//        to = "9567"
       }
     }
 
@@ -37,7 +37,7 @@ job "location-update-publisher" {
       # Configuration is specific to each driver.
       config {
         image =      "bmd007/location-update-publisher"
-        network_mode = "bridge"
+        network_mode = "host"
         force_pull = true
 		ports = ["http", "management"]
       }
@@ -77,7 +77,7 @@ job "location-update-publisher" {
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
-        SPRING_CLOUD_CONSUL_HOST =                                "172.17.0.1"
+        SPRING_CLOUD_CONSUL_HOST =                                "localhost"
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
 //        JAVA_OPTS =                                               "-XshowSettings:vm -XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"

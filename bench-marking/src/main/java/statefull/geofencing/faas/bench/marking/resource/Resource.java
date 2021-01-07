@@ -15,7 +15,6 @@ import statefull.geofencing.faas.bench.marking.client.model.MoverLocationUpdate;
 import statefull.geofencing.faas.bench.marking.repository.TripDocumentRepository;
 
 import java.time.Instant;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("/api/test")
@@ -34,28 +33,30 @@ public class Resource {
         this.locationAggregateClient = locationAggregateClient;
     }
 
-    @GetMapping("/all/times/{times}/leg}")
+    @GetMapping("/all/times/{times}/leg/{leg}")
     public void loadTestNumberOfTimes(@PathVariable Integer times, @PathVariable String leg) {
-        for (int i = 0; i < times; i++) {
-            if (leg.equals("push")) {
-                testAllTrips_PushLeg();
-            } else if (leg.equals("poll")) {
-                testAllTrips_PollLeg();
-            } else {
-                testAllTrips_AllLegs();
-            }
-        }
-    }
-
-    @GetMapping("/all")
-    public void testAllTrips_AllLegs() {
         repository.findAll()
                 .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
                         .withMoverId(tripDocument.getTripId())
                         .withWkt(tripDocument.getMiddleRouteRingWkt())
                         .build()))
                 .collectList()
-                .flatMapIterable(Function.identity())
+                .subscribe(tripDocuments -> {
+                    for (int i = 0; i < times; i++) {
+                        if (leg.equals("push")) {
+                            testAllTrips_PushLeg();
+                        } else if (leg.equals("poll")) {
+                            testAllTrips_PollLeg();
+                        } else {
+                            testAllTrips_AllLegs();
+                        }
+                    }
+                });
+    }
+
+    @GetMapping("/all")
+    public void testAllTrips_AllLegs() {
+        repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
@@ -73,12 +74,6 @@ public class Resource {
     @GetMapping("/all/leg/poll")
     public void testAllTrips_PollLeg() {
         repository.findAll()
-                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
-                        .withMoverId(tripDocument.getTripId())
-                        .withWkt(tripDocument.getMiddleRouteRingWkt())
-                        .build()))
-                .collectList()
-                .flatMapIterable(Function.identity())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
@@ -90,12 +85,6 @@ public class Resource {
     @GetMapping("/all/leg/push")
     public void testAllTrips_PushLeg() {
         repository.findAll()
-                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
-                        .withMoverId(tripDocument.getTripId())
-                        .withWkt(tripDocument.getMiddleRouteRingWkt())
-                        .build()))
-                .collectList()
-                .flatMapIterable(Function.identity())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())

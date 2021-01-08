@@ -87,7 +87,6 @@ public class KStreamAndKTableDefinitions {
                 .join(moversFenceKTable, moverFenceIntersectionChecker::apply)
                 .foreach((moverId, intersects) -> {
                     metrics.incrementMoverFenceIntersectionCounter();
-                    System.out.println(intersects);
                 });//todo integrate alarming function here.
     }
 }

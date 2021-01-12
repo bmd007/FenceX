@@ -1,0 +1,57 @@
+version: "3.7"
+services:
+  consul-client:
+    network_mode: host
+    container_name: consul-client3
+    hostname: consul-client
+    image: consul:latest
+    command: "agent -node=client-3 -join=${SERVER1_IP} -advertise=${SERVER4_IP}"
+    ports:
+      - "8300:8300/tcp"
+      - "8300:8300/udp"
+      - "8301:8301/tcp"
+      - "8301:8301/udp"
+      - "8302:8302/tcp"
+      - "8302:8302/udp"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600/udp"
+      - "8600:8600/tcp"
+      - "7946:7946/udp"
+      - "7946:7946/tcp"
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    ports:
+      - "9100:9100"
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+
+  mongo:
+    network_mode: host
+    container_name: mongo
+    hostname: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  bench-marking:
+    network_mode: host
+    container_name: bench-marking
+    hostname: bench-marking
+    image: bmd007/bench-marking
+    ports:
+      - "9511:9511"
+      - "9512:9512"
+    depends_on:
+      - consul-client
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/geofencing
+      SPRING_CLOUD_CONSUL_HOST: localhost

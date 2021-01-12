@@ -14,11 +14,8 @@ scrape_configs:
         target_label: job
         action: drop
 
-  - job_name: nodeexporter-geofencing1
+  - job_name: nodeexporter-geofencing
     static_configs:
-      - targets: [ 'localhost:9100' ]
+      - targets: [ 'localhost:9100', '192.168.1.20:9100' ]
 
-  - job_name: nodeexporter-geofencing4
-    static_configs:
-      - targets: [ '192.168.1.20:9100' ]
 

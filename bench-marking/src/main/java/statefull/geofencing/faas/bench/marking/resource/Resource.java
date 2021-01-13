@@ -42,9 +42,8 @@ public class Resource {
                         .withWkt(tripDocument.getMiddleRouteRingWkt())
                         .build()))
                 .collectList()
-                .then()
                 .subscribe(unused -> {
-                    for (int i = 0; i < times; i++) {
+                    for (int i=0; i<times; i++){
                         if (leg.equals("push")) {
                             testAllTrips_PushLeg(times);
                         } else if (leg.equals("poll")) {
@@ -58,8 +57,6 @@ public class Resource {
 
     public void testAllTrips_bothLegs(Integer times) {
         repository.findAll()
-                .parallel()
-                .runOn(Schedulers.elastic())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
@@ -71,14 +68,11 @@ public class Resource {
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
                                 .subscribe()))
-//                .repeat(times)
                 .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
     }
 
     public void testAllTrips_PollLeg(Integer times) {
         repository.findAll()
-                .parallel()
-                .runOn(Schedulers.elastic())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
@@ -89,8 +83,6 @@ public class Resource {
 
     public void testAllTrips_PushLeg(Integer times) {
         repository.findAll()
-                .parallel()
-                .runOn(Schedulers.elastic())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())

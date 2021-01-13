@@ -22,7 +22,7 @@ services:
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/geofencing
       SPRING_CLOUD_CONSUL_HOST: localhost
-      JAVA_OPTS: "-XX:+UseZGC"
+#      JAVA_OPTS: "-XX:+UseZGC"
 
 
 

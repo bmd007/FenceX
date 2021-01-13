@@ -78,8 +78,8 @@ job "realtime-fencing" {
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
       }
       resources {
-        cpu =    715
-        memory = 1024
+        cpu =    1000
+        memory = 1300
       }
     }
   }

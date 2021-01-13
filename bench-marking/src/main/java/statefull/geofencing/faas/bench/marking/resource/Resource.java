@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationAggregateClient;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
@@ -41,22 +42,24 @@ public class Resource {
                         .withWkt(tripDocument.getMiddleRouteRingWkt())
                         .build()))
                 .collectList()
-                .subscribe(tripDocuments -> {
+                .then()
+                .subscribe(unused -> {
                     for (int i = 0; i < times; i++) {
                         if (leg.equals("push")) {
-                            testAllTrips_PushLeg();
+                            testAllTrips_PushLeg(times);
                         } else if (leg.equals("poll")) {
-                            testAllTrips_PollLeg();
+                            testAllTrips_PollLeg(times);
                         } else {
-                            testAllTrips_AllLegs();
+                            testAllTrips_bothLegs(times);
                         }
                     }
                 });
     }
 
-    @GetMapping("/all")
-    public void testAllTrips_AllLegs() {
+    public void testAllTrips_bothLegs(Integer times) {
         repository.findAll()
+                .parallel()
+                .runOn(Schedulers.elastic())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
@@ -68,12 +71,14 @@ public class Resource {
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
                                 .subscribe()))
+//                .repeat(times)
                 .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
     }
 
-    @GetMapping("/all/leg/poll")
-    public void testAllTrips_PollLeg() {
+    public void testAllTrips_PollLeg(Integer times) {
         repository.findAll()
+                .parallel()
+                .runOn(Schedulers.elastic())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
@@ -82,9 +87,10 @@ public class Resource {
     }
 
 
-    @GetMapping("/all/leg/push")
-    public void testAllTrips_PushLeg() {
+    public void testAllTrips_PushLeg(Integer times) {
         repository.findAll()
+                .parallel()
+                .runOn(Schedulers.elastic())
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())

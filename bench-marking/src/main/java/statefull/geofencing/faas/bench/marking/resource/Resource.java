@@ -77,7 +77,7 @@ public class Resource {
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
                                 .subscribe()))
-                .subscribe(locationReport -> LOGGER.info("{} is queried", locationReport));
+                .subscribe();
     }
 
 
@@ -91,7 +91,7 @@ public class Resource {
                                 .withTimestamp(Instant.now())
                                 .build())
                                 .subscribe()))
-                .subscribe(locationReport -> LOGGER.info("{} is published", locationReport));
+                .subscribe();
     }
 
 
@@ -112,8 +112,7 @@ public class Resource {
                                         .build()).subscribe())
                                 .doOnNext(locationReport -> locationAggregateClient.queryMoverLocationsByFence(
                                         tripDocument.getMiddleRouteRingWkt()).subscribe()))
-                .subscribe(tripDocument ->
-                        LOGGER.info("trip document {} info published and queried", tripDocument.getTripId()));
+                .subscribe();
     }
 }
 

@@ -15,10 +15,10 @@ import java.net.UnknownHostException;
 public class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-    @Bean
-    public TimedAspect timedAspect(MeterRegistry registry) {
-        return new TimedAspect(registry);
-    }
+//    @Bean
+//    public TimedAspect timedAspect(MeterRegistry registry) {
+//        return new TimedAspect(registry);
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

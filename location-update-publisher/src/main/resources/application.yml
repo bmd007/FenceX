@@ -34,6 +34,8 @@ management:
         enabled: true
 
 spring:
+  application:
+    name: location-update-publisher
   cloud:
     consul:
       discovery:
@@ -58,7 +60,9 @@ kafka:
 
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   kafka:
     streams:
       replication-factor: 1
@@ -71,7 +75,9 @@ kafka:
 
 ---
 spring:
-  profiles: no-consul
+  config:
+    activate:
+      on-profile: no-consul
   application:
     name: location-update-processor
   kafka:

@@ -1,5 +1,4 @@
 spring:
-  application.name: location-update-publisher
   cloud:
     consul:
       config:
@@ -13,7 +12,9 @@ spring:
 
 ---
 spring:
-  profiles: no-consul
+  config:
+    activate:
+      on-profile: no-consul
   cloud:
     consul:
       config:

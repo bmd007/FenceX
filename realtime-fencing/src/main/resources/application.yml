@@ -34,6 +34,7 @@ management:
         enabled: true
 
 spring:
+  application.name: realtime-fencing
   cloud:
     consul:
       discovery:
@@ -63,7 +64,9 @@ kafka:
         app-port: ${server.port}
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   kafka:
     streams:
       replication-factor: 1
@@ -76,7 +79,9 @@ kafka:
 
 ---
 spring:
-  profiles: no-consul
+  config:
+    activate:
+      on-profile: no-consul
   application:
     name: realtime-fencing
   kafka:

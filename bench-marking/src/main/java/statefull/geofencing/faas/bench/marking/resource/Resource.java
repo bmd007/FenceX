@@ -7,15 +7,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationAggregateClient;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
 import statefull.geofencing.faas.bench.marking.client.model.FenceDto;
 import statefull.geofencing.faas.bench.marking.client.model.MoverLocationUpdate;
+import statefull.geofencing.faas.bench.marking.domain.TripDocument;
 import statefull.geofencing.faas.bench.marking.repository.TripDocumentRepository;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api/test")
@@ -34,29 +39,57 @@ public class Resource {
         this.locationAggregateClient = locationAggregateClient;
     }
 
+    private static final AtomicBoolean isStreaming = new AtomicBoolean(Boolean.FALSE);
+
+    @GetMapping("/all/ongoing/{play}")
+    public void testOnGoingStream(@PathVariable String play) {
+        if (!play.equals("play")){
+            isStreaming.set(Boolean.FALSE);
+            return;
+        }
+        Flux.interval(Duration.ofSeconds(5))
+                .filter(ignore -> isStreaming.get())
+                .repeat()
+                .doOnNext(aLong -> loadTestNumberOfTimes(1, "both"))
+                .subscribe();
+    }
+
+    @GetMapping("/one/{id}")
+    public void testOneTrip(@PathVariable String id) {
+        repository.findById(id)
+                .delayUntil(this::defineFence)
+                .map(List::of)
+                .doOnNext(this::testAllTrips_bothLegs)
+                .subscribe();
+    }
+
     @GetMapping("/all/times/{times}/leg/{leg}")
     public void loadTestNumberOfTimes(@PathVariable Integer times, @PathVariable String leg) {
         repository.findAll()
-                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
-                        .withMoverId(tripDocument.getTripId())
-                        .withWkt(tripDocument.getMiddleRouteRingWkt())
-                        .build()))
+                .delayUntil(this::defineFence)
                 .collectList()
-                .subscribe(unused -> {
+                .subscribe(tripDocuments -> {
                     for (int i=0; i<times; i++){
                         if (leg.equals("push")) {
-                            testAllTrips_PushLeg(times);
+                            testAllTrips_PushLeg(tripDocuments);
                         } else if (leg.equals("poll")) {
-                            testAllTrips_PollLeg(times);
+                            testAllTrips_PollLeg(tripDocuments);
                         } else {
-                            testAllTrips_bothLegs(times);
+                            testAllTrips_bothLegs(tripDocuments);
                         }
                     }
                 });
     }
 
-    public void testAllTrips_bothLegs(Integer times) {
-        repository.findAll()
+    private Mono<String> defineFence(TripDocument tripDocument) {
+        return fencingClient.defineFenceForMover(FenceDto.newBuilder()
+                .withMoverId(tripDocument.getTripId())
+                .withWkt(tripDocument.getMiddleRouteRingWkt())
+                .build());
+    }
+
+    public void testAllTrips_bothLegs(List<TripDocument> tripDocuments) {
+        Flux.fromIterable(tripDocuments)
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
@@ -71,8 +104,8 @@ public class Resource {
                 .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
     }
 
-    public void testAllTrips_PollLeg(Integer times) {
-        repository.findAll()
+    public void testAllTrips_PollLeg(List<TripDocument> tripDocuments) {
+        Flux.fromIterable(tripDocuments)
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
@@ -81,8 +114,8 @@ public class Resource {
     }
 
 
-    public void testAllTrips_PushLeg(Integer times) {
-        repository.findAll()
+    public void testAllTrips_PushLeg(List<TripDocument> tripDocuments) {
+        Flux.fromIterable(tripDocuments)
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
@@ -94,26 +127,6 @@ public class Resource {
                 .subscribe();
     }
 
-
-    @GetMapping("/one/{id}")
-    public void testOneTrip(@PathVariable String id) {
-        repository.findById(id)
-                .delayUntil(tripDocument -> fencingClient.defineFenceForMover(FenceDto.newBuilder()
-                        .withMoverId(tripDocument.getTripId())
-                        .withWkt(tripDocument.getMiddleRouteRingWkt())
-                        .build()))
-                .delayUntil(tripDocument ->
-                        Flux.fromIterable(tripDocument.getLocationReports())
-                                .doOnNext(report -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
-                                        .withLatitude(report.getLatitude())
-                                        .withLongitude(report.getLongitude())
-                                        .withMoverId(tripDocument.getTripId())
-                                        .withTimestamp(Instant.now())
-                                        .build()).subscribe())
-                                .doOnNext(locationReport -> locationAggregateClient.queryMoverLocationsByFence(
-                                        tripDocument.getMiddleRouteRingWkt()).subscribe()))
-                .subscribe();
-    }
 }
 
 

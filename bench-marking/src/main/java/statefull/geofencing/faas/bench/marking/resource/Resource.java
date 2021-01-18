@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationAggregateClient;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
@@ -81,6 +82,7 @@ public class Resource {
     public void testAllTrips_bothLegs() {
         repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
+                        .subscribeOn(Schedulers.boundedElastic())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
                                 .withLongitude(locationReport.getLongitude())
@@ -91,12 +93,13 @@ public class Resource {
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
                                 .subscribe()))
-                .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
+                .subscribe();
     }
 
     public void testAllTrips_PollLeg() {
         repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
+                        .subscribeOn(Schedulers.boundedElastic())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
                                 .subscribe()))
@@ -107,6 +110,7 @@ public class Resource {
     public void testAllTrips_PushLeg() {
         repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
+                        .subscribeOn(Schedulers.boundedElastic())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
                                 .withLongitude(locationReport.getLongitude())

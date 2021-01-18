@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationAggregateClient;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
@@ -43,14 +42,15 @@ public class Resource {
 
     @GetMapping("/all/ongoing/{play}")
     public void testOnGoingStream(@PathVariable String play) {
-        if (!play.equals("play")){
+        if (!play.equals("play")) {
             isStreaming.set(Boolean.FALSE);
             return;
+        } else {
+            isStreaming.set(Boolean.TRUE);
         }
         Flux.interval(Duration.ofSeconds(5))
-                .repeat()
                 .filter(ignore -> isStreaming.get())
-                .doOnNext(aLong -> loadTestNumberOfTimes(1, "both"))
+                .doOnNext(ignore -> loadTestNumberOfTimes(1, "both"))
                 .subscribe();
     }
 
@@ -69,7 +69,7 @@ public class Resource {
                 .delayUntil(this::defineFence)
                 .collectList()
                 .subscribe(tripDocuments -> {
-                    for (int i=0; i<times; i++){
+                    for (int i = 0; i < times; i++) {
                         if (leg.equals("push")) {
                             testAllTrips_PushLeg(tripDocuments);
                         } else if (leg.equals("poll")) {

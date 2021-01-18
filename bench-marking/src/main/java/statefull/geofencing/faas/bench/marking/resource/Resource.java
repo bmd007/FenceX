@@ -48,8 +48,8 @@ public class Resource {
             return;
         }
         Flux.interval(Duration.ofSeconds(5))
-                .filter(ignore -> isStreaming.get())
                 .repeat()
+                .filter(ignore -> isStreaming.get())
                 .doOnNext(aLong -> loadTestNumberOfTimes(1, "both"))
                 .subscribe();
     }

@@ -2,7 +2,6 @@ package statefull.geofencing.faas.bench.marking.resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,7 +16,6 @@ import statefull.geofencing.faas.bench.marking.repository.TripDocumentRepository
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
@@ -39,9 +37,10 @@ public class Resource {
 
     private static final AtomicBoolean isStreaming = new AtomicBoolean(Boolean.FALSE);
 
-    @GetMapping("/all/ongoing/{play}")
-    public void testOnGoingStream(@PathVariable String play,
-          @RequestParam(required = false, defaultValue = "10", name = "interval")  Long interval) {
+    @GetMapping("/all/ongoing/leg/{leg}")
+    public void testOnGoingStream(@PathVariable String leg,
+                                  @RequestParam(required = false, defaultValue = "play", name = "play") String play,
+                                  @RequestParam(required = false, defaultValue = "10", name = "interval") Long interval) {
         if (!play.equals("play")) {
             isStreaming.set(Boolean.FALSE);
             return;
@@ -50,7 +49,15 @@ public class Resource {
         }
         Flux.interval(Duration.ofSeconds(interval))
                 .filter(ignore -> isStreaming.get())
-                .doOnNext(ignore -> testAllTrips_bothLegs())
+                .doOnNext(ignore -> {
+                    if (leg.equals("push")) {
+                        testAllTrips_PushLeg();
+                    } else if (leg.equals("poll")) {
+                        testAllTrips_PollLeg();
+                    } else {
+                        testAllTrips_bothLegs();
+                    }
+                })
                 .subscribe();
     }
 

@@ -18,7 +18,6 @@ import statefull.geofencing.faas.bench.marking.repository.TripDocumentRepository
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
@@ -54,28 +53,19 @@ public class Resource {
                 .subscribe();
     }
 
-    @GetMapping("/one/{id}")
-    public void testOneTrip(@PathVariable String id) {
-        repository.findById(id)
-                .delayUntil(this::defineFence)
-                .map(List::of)
-                .doOnNext(this::testAllTrips_bothLegs)
-                .subscribe();
-    }
-
     @GetMapping("/all/times/{times}/leg/{leg}")
     public void loadTestNumberOfTimes(@PathVariable Integer times, @PathVariable String leg) {
         repository.findAll()
                 .delayUntil(this::defineFence)
                 .collectList()
-                .subscribe(tripDocuments -> {
+                .subscribe(ignore -> {
                     for (int i = 0; i < times; i++) {
                         if (leg.equals("push")) {
-                            testAllTrips_PushLeg(tripDocuments);
+                            testAllTrips_PushLeg();
                         } else if (leg.equals("poll")) {
-                            testAllTrips_PollLeg(tripDocuments);
+                            testAllTrips_PollLeg();
                         } else {
-                            testAllTrips_bothLegs(tripDocuments);
+                            testAllTrips_bothLegs();
                         }
                     }
                 });
@@ -88,8 +78,8 @@ public class Resource {
                 .build());
     }
 
-    public void testAllTrips_bothLegs(List<TripDocument> tripDocuments) {
-        Flux.fromIterable(tripDocuments)
+    public void testAllTrips_bothLegs() {
+        repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
@@ -104,8 +94,8 @@ public class Resource {
                 .subscribe(locationReport -> LOGGER.info("{} is published and queried", locationReport));
     }
 
-    public void testAllTrips_PollLeg(List<TripDocument> tripDocuments) {
-        Flux.fromIterable(tripDocuments)
+    public void testAllTrips_PollLeg() {
+        repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
@@ -114,8 +104,8 @@ public class Resource {
     }
 
 
-    public void testAllTrips_PushLeg(List<TripDocument> tripDocuments) {
-        Flux.fromIterable(tripDocuments)
+    public void testAllTrips_PushLeg() {
+        repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())

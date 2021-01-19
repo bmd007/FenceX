@@ -26,11 +26,10 @@ In practice, some of these resources will be used by Kafka nodes most specifical
 
 ## Pure throughput
 ### Push leg
- * location-updates topic has replication factor of 3 and 12 partitions
 #### Description: stress test
 Firstly we defined some fences for some movers.
 Then we sent a socking stream of location-updates into the system.
-We have graphs that shows the total number of intersections happening in push leg of system.
+We have graphs that show the total number of intersections happening in push leg of system.
 We repeated this experiment while varying the shock size in order to realize the peak throughput
 of system with current available resources.
 
@@ -40,6 +39,7 @@ of system with current available resources.
 * location-update-publisher,      4,         500 GB,   500 Mhz
 * location-aggregate,             3,        2500 GB,  2000 Mhz
 * realtime-fencing,               4,         800 GB,  700 Mhz
+* location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 
 
@@ -57,6 +57,7 @@ of system with current available resources.
 * location-update-publisher,      5,         700 GB,   400 Mhz
 * location-aggregate,             3,        2600 GB,  2200 Mhz
 * realtime-fencing,               5,         700 GB,   400 Mhz
+* location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![benchmarking(24,10)](/work-report/images/evaluation/ex2-benchmarking(24,10).png)
 
@@ -70,6 +71,22 @@ However, it's worthy to mention that during one of the random experiments push t
 Comparing to [1], we have #TODO
 
 ----
+### Poll leg
+#### Description: stress test
+Firstly we defined some fences and send some location updates for some movers.
+Then we sent a socking load of query by fence request to the system.
+We have graphs that show the total number of queries answered by poll leg of system.
+We repeated this experiment while varying the load in order to realize the peak throughput
+of system with current available resources.
+
+#### Experiment 3
+##### Deployment view
+* Application,               #of instances,   RAM,      CPU
+* location-update-publisher,      4,         500 GB,   500 Mhz
+* location-aggregate,             2,        3200 GB,  2500 Mhz
+* realtime-fencing,               4,         800 GB,   700 Mhz
+* location-updates topic has replication factor of 3 and 12 partitions
+#### Result 
 
 
 

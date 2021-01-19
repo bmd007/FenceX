@@ -7,6 +7,7 @@ The deployed system looks like:
 ![Resulted deployed system](/work-report/images/Infrsutracture.png)
 
 in which servers' resources is as below:
+
     - Server   , CPU CORES , RAM(GB)
     - server 1 , 8         , 16  
     - server 2 , 4         , 8  
@@ -35,11 +36,11 @@ of system with current available resources.
 
 #### Experiment 1
 ##### Deployment view
-* Application,               #of instances,   RAM,      CPU
-* location-update-publisher,      4,         500 GB,   500 Mhz
-* location-aggregate,             3,        2500 GB,  2000 Mhz
-* realtime-fencing,               4,         800 GB,  700 Mhz
-* location-updates topic has replication factor of 3 and 12 partitions
+    - Application              , #of instances,     RAM       ,      CPU
+    - location-update-publisher,      4       ,         500 GB,   500 Mhz
+    - location-aggregate       ,      3       ,        2500 GB,  2000 Mhz
+    - realtime-fencing         ,      4       ,         800 GB,  700 Mhz
+    - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 
 
@@ -53,11 +54,11 @@ of system with current available resources.
 
 #### Experiment 2
 ##### Deployment view
-* Application,               #of instances,   RAM,      CPU
-* location-update-publisher,      5,         700 GB,   400 Mhz
-* location-aggregate,             3,        2600 GB,  2200 Mhz
-* realtime-fencing,               5,         700 GB,   400 Mhz
-* location-updates topic has replication factor of 3 and 12 partitions
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       5       ,   700 GB ,   400 Mhz
+     - location-aggregate       ,       3       ,   2600 GB,  2200 Mhz
+     - realtime-fencing         ,       5       ,   700 GB ,   400 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking(24,10)](/work-report/images/evaluation/ex2-benchmarking(24,10).png)
 
@@ -81,11 +82,11 @@ of system with current available resources.
 
 #### Experiment 3
 ##### Deployment view
-* Application,               #of instances,   RAM,      CPU
-* location-update-publisher,      4,         500 GB,   500 Mhz
-* location-aggregate,             2,        3200 GB,  2500 Mhz
-* realtime-fencing,               4,         800 GB,   700 Mhz
-* location-updates topic has replication factor of 3 and 12 partitions
+     - Application              , #of instances,            RAM,      CPU
+     - location-update-publisher,      4       ,         500 GB,   500 Mhz
+     - location-aggregate       ,      2       ,        3200 GB,  2500 Mhz
+     - realtime-fencing         ,      4       ,         800 GB,   700 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![poll-benchmarking(13,7)](/work-report/images/evaluation/ex3-benchmarking(13,7).png)
 
@@ -93,11 +94,11 @@ of system with current available resources.
 
 #### Experiment 4
 ##### Deployment view
-* Application,               #of instances,   RAM,      CPU
-* location-update-publisher,      4,         500 GB,   500 Mhz
-* location-aggregate,             2,        2700 GB,  2700 Mhz
-* realtime-fencing,               4,         800 GB,   700 Mhz
-* location-updates topic has replication factor of 3 and 12 partitions
+     - Application              , #of instances,     RAM  ,      CPU
+     - location-update-publisher,      4       ,    500 GB,   500 Mhz
+     - location-aggregate       ,      2       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,      4            800 GB,   700 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![poll-benchmarking(19,10)](/work-report/images/evaluation/ex4-benchmarking(19,10).png)
 

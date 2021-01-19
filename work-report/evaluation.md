@@ -171,7 +171,8 @@ soon enough and keeps giving IP of the restarted instance to bench-marking appli
 Which leads to queries reaching the instance when it's state it under preparation and
 resulting errors avoids a successful restart.
 
-One way to solve this in production is to use BLUE/GREEN deployment strategy. 
+One way to solve this in production is to use BLUE/GREEN deployment strategy. This approach is
+very important for services with large in memory data sets like location-aggregate.
 Implementing special health checks for KafkaStreams is also another option.
 
 
@@ -183,17 +184,11 @@ Implementing special health checks for KafkaStreams is also another option.
      - realtime-fencing         ,       0       ,   800 GB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
-![poll-benchmarking-ongoing-2per10sec](/work-report/images/evaluation/ex6-benchmarking-ongoing-2per10sec.png)
-In this system we are using poll based health checks which means instead of each application every now and agains
-reports its status to Consul (service registry), Consul asks services about theirs status every now and again.
-(Initially it's up to Nomad to tell about instances to Consul).
-So when we restart an instance of location-aggregate, consul won't get informed about it
-soon enough and keeps giving IP of the restarted instance to bench-marking application.
-Which leads to queries reaching the instance when it's state it under preparation and
-resulting errors avoids a successful restart.
+![poll-benchmarking-ongoing-2per10sec](/work-report/images/evaluation/ex7-benchmarking-ongoing-2per10sec.png)
+Deploying more instances of location-aggregate helped with zeroing the query load
+during preparation phase after re-balancing. As a result, the restarted instance managed to 
+get back to work successfully. Eventually throughput induced back to its pre restart value.
 
-One way to solve this in production is to use BLUE/GREEN deployment strategy. 
-Implementing special health checks for KafkaStreams is also another option.
 
 
 

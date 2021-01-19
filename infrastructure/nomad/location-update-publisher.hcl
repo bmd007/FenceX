@@ -15,7 +15,7 @@ job "location-update-publisher" {
 
 
   group "location-update-publisher" {
-    count = 6
+    count = 5
 
     restart {
       delay = "15s"
@@ -80,7 +80,7 @@ job "location-update-publisher" {
       }
       resources {
         cpu =    400
-        memory = 400
+        memory = 700
       }
     }
   }

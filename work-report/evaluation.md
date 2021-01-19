@@ -47,9 +47,9 @@ of system with current available resources.
 #### Experiment 2
 ##### Deployment view
 * Application,               #of instances,   RAM,      CPU
-* location-update-publisher,      6,         400 GB,   400 Mhz
+* location-update-publisher,      5,         700 GB,   400 Mhz
 * location-aggregate,             3,        2600 GB,  2200 Mhz
-* realtime-fencing,               6,         400 GB,   400 Mhz
+* realtime-fencing,               5,         700 GB,   400 Mhz
 
 * location-updates topic has replication factor of 3 and 12 partitions
 #### Description: stress test

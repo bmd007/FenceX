@@ -42,7 +42,6 @@ of system with current available resources.
 * realtime-fencing,               4,         800 GB,  700 Mhz
 #### Result 
 
-![Resulted deployed system](/work-report/images/Infrsutracture.png)
 
 ![benchmarking(15,6)](/work-report/images/ex1-benchmarking(15,6).png)
 

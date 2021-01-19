@@ -43,13 +43,13 @@ of system with current available resources.
 #### Result 
 
 
-![benchmarking(15,6)](/work-report/images/ex1-benchmarking(15,6).png)
+![benchmarking(15,6)](/work-report/images/evaluation/ex1-benchmarking(15,6).png)
 
-![benchmarking(19,7)](/work-report/images/ex1-benchmarking(19,7).png)
+![benchmarking(19,7)](/work-report/images/evaluation/ex1-benchmarking(19,7).png)
 
-![benchmarking(22,9)](/work-report/images/ex1-benchmarking(22,9).png)
+![benchmarking(22,9)](/work-report/images/evaluation/ex1-benchmarking(22,9).png)
 
-![benchmarking(23,10)](/work-report/images/ex1-benchmarking(23,10).png)
+![benchmarking(23,10)](/work-report/images/evaluation/ex1-benchmarking(23,10).png)
 
 #### Experiment 2
 ##### Deployment view
@@ -58,7 +58,7 @@ of system with current available resources.
 * location-aggregate,             3,        2600 GB,  2200 Mhz
 * realtime-fencing,               5,         700 GB,   400 Mhz
 #### Result
-![ex2-benchmarking(24,10).png](/work-report/images/ex2-benchmarking(24,10).png)
+![benchmarking(24,10)](/work-report/images/evaluation/ex2-benchmarking(24,10).png)
 
 So far the bottleneck is input rate which is limited by our physical available resources.
 We can clearly see in the graphs that regardless of setup, push throughput (intersecions/sec) follows pretty

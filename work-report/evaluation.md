@@ -27,9 +27,10 @@ In practice, some of these resources will be used by Kafka nodes most specifical
 ## Pure throughput
 ### Push leg
 ##### Deployment view: 
- * Application, #of instances, RAM, CPU
- * location-update-publisher, 2, 700 GB, 600 Mhz
- * 
+ * Application,               #of instances,   RAM,      CPU
+ * location-update-publisher,      3,         700 GB,   600 Mhz
+ * location-aggregate,             3,        2500 GB,  2000 Mhz
+ * realtime-fencing,               3,        1000 GB,  700 Mhz
 
 
 

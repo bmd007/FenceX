@@ -57,7 +57,7 @@ On the other hand, a physical data flow graph illustrates how exactly the deploy
 Like how many instances of each `task` will be deployed. Not to forget that nodes are called `task` in the physical data flow graph.
      
 
-![Physical data flow](/work-report/physical-data-flow-graph.png)
+![Physical data flow](/work-report/images/physical-data-flow-graph.png)
 
 
 __Parallelism__ has two dimensions of `task` and `data` in stream processing. 

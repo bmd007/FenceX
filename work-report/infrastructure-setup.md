@@ -12,7 +12,7 @@ Nomad on the other hand is a production level container orchestration tool
 which is used to deploy the applications implemented during this thesis.
 
 The deployed system at the moment looks like:
-![Resulted deployed system](/work-report/Infrsutracture.png)
+![Resulted deployed system](/work-report/images/Infrsutracture.png)
 
 ### how
 It was not very straight forward how to set up the networking between

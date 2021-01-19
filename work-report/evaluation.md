@@ -109,7 +109,7 @@ We can clearly see in the graphs that regardless of setup, poll throughput (quer
 much the exact parent of changes in input rate (queries sent/sec).
 So there is no point in continuing poll throughput experiments with current available hardware.
 
-Comparing to [2], we have out performed in terms of poll throughput
+Comparing to [2], we have out performed in terms of poll throughput #TODO
 
 
 

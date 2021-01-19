@@ -26,11 +26,18 @@ In practice, some of these resources will be used by Kafka nodes most specifical
 
 ## Pure throughput
 ### Push leg
-##### Deployment view: 
+##### Deployment view
  * Application,               #of instances,   RAM,      CPU
  * location-update-publisher,      3,         700 GB,   600 Mhz
  * location-aggregate,             3,        2500 GB,  2000 Mhz
  * realtime-fencing,               3,        1000 GB,  700 Mhz
+#### Description: stress test
+Firstly we defined some fences for some movers.
+Then we sent a socking stream of location-updates into the system.
+We have graphs that shows the total number of intersections happening in push leg of system.
+We repeated this experiment while varying the shock size in order to realize the peak throughput
+of system with current available resources.
+#### Result 
 
 
 

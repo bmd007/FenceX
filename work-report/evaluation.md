@@ -43,13 +43,13 @@ of system with current available resources.
 #### Result 
 
 
-![benchmarking(15,6)](/work-report/images/evaluation/ex1-benchmarking(15,6).png)
+![push-benchmarking(15,6)](/work-report/images/evaluation/ex1-benchmarking(15,6).png)
 
-![benchmarking(19,7)](/work-report/images/evaluation/ex1-benchmarking(19,7).png)
+![push-benchmarking(19,7)](/work-report/images/evaluation/ex1-benchmarking(19,7).png)
 
-![benchmarking(22,9)](/work-report/images/evaluation/ex1-benchmarking(22,9).png)
+![push-benchmarking(22,9)](/work-report/images/evaluation/ex1-benchmarking(22,9).png)
 
-![benchmarking(23,10)](/work-report/images/evaluation/ex1-benchmarking(23,10).png)
+![push-benchmarking(23,10)](/work-report/images/evaluation/ex1-benchmarking(23,10).png)
 
 #### Experiment 2
 ##### Deployment view
@@ -59,7 +59,7 @@ of system with current available resources.
 * realtime-fencing,               5,         700 GB,   400 Mhz
 * location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![benchmarking(24,10)](/work-report/images/evaluation/ex2-benchmarking(24,10).png)
+![push-benchmarking(24,10)](/work-report/images/evaluation/ex2-benchmarking(24,10).png)
 
 So far the bottleneck is input rate which is limited by our physical available resources.
 We can clearly see in the graphs that regardless of setup, push throughput (intersections/sec) follows pretty
@@ -87,7 +87,9 @@ of system with current available resources.
 * realtime-fencing,               4,         800 GB,   700 Mhz
 * location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
+![poll-benchmarking(13,7)](/work-report/images/evaluation/ex3-benchmarking(13,7).png)
 
+![poll-benchmarking(16,9)](/work-report/images/evaluation/ex3-benchmarking(16,9).png)
 
 #### Experiment 4
 ##### Deployment view
@@ -97,10 +99,17 @@ of system with current available resources.
 * realtime-fencing,               4,         800 GB,   700 Mhz
 * location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
+![poll-benchmarking(19,10)](/work-report/images/evaluation/ex4-benchmarking(19,10).png)
 
+![poll-benchmarking(22,10)](/work-report/images/evaluation/ex4-benchmarking(22,10).png)
 
+Although the CPU usage on location-aggregate nodes peaked to 100% during these experiments, 
+again the bottleneck was input rate which is limited by our physical available resources.
+We can clearly see in the graphs that regardless of setup, poll throughput (queries/sec) follows pretty
+much the exact parent of changes in input rate (queries sent/sec).
+So there is no point in continuing poll throughput experiments with current available hardware.
 
-
+Comparing to [2], we have out performed in terms of poll throughput
 
 
 

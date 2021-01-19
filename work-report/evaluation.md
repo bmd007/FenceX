@@ -42,13 +42,15 @@ of system with current available resources.
 * realtime-fencing,               4,         800 GB,  700 Mhz
 #### Result 
 
-![ex1-benchmarking(15,6)](/work-report/images/ex1-benchmarking(15,6).png)
+![Resulted deployed system](/work-report/images/Infrsutracture.png)
 
-![ex1-benchmarking(19,7).png](/work-report/images/ex1-benchmarking(19,7).png)
+![benchmarking(15,6)](/work-report/images/ex1-benchmarking(15,6).png)
 
-![ex1-benchmarking(22,9).png](/work-report/images/ex1-benchmarking(22,9).png)
+![benchmarking(19,7)](/work-report/images/ex1-benchmarking(19,7).png)
 
-![ex1-benchmarking(23,10).png](/work-report/images/ex1-benchmarking(23,10).png)
+![benchmarking(22,9)](/work-report/images/ex1-benchmarking(22,9).png)
+
+![benchmarking(23,10)](/work-report/images/ex1-benchmarking(23,10).png)
 
 #### Experiment 2
 ##### Deployment view

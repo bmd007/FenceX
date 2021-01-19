@@ -24,7 +24,7 @@ job "location-aggregate" {
 //  }
 
   group "location-aggregate" {
-    count = 3
+    count = 2
 
     restart {
       delay = "15s"
@@ -91,11 +91,11 @@ job "location-aggregate" {
         #        SPRING_APPLICATION_INSTANCE_ID =                           "${NOMAD_ALLOC_ID}"
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
 //        JAVA_OPTS =                                               "-XX:+ExitOnOutOfMemoryError -Xmx700m -Xms700m -XX:MaxDirectMemorySize=48m -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=128m -Xss256k"
-        JAVA_OPTS =                                               "-XX:MaxDirectMemorySize=500m -XX:+UseZGC"
+        JAVA_OPTS =                                               "-XX:MaxDirectMemorySize=800m -XX:+UseZGC"
       }
       resources {
-        cpu =    2200
-        memory = 3000
+        cpu =    2500
+        memory = 3200
       }
     }
   }

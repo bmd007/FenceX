@@ -65,7 +65,7 @@ We can clearly see in the graphs that regardless of setup, push throughput (inte
 much the exact parent of input rate (location updates/sec).
 So there is no point in continuing push throughput experiments.
 It's worthy to mention however that during one of the random experiments push throughput maxed at 21k/s.
-![tuned-input-rate](/work-report/images/evaluation/1st-springboot-2.4.2-both-tuned-input-rate-UseZGC)
+![tuned-input-rate](/work-report/images/evaluation/1st-springboot-2.4.2-both-tuned-input-rate-UseZGC.png)
 
 Comparing to [1], we have #TODO
 

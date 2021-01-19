@@ -15,7 +15,7 @@ job "realtime-fencing" {
 
 
   group "realtime-fencing" {
-    count = 4
+    count = 6
 
     restart {
       delay = "15s"
@@ -78,8 +78,8 @@ job "realtime-fencing" {
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
       }
       resources {
-        cpu =    700
-        memory = 800
+        cpu =    400
+        memory = 400
       }
     }
   }

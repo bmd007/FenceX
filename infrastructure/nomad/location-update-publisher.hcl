@@ -15,7 +15,7 @@ job "location-update-publisher" {
 
 
   group "location-update-publisher" {
-    count = 4
+    count = 6
 
     restart {
       delay = "15s"
@@ -79,8 +79,8 @@ job "location-update-publisher" {
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
       }
       resources {
-        cpu =    500
-        memory = 500
+        cpu =    400
+        memory = 400
       }
     }
   }

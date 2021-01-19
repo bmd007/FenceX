@@ -26,13 +26,6 @@ In practice, some of these resources will be used by Kafka nodes most specifical
 
 ## Pure throughput
 ### Push leg
-#### Experiment 1
-##### Deployment view
- * Application,               #of instances,   RAM,      CPU
- * location-update-publisher,      4,         500 GB,   500 Mhz
- * location-aggregate,             3,        2500 GB,  2000 Mhz
- * realtime-fencing,               4,         800 GB,  700 Mhz
-
  * location-updates topic has replication factor of 3 and 12 partitions
 #### Description: stress test
 Firstly we defined some fences for some movers.
@@ -40,9 +33,19 @@ Then we sent a socking stream of location-updates into the system.
 We have graphs that shows the total number of intersections happening in push leg of system.
 We repeated this experiment while varying the shock size in order to realize the peak throughput
 of system with current available resources.
+
+#### Experiment 1
+##### Deployment view
+* Application,               #of instances,   RAM,      CPU
+* location-update-publisher,      4,         500 GB,   500 Mhz
+* location-aggregate,             3,        2500 GB,  2000 Mhz
+* realtime-fencing,               4,         800 GB,  700 Mhz
 #### Result 
 
-
+![ex1-benchmarking(15,6)](/work-report/images/ex1-benchmarking(15,6).jpg)
+![ex1-benchmarking(19,7).jpg](/work-report/images/ex1-benchmarking(19,7).jpg)
+![ex1-benchmarking(22,9).jpg](/work-report/images/ex1-benchmarking(22,9).jpg)
+![ex1-benchmarking(23,10).jpg](/work-report/images/ex1-benchmarking(23,10).jpg)
 
 #### Experiment 2
 ##### Deployment view
@@ -50,15 +53,16 @@ of system with current available resources.
 * location-update-publisher,      5,         700 GB,   400 Mhz
 * location-aggregate,             3,        2600 GB,  2200 Mhz
 * realtime-fencing,               5,         700 GB,   400 Mhz
+#### Result
+![ex2-benchmarking(24,10).jpg](/work-report/images/ex2-benchmarking(24,10).jpg)
 
-* location-updates topic has replication factor of 3 and 12 partitions
-#### Description: stress test
-Firstly we defined some fences for some movers.
-Then we sent a socking stream of location-updates into the system.
-We have graphs that shows the total number of intersections happening in push leg of system.
-We repeated this experiment while varying the shock size in order to realize the peak throughput
-of system with current available resources.
-#### Result 
+So far the bottleneck is input rate which is limited by our physical available resources.
+We can clearly see in the graphs that regardless of setup, push throughput (intersecions/sec) follows pretty
+much the exact parent of input rate (location updates/sec).
+So there is no point in continuing push throughput experiments. 
+
+Comparing to [1], we have #TODO
+
 
 
 

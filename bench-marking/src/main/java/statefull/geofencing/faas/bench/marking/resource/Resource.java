@@ -89,7 +89,6 @@ public class Resource {
     public void testAllTrips_bothLegs() {
         repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
-                        .subscribeOn(Schedulers.boundedElastic())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
                                 .withLongitude(locationReport.getLongitude())
@@ -106,7 +105,6 @@ public class Resource {
     public void testAllTrips_PollLeg() {
         repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
-                        .subscribeOn(Schedulers.boundedElastic())
                         .doOnNext(locationReport -> locationAggregateClient
                                 .queryMoverLocationsByFence(tripDocument.getMiddleRouteRingWkt())
                                 .subscribe()))
@@ -117,7 +115,6 @@ public class Resource {
     public void testAllTrips_PushLeg() {
         repository.findAll()
                 .flatMap(tripDocument -> Flux.fromIterable(tripDocument.getLocationReports())
-                        .subscribeOn(Schedulers.boundedElastic())
                         .doOnNext(locationReport -> updatePublisherClient.requestLocationUpdate(MoverLocationUpdate.newBuilder()
                                 .withLatitude(locationReport.getLatitude())
                                 .withLongitude(locationReport.getLongitude())

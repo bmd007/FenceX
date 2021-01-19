@@ -115,6 +115,24 @@ Comparing to [2], we have out performed in terms of poll throughput #TODO
 
 
 
+## Availability
+### Push leg
+#### Description: stress test
+Firstly we defined some fences for some movers.
+Then we start an ongoing stream of location-updates into the system.
+We have graphs that show the total number of intersections happening in push leg of system.
+Now we restart one of the instances of realtime-fencing. Throughput should decrease temporarily due
+to re-balancing (of kafka consumers against topic partitions). 
+Eventually when the started instance is up and running again, throughput goes back to normal.
+If instances of realtime-fencing have enough resources, there might not be any decrease in throughput.
+#### Experiment 5
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       5       ,   700 GB ,   400 Mhz
+     - location-aggregate       ,       2       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,       6       ,   800 GB ,   400 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result 
 
 
 

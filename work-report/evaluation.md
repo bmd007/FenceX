@@ -93,7 +93,7 @@ of system with current available resources.
 ##### Deployment view
 * Application,               #of instances,   RAM,      CPU
 * location-update-publisher,      4,         500 GB,   500 Mhz
-* location-aggregate,             2,        3500 GB,  3000 Mhz
+* location-aggregate,             2,        2700 GB,  2700 Mhz
 * realtime-fencing,               4,         800 GB,   700 Mhz
 * location-updates topic has replication factor of 3 and 12 partitions
 #### Result 

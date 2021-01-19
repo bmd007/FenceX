@@ -94,8 +94,8 @@ job "location-aggregate" {
         JAVA_OPTS =                                               "-XX:MaxDirectMemorySize=800m -XX:+UseZGC"
       }
       resources {
-        cpu =    3000
-        memory = 3500
+        cpu =    2700
+        memory = 2700
       }
     }
   }

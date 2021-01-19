@@ -133,6 +133,18 @@ If instances of realtime-fencing have enough resources, there might not be any d
      - realtime-fencing         ,       6       ,   800 GB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
+![push-benchmarking-ongoing-2per7sec](/work-report/images/evaluation/ex5-benchmarking-ongoing-2per7sec.png)
+
+![push-benchmarking-ongoing-6sec](/work-report/images/evaluation/ex5-benchmarking-ongoing-2per6sec.png)
+
+As you can see in the graph, there are two points in the timeline at which number of realtime-fencing
+instances goes down (by 1 and 2) and later comes back to 6 again. During the time that
+takes for all 6 instances to be up and running again, throughput slightly drops and eventually recovers.
+Since we are using kafka topics as durable storage of location updates, the location updates which
+didn't get a chance to get processed, get it after re-balancing. As a result, we have event
+higher throughput than input rate temporarily after re-balancing finishes.
+
+
 
 
 

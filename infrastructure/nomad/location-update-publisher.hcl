@@ -15,7 +15,7 @@ job "location-update-publisher" {
 
 
   group "location-update-publisher" {
-    count = 5
+    count = 2
 
     restart {
       delay = "15s"

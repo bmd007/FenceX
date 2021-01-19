@@ -79,8 +79,8 @@ job "location-update-publisher" {
         SPRING_CLOUD_SERVICE_REGISTRY_AUTO_REGISTRATION_ENABLED = "false"
       }
       resources {
-        cpu =    700
-        memory = 800
+        cpu =    500
+        memory = 500
       }
     }
   }

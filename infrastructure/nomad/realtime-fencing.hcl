@@ -15,7 +15,7 @@ job "realtime-fencing" {
 
 
   group "realtime-fencing" {
-    count = 7
+    count = 8
 
     restart {
       delay = "15s"

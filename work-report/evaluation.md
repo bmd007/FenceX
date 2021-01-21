@@ -295,6 +295,7 @@ failure to keep the input rate high while having 5 instances. why??
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex15-benchmarking-ongoing-3per4sec.png)
+failure to keep up with input rate with 6 instances. why??
 
 #### Experiment 16
 ##### Deployment view
@@ -305,5 +306,6 @@ failure to keep the input rate high while having 5 instances. why??
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex16-benchmarking-ongoing-3per4sec.png)
-
+Same as previous experiment. The moment input rate goes above 15k/s, the throughput falls down below 10k/s. 
+Event with 12 instances of realtime-fencing.
 

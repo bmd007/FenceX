@@ -284,7 +284,7 @@ instances and continue. It will make comparison of input rate with throughput mo
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex14-benchmarking-ongoing-3per4sec.png)
-failure too keep the input rate high while having 5 instances. why??
+failure to keep the input rate high while having 5 instances. why??
 
 #### Experiment 15
 ##### Deployment view
@@ -295,4 +295,15 @@ failure too keep the input rate high while having 5 instances. why??
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex15-benchmarking-ongoing-3per4sec.png)
+
+#### Experiment 16
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,       7       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex16-benchmarking-ongoing-3per4sec.png)
+failure to keep up with the input rate with having 6 instances. why??
 

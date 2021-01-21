@@ -232,4 +232,14 @@ won't increase throughout.
      - realtime-fencing         ,       3       ,   500 GB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex9-benchmarking-ongoing-2per4sec.png)
+![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex10-benchmarking-ongoing-2per4sec.png)
+
+#### Experiment 10
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,       4       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex10-benchmarking-ongoing-2per4sec.png)

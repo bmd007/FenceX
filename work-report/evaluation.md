@@ -309,3 +309,8 @@ failure to keep up with input rate with 6 instances. why??
 Same as previous experiment. The moment input rate goes above 15k/s, the throughput falls down below 10k/s. 
 Event with 12 instances of realtime-fencing.
 
+We have repeated this experiment but gave each instance 90Mhz of CPU instaed of 30. Result was promising. But,
+our hardware can't keep the input rate high enough. As usual the bottleneck is input rate.
+![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/90MHz-ex16-benchmarking-ongoing-3per4sec.png)
+
+

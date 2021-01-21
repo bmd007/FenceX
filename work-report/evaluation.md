@@ -207,7 +207,7 @@ won't increase throughout.
 #### Experiment 8
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
+     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
      - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
      - realtime-fencing         ,       1       ,   500 GB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions

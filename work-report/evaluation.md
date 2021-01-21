@@ -194,5 +194,22 @@ get back to work successfully. Eventually throughput induced back to its pre res
 
 
 
-
-
+## Strong scalability
+### Push leg
+#### Description:
+Firstly we defined some fences for some movers.
+Then we start an ongoing stream (fixed rate) of location-updates into the system. 
+We start with deploying only one resourceful instance of realtime-fencing. 
+However, this instance should not be too rich. We hope for this instance to be overwhelmed.  
+Then we repeat the experiment with 2 such instances, and the throughout should increase.
+We continue adding such instances and repeat the experiment until adding more instances 
+won't increase throughout.
+#### Experiment 8
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
+     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,       1       ,   500 GB ,   400 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-6sec](/work-report/images/evaluation/ex5-benchmarking-ongoing-2per6sec.png)

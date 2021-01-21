@@ -24,7 +24,7 @@ job "location-aggregate" {
 //  }
 
   group "location-aggregate" {
-    count = 4
+    count = 0
 
     restart {
       delay = "15s"

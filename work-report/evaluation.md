@@ -301,7 +301,7 @@ failure to keep the input rate high while having 5 instances. why??
      - Application              ,  #of instances,   RAM    ,      CPU
      - location-update-publisher,       4       ,   700 GB ,   200 Mhz
      - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       8       ,   500 GB ,   30 Mhz
+     - realtime-fencing         ,       12       ,   500 GB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex16-benchmarking-ongoing-3per4sec.png)

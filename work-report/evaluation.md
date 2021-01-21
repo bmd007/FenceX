@@ -275,7 +275,7 @@ instances and continue. It will make comparison of input rate with throughput mo
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex13-benchmarking-ongoing-3per4sec.png)
 
 
-#### Experiment 14  todo
+#### Experiment 14  
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
      - location-update-publisher,       4       ,   700 GB ,   200 Mhz
@@ -284,6 +284,7 @@ instances and continue. It will make comparison of input rate with throughput mo
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex14-benchmarking-ongoing-3per4sec.png)
+failure too keep the input rate high while having 5 instances. why??
 
 #### Experiment 15
 ##### Deployment view

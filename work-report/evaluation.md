@@ -243,3 +243,16 @@ won't increase throughout.
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex11-benchmarking-ongoing-2per4sec.png)
+
+Now we increase the input rate and repeat pretty much (starting from 3 instances instead of 1) same experiments:
+
+#### Experiment 12
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,       3       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex11-benchmarking-ongoing-2per4sec.png)
+

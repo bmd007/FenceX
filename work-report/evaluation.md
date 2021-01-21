@@ -209,7 +209,7 @@ won't increase throughout.
      - Application              ,  #of instances,   RAM    ,      CPU
      - location-update-publisher,       4       ,   700 GB ,   200 Mhz
      - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       1       ,   500 GB ,   400 Mhz
+     - realtime-fencing         ,       1       ,   500 GB ,   100 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-6sec](/work-report/images/evaluation/ex5-benchmarking-ongoing-2per6sec.png)

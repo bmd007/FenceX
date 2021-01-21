@@ -244,7 +244,14 @@ won't increase throughout.
 #### Result
 ![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex11-benchmarking-ongoing-2per4sec.png)
 
-Now we increase the input rate and repeat pretty much (starting from 3 instances instead of 1) same experiments:
+### Repeat
+Now we repeat experiments 8 to 11 slightly different. 
+Differences are:
+   * increased input rate
+   * after observing throughput with x number of instances, we kill the input rate,
+so that the buffered location updates get processed. When throughput reaches zero, we increase the number of 
+instances and continue. It will make comparison of input rate with throughput more meaningful.
+   * We start with 3 instances of realtime-fencing (instead of 1)
 
 #### Experiment 12
 ##### Deployment view
@@ -254,5 +261,16 @@ Now we increase the input rate and repeat pretty much (starting from 3 instances
      - realtime-fencing         ,       3       ,   500 GB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex11-benchmarking-ongoing-2per4sec.png)
+![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex12-benchmarking-ongoing-3per4sec.png)
+
+
+#### Experiment 13
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
+     - realtime-fencing         ,       5       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex13-benchmarking-ongoing-2per4sec.png)
 

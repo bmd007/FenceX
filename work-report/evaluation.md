@@ -336,3 +336,13 @@ won't increase throughout.
 #### Result
 ![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex17-benchmarking-ongoing-2per4sec.png)
 
+#### Experiment 18
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       0       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       2       ,   1500 GB,  100 Mhz
+     - realtime-fencing         ,       0       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex18-benchmarking-ongoing-2per4sec.png)
+

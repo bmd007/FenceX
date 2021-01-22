@@ -10,7 +10,7 @@ job "location-aggregate" {
     # The update stanza specifies the group's update strategy.
     max_parallel =     1
     health_check =     "checks"
-    min_healthy_time = "30s"
+    min_healthy_time = "120s"
   }
 
 //  constraint {
@@ -24,7 +24,7 @@ job "location-aggregate" {
 //  }
 
   group "location-aggregate" {
-    count = 1
+    count = 2
 
     restart {
       delay = "15s"

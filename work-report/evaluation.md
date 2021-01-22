@@ -360,10 +360,9 @@ Then we sent a shocking stream of location-updates into the system.
 We have graphs that show the total number of intersections happening in push leg of system.
 We start with deploying only one resourceful instance of realtime-fencing.
 However, this instance should not be too rich. We hope for this instance to be overwhelmed.  
-Then we repeat the experiment with double input rate and 2 instaces of realtime-fencing. 
-Now, throughout should increase.
-We continue adding such instances and increasing input rate for each experiment until throughout
-stops increasing.
+Then we repeat the experiment with increased input rate and 2 instances of realtime-fencing. 
+And expect throughout to be increased relatively.
+We continue adding such instances and increasing input rate until throughout stops increasing.
 #### Experiment 19 TODO
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU

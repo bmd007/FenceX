@@ -346,3 +346,30 @@ won't increase throughout.
 #### Result
 ![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex18-benchmarking-ongoing-2per4sec.png)
 
+we can not go further in this experiment because we can not produce a high enough input rate to overwhelm 2 intances of
+location-aggregate
+
+conclusion ?
+
+
+## Weak scalability
+### Push leg
+#### Description:
+Firstly we defined some fences for some movers.
+Then we sent a shocking stream of location-updates into the system.
+We have graphs that show the total number of intersections happening in push leg of system.
+We start with deploying only one resourceful instance of realtime-fencing.
+However, this instance should not be too rich. We hope for this instance to be overwhelmed.  
+Then we repeat the experiment with double input rate and 2 instaces of realtime-fencing. 
+Now, throughout should increase.
+We continue adding such instances and increasing input rate for each experiment until throughout
+stops increasing.
+#### Experiment 19 TODO
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
+     - realtime-fencing         ,       1       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-1*10sec](/work-report/images/evaluation/ex19-benchmarking-ongoing-1per10sec.png)

@@ -284,7 +284,7 @@ instances and continue. It will make comparison of input rate with throughput mo
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex14-benchmarking-ongoing-3per4sec.png)
-failure to keep the input rate high while having 5 instances. why??
+failure to keep the input rate high while having 5 instances. why?
 
 #### Experiment 15
 ##### Deployment view
@@ -295,7 +295,9 @@ failure to keep the input rate high while having 5 instances. why??
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex15-benchmarking-ongoing-3per4sec.png)
-failure to keep up with input rate with 6 instances. why??
+failure to keep up with input rate with 6 instances. why? The input rate pressure is low enough for instances to 
+try to process them without much of buffering while it's high enough to overwhelm the intances CPU 100% (no further 
+progress possible).
 
 #### Experiment 16
 ##### Deployment view
@@ -309,8 +311,28 @@ failure to keep up with input rate with 6 instances. why??
 Same as previous experiment. The moment input rate goes above 15k/s, the throughput falls down below 10k/s. 
 Event with 12 instances of realtime-fencing.
 
-We have repeated this experiment but gave each instance 90Mhz of CPU instaed of 30. Result was promising. But,
+We have repeated this experiment but gave each instance 90Mhz of CPU (instead of 30). Result was promising. But,
 our hardware can't keep the input rate high enough. As usual the bottleneck is input rate.
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/90MHz-ex16-benchmarking-ongoing-3per4sec.png)
 
+
+## Strong scalability
+### Poll leg
+#### Description:
+Firstly we a load of location updates for some movers.
+Then we start an ongoing stream (fixed rate) of queries (by fence) to the system.
+We start with deploying only one resourceful instance of location-aggregate.
+However, this instance should not be too rich. We hope for this instance to be overwhelmed.  
+Then we repeat the experiment with 2 such instances, and the throughout should increase.
+We continue adding such instances and repeat the experiment until adding more instances
+won't increase throughout.
+#### Experiment 17
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       0       ,   700 GB ,   200 Mhz
+     - location-aggregate       ,       1       ,   1000 GB,  100 Mhz
+     - realtime-fencing         ,       0       ,   500 GB ,   30 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex17-benchmarking-ongoing-2per4sec.png)
 

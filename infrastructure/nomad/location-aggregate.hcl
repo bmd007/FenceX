@@ -24,7 +24,7 @@ job "location-aggregate" {
 //  }
 
   group "location-aggregate" {
-    count = 0
+    count = 1
 
     restart {
       delay = "15s"
@@ -94,8 +94,8 @@ job "location-aggregate" {
         JAVA_OPTS =                                               "-XX:MaxDirectMemorySize=800m -XX:+UseZGC"
       }
       resources {
-        cpu =    2700
-        memory = 2700
+        cpu =    100
+        memory = 1000
       }
     }
   }

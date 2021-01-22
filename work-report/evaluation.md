@@ -367,9 +367,9 @@ stops increasing.
 #### Experiment 19 TODO
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
+     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
      - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       1       ,   500 GB ,   30 Mhz
+     - realtime-fencing         ,       1       ,   500 GB ,   90 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-1*10sec](/work-report/images/evaluation/ex19-benchmarking-ongoing-1per10sec.png)

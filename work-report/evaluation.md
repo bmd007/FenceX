@@ -363,7 +363,7 @@ However, this instance should not be too rich. We hope for this instance to be o
 Then we repeat the experiment with increased input rate and 2 instances of realtime-fencing. 
 And expect throughout to be increased relatively.
 We continue adding such instances and increasing input rate until throughout stops increasing.
-#### Experiment 19 TODO
+#### Experiment 19 
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
      - location-update-publisher,       4       ,   700 GB ,   400 Mhz
@@ -371,4 +371,13 @@ We continue adding such instances and increasing input rate until throughout sto
      - realtime-fencing         ,       1       ,   500 GB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![push-benchmarking-ongoing-1*10sec](/work-report/images/evaluation/ex19-benchmarking-ongoing-1per12sec.png)
+![push-benchmarking-ongoing-1*16sec](/work-report/images/evaluation/ex19-benchmarking-ongoing-1per16sec.png)
+#### Experiment 20 
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
+     - realtime-fencing         ,       2       ,   500 GB ,   60 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-1*10sec](/work-report/images/evaluation/ex20-benchmarking-ongoing-1per10sec.png)

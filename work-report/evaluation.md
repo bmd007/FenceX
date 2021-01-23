@@ -37,9 +37,9 @@ of system with current available resources.
 #### Experiment 1
 ##### Deployment view
     - Application              , #of instances,     RAM       ,      CPU
-    - location-update-publisher,      4       ,         500 GB,   500 Mhz
-    - location-aggregate       ,      3       ,        2500 GB,  2000 Mhz
-    - realtime-fencing         ,      4       ,         800 GB,  700 Mhz
+    - location-update-publisher,      4       ,         500 MB,   500 Mhz
+    - location-aggregate       ,      3       ,        2500 MB,  2000 Mhz
+    - realtime-fencing         ,      4       ,         800 MB,  700 Mhz
     - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 
@@ -55,9 +55,9 @@ of system with current available resources.
 #### Experiment 2
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       5       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       3       ,   2600 GB,  2200 Mhz
-     - realtime-fencing         ,       5       ,   700 GB ,   400 Mhz
+     - location-update-publisher,       5       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       3       ,   2600 MB,  2200 Mhz
+     - realtime-fencing         ,       5       ,   700 MB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking(24,10)](/work-report/images/evaluation/ex2-benchmarking(24,10).png)
@@ -83,9 +83,9 @@ of system with current available resources.
 #### Experiment 3
 ##### Deployment view
      - Application              , #of instances,            RAM,      CPU
-     - location-update-publisher,      4       ,         500 GB,   500 Mhz
-     - location-aggregate       ,      2       ,        3200 GB,  2500 Mhz
-     - realtime-fencing         ,      4       ,         800 GB,   700 Mhz
+     - location-update-publisher,      4       ,         500 MB,   500 Mhz
+     - location-aggregate       ,      2       ,        3200 MB,  2500 Mhz
+     - realtime-fencing         ,      4       ,         800 MB,   700 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![poll-benchmarking(13,7)](/work-report/images/evaluation/ex3-benchmarking(13,7).png)
@@ -95,9 +95,9 @@ of system with current available resources.
 #### Experiment 4
 ##### Deployment view
      - Application              , #of instances,     RAM  ,      CPU
-     - location-update-publisher,      4       ,    500 GB,   500 Mhz
-     - location-aggregate       ,      2       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,      4            800 GB,   700 Mhz
+     - location-update-publisher,      4       ,    500 MB,   500 Mhz
+     - location-aggregate       ,      2       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,      4            800 MB,   700 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![poll-benchmarking(19,10)](/work-report/images/evaluation/ex4-benchmarking(19,10).png)
@@ -128,9 +128,9 @@ If instances of realtime-fencing have enough resources, there might not be any d
 #### Experiment 5
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       5       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       2       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       6       ,   800 GB ,   400 Mhz
+     - location-update-publisher,       5       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       2       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       6       ,   800 MB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![push-benchmarking-ongoing-2per7sec](/work-report/images/evaluation/ex5-benchmarking-ongoing-2per7sec.png)
@@ -157,9 +157,9 @@ If instances of location-aggregate have enough resources, there might not be any
 #### Experiment 6
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       5       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       2       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       6       ,   800 GB ,   400 Mhz
+     - location-update-publisher,       5       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       2       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       6       ,   800 MB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![poll-benchmarking-ongoing-2per10sec](/work-report/images/evaluation/ex6-benchmarking-ongoing-2per10sec.png)
@@ -179,9 +179,9 @@ Implementing special health checks for KafkaStreams is also another option.
 #### Experiment 7
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       0       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       4       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       0       ,   800 GB ,   400 Mhz
+     - location-update-publisher,       0       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       4       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       0       ,   800 MB ,   400 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result 
 ![poll-benchmarking-ongoing-2per10sec](/work-report/images/evaluation/ex7-benchmarking-ongoing-2per10sec.png)
@@ -207,9 +207,9 @@ won't increase throughout.
 #### Experiment 8
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       1       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       1       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex8-benchmarking-ongoing-2per4sec.png)
@@ -217,9 +217,9 @@ won't increase throughout.
 #### Experiment 9
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       2       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       2       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex9-benchmarking-ongoing-2per4sec.png)
@@ -227,9 +227,9 @@ won't increase throughout.
 #### Experiment 10
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       3       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       3       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex10-benchmarking-ongoing-2per4sec.png)
@@ -237,9 +237,9 @@ won't increase throughout.
 #### Experiment 11
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       4       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       4       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex11-benchmarking-ongoing-2per4sec.png)
@@ -256,9 +256,9 @@ instances and continue. It will make comparison of input rate with throughput mo
 #### Experiment 12
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       3       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       3       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex12-benchmarking-ongoing-3per4sec.png)
@@ -267,9 +267,9 @@ instances and continue. It will make comparison of input rate with throughput mo
 #### Experiment 13
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       4       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       4       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex13-benchmarking-ongoing-3per4sec.png)
@@ -278,9 +278,9 @@ instances and continue. It will make comparison of input rate with throughput mo
 #### Experiment 14  
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       5       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       5       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex14-benchmarking-ongoing-3per4sec.png)
@@ -289,9 +289,9 @@ failure to keep the input rate high while having 5 instances. why?
 #### Experiment 15
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       6       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       6       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex15-benchmarking-ongoing-3per4sec.png)
@@ -302,9 +302,9 @@ progress possible).
 #### Experiment 16
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       0       ,   2700 GB,  2700 Mhz
-     - realtime-fencing         ,       12       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       0       ,   2700 MB,  2700 Mhz
+     - realtime-fencing         ,       12       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-3*4sec](/work-report/images/evaluation/ex16-benchmarking-ongoing-3per4sec.png)
@@ -329,9 +329,9 @@ won't increase throughout.
 #### Experiment 17
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       0       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       1       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       0       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       0       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       1       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,       0       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex17-benchmarking-ongoing-2per4sec.png)
@@ -339,9 +339,9 @@ won't increase throughout.
 #### Experiment 18
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       0       ,   700 GB ,   200 Mhz
-     - location-aggregate       ,       2       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       0       ,   500 GB ,   30 Mhz
+     - location-update-publisher,       0       ,   700 MB ,   200 Mhz
+     - location-aggregate       ,       2       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,       0       ,   500 MB ,   30 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex18-benchmarking-ongoing-2per4sec.png)
@@ -366,9 +366,9 @@ We continue adding such instances and increasing input rate until throughout sto
 #### Experiment 19 
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       1       ,   500 GB ,   60 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,       1       ,   500 MB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-1*16sec](/work-report/images/evaluation/ex19-benchmarking-ongoing-1per16sec.png)
@@ -376,9 +376,9 @@ We continue adding such instances and increasing input rate until throughout sto
 #### Experiment 20 
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       2       ,   500 GB ,   60 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,       2       ,   500 MB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-1*10sec](/work-report/images/evaluation/ex20-benchmarking-ongoing-1per10sec.png)
@@ -386,9 +386,9 @@ We continue adding such instances and increasing input rate until throughout sto
 #### Experiment 21 
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       4       ,   500 GB ,   60 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,       4       ,   500 MB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-1*6sec](/work-report/images/evaluation/ex21-benchmarking-ongoing-1per6sec.png)
@@ -396,9 +396,9 @@ We continue adding such instances and increasing input rate until throughout sto
 #### Experiment 22 
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,       5       ,   500 GB ,   60 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,       5       ,   500 MB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-1*2sec](/work-report/images/evaluation/ex21-benchmarking-ongoing-1per2sec.png)
@@ -406,9 +406,9 @@ We continue adding such instances and increasing input rate until throughout sto
 #### Experiment 23 
 ##### Deployment view
      - Application              ,  #of instances,   RAM    ,      CPU
-     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
-     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
-     - realtime-fencing         ,      10       ,   500 GB ,   60 Mhz
+     - location-update-publisher,       4       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,      10       ,   500 MB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
 ![push-benchmarking-ongoing-2*2sec](/work-report/images/evaluation/ex23-benchmarking-ongoing-2per2sec.png)

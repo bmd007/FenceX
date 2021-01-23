@@ -72,7 +72,7 @@ job "realtime-fencing" {
         MANAGEMENT_SERVER_PORT= "${NOMAD_PORT_management}"
         KAFKA_TOPIC_CONFIG_EVENT= "12:3"
         KAFKA_TOPIC_CONFIG_CHANGELOG= "12:3"
-        KAFKA_STREAMS_SERVER_CONFIG_APP-IP= "${NOMAD_IP_http}"
+        KAFKA_STREAMS_SERVER_CONFIG_APP_IP= "${NOMAD_IP_http}"
         SPRING_KAFKA_BOOTSTRAP_SERVERS= "${NOMAD_IP_http}:9092"
         SPRING_PROFILES_ACTIVE =                                  "nomad"
         SPRING_CLOUD_CONSUL_HOST =                                "localhost"

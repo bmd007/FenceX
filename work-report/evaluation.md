@@ -391,4 +391,14 @@ We continue adding such instances and increasing input rate until throughout sto
      - realtime-fencing         ,       4       ,   500 GB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![push-benchmarking-ongoing-1*8sec](/work-report/images/evaluation/ex20-benchmarking-ongoing-1per8sec.png)
+![push-benchmarking-ongoing-1*6sec](/work-report/images/evaluation/ex21-benchmarking-ongoing-1per6sec.png)
+
+#### Experiment 22 
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,       4       ,   700 GB ,   400 Mhz
+     - location-aggregate       ,       0       ,   1500 GB,  100 Mhz
+     - realtime-fencing         ,       5       ,   500 GB ,   60 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-1*2sec](/work-report/images/evaluation/ex21-benchmarking-ongoing-1per2sec.png)

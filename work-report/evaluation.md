@@ -411,4 +411,7 @@ We continue adding such instances and increasing input rate until throughout sto
      - realtime-fencing         ,      10       ,   500 GB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![push-benchmarking-ongoing-1*1sec](/work-report/images/evaluation/ex21-benchmarking-ongoing-1per1sec.png)
+![push-benchmarking-ongoing-2*2sec](/work-report/images/evaluation/ex23-benchmarking-ongoing-2per2sec.png)
+As usual, the bottleneck is the hardware available to our input rate producer. We can not produce a stable 
+input rate above 15K location updates per second. So we can not continue the experiment further more. So far the
+push leg has shown perfect strong scalability.

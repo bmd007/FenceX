@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import statefull.geofencing.faas.bench.marking.client.LocationAggregateClient;
 import statefull.geofencing.faas.bench.marking.client.LocationUpdatePublisherClient;
 import statefull.geofencing.faas.bench.marking.client.RealTimeFencingClient;
@@ -58,6 +57,13 @@ public class Resource {
                         testAllTrips_bothLegs();
                     }
                 })
+                .subscribe();
+    }
+
+    @GetMapping("/define/fences")
+    public void loadTestNumberOfTimes() {
+        repository.findAll()
+                .delayUntil(this::defineFence)
                 .subscribe();
     }
 

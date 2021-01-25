@@ -320,7 +320,7 @@ our hardware can't keep the input rate high enough. As usual the bottleneck is i
 ### Poll leg
 #### Description:
 Firstly we a load of location updates for some movers.
-Then we start an ongoing stream (fixed rate) of queries (by fence) to the system.
+Then we start an ongoing stream (fixed rate) of queries (by a fence) to the system.
 We start with deploying only one resourceful instance of location-aggregate.
 However, this instance should not be too rich. We hope for this instance to be overwhelmed.  
 Then we repeat the experiment with 2 such instances, and the throughout should increase.
@@ -415,3 +415,44 @@ We continue adding such instances and increasing input rate until throughout sto
 As usual, the bottleneck is the hardware available to our input rate producer. We can not produce a stable 
 input rate above 15K location updates per second. So we can not continue the experiment further more. So far the
 push leg has shown perfect strong scalability.
+
+## Weak scalability
+### Poll leg
+#### Description:
+Firstly, we sent a load of location-updates.
+Then we sent a shocking load of queries to the system.
+We have graphs that show the total number of queries sent to and answered by system.
+We start with deploying only one resourceful instance of location-aggregate.
+However, this instance should not be too rich. We hope for this instance to be overwhelmed.  
+Then we repeat the experiment with increased input (queries per second) rate and 
+2 instances of location-aggregate.
+We expect throughout to be increased relatively.
+We continue adding such instances and increasing input rate until throughout stops increasing.
+
+However, the minimum required resources for location-aggregate to easily cover (with ~2 instances)
+the maximum input rate that we can produce (with our available resources). 
+
+
+## Free fall scalability (my invention maybe)
+## Push leg (only)
+#### Description
+Firstly, we deploy 4 instances of location-update-publisher only.
+Then we start an ongoing stream of location-updates and stop it after 2 minutes.
+Now the kafka topic has buffered a lot of location-updates. 
+As next step, we start 12 (not so resourceful) instances of realtime-fencing.
+Since there is no external limitation around consuming kafka topics and no other thing is happening 
+in the whole system, realtime-fencing should process the buffered location updates with a very high throughput.
+We call this test free fall as a reference to super fast instant shock of input to system while nothing else is 
+happening. So system can handle the load freely. However, system must do it while becoming up and running.
+So the pressure of becoming up and running (multiple re-balancing rounds) while processing a huge 
+input load, is equivalent to stay alive during and after free fall.
+#### Experiment 24
+##### Deployment view
+     - Application              ,  #of instances,   RAM    ,      CPU
+     - location-update-publisher,     4 - 0       ,   700 MB ,   400 Mhz
+     - location-aggregate       ,     0 - 0       ,   1500 MB,  100 Mhz
+     - realtime-fencing         ,    0 - 12       ,   500 MB ,   60 Mhz
+     - location-updates topic has replication factor of 3 and 12 partitions
+#### Result
+![push-benchmarking-ongoing-2*2sec](/work-report/images/evaluation/ex24-benchmarking-ongoing-2per2sec.png)
+

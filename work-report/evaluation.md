@@ -434,7 +434,7 @@ the maximum input rate that we can produce (with our available resources).
 
 
 ## Free fall scalability (my invention maybe)
-## Push leg (only)
+### Push leg (only)
 #### Description
 Firstly, we deploy 4 instances of location-update-publisher only.
 Then we start an ongoing stream of location-updates and stop it after 2 minutes.

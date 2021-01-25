@@ -454,5 +454,5 @@ input load, is equivalent to stay alive during and after free fall.
      - realtime-fencing         ,    0 - 12       ,   500 MB ,   60 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
 #### Result
-![push-benchmarking-ongoing-2*2sec](/work-report/images/evaluation/ex24-benchmarking-ongoing-2per2sec.png)
+![push-benchmarking-ongoing-1*2sec](/work-report/images/evaluation/ex24-benchmarking-ongoing-1per2sec.png)
 

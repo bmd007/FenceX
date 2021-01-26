@@ -87,9 +87,7 @@ of system with current available resources.
      - location-aggregate       ,      2       ,        3200 MB,  2500 Mhz
      - realtime-fencing         ,      4       ,         800 MB,   700 Mhz
      - location-updates topic has replication factor of 3 and 12 partitions
-#### Result 
-![poll-benchmarking(13,7)](/work-report/images/evaluation/ex3-benchmarking(13,7).png)
-
+#### Result
 ![poll-benchmarking(16,9)](/work-report/images/evaluation/ex3-benchmarking(16,9).png)
 
 #### Experiment 4

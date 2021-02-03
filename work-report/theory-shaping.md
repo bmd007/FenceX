@@ -56,7 +56,7 @@ very resilient. Because local errors in one operation do not bring the whole sys
 #### Logical data flow diagram
 The picture below illustrates operators of FenseX. 
 
-![Logical data flow](/work-report/logical%20data%20flow%20diagram.png)
+![Logical data flow](/work-report/images/logical-data-flow-diagram.png)
 
 __Location update publisher__ somehow gets reports from movers when
 they change their position.  Then publishes a `mover location update` event. 
@@ -111,7 +111,7 @@ The picture below roughly illustrates how we are going to deploy tasks.
 Each colored group of tasks, represents a separate deployable unit. 
 The units with same shape correspond to same operations.
 
-![Physical data flow](/work-report/physical%20data%20flow%20diagram.png)
+![Physical data flow](/work-report/images/physical-data-flow-diagram.png)
 
 ### Expectations
 FenseX is expected to 

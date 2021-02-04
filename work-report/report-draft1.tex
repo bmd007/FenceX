@@ -140,7 +140,7 @@
     Consistency level required for geofencing applications is not strong so eventual consistency will suffice. Once a location report has received, it might takes a fraction of time until the view of FenceX about corresponding mover changes. Before that, latest previously captured report and finalized view is valid and used. Same goes for predefined fences. So no need for distributed transactions or implementation of Saga as there is not much of intertwined that can go wrong.
 
 
-    \section{Suggested solution}
+    \chapter{Suggested solution}
     FenceX is a stream processing system designed and implemented into microservices. It can also be identified as a reactive distributed system that is applying event driven architecture for communication of its modules. These four big software architectural names are pretty much the same thing in the context of FenceX with their different being point of view. To avoid repeating same vocabulary over and over in this document, we use the terminology specific to each of these realms interchangeably on precisely when applicable. The listing below  illustrates words that refer to similar things but originate to different terminologies.
 
     \begin{itemize}
@@ -160,9 +160,9 @@
     \end{itemize}
 
     \begin{figure}[ht]
-        \caption{Logical data flow graph of FenceX}
+        \caption{Logical data flow graph of FenceX - larger size available in the appendix}
         \label{fig:logical-dfg}
-        \includegraphics[scale=0.3]{images/logical-data-flow-diagram.png}
+        \includegraphics[scale=0.2]{images/logical-data-flow-diagram.png}
         \centering
     \end{figure}
 
@@ -179,9 +179,141 @@
     \paragraph{alarming} is responsible for responding to the events coming out of fence-location-intersection. Implementation of this operator is not withing boundaries of this thesis. So we won't describe its details.
 
 
-    \subsection{Push and Poll leg}
+    \subsection{Push and Poll legs}
+    As described previously, FenceX provides two styles of geofencing, On demand and real time.
+
+    Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature. Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic. The fence will be checked against the whole data base of mover locations. \emph{location-aggregate} is responsible for this style of fencing. Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg. So \emph{location-aggregate} is poll leg of FenceX.
+
+    Calculating fence-point intersection for every location report, on the other hand, is of real time nature. For each new location report, system pushes a intersection calculation result. \emph{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
+    In this style the defined fences are more static and don't change frequently over time.
+
+    From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of these legs have their own characteristics and require individual attention.
+
+    \section{Physical data flow graph}
+    Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be deployed as instances of microservices containing stream processing pipe line tasks. Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
+
+    The combination of tasks below will be deployed as one microservice:
+    \begin{itemize}
+        \item{location-update-publisher} alone makes a microservice called \emph{location-update-publisher}.
+        \item{filter and location-aggregate} together make a microservice called \emph{location-aggregate}. This the poll leg of FenceX.
+        \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \emph{realtime-fencing}. This the push leg of FenceX.
+    \end{itemize}
+
+    You can see that each microservice exists two times in \ref{fig:physical-dfg} differed by color. It means FenseX deploys more than one instance of each microservice for scalability and resiliency purposes.
+    Such characteristics will be discussed in details later.
+
+    Below are the facts common about all FenceX microservices:
+    \begin{itemize}
+        \item They are implemented using Java 15.
+        \item They are implemented with extensive help from Spring family frameworks and libraries like Spring boot, Spring data, Spring webflux, Spring cloud and many more.
+        \item They are packaged as layered docker images so the deployment artifacts of FenceX are docker images.
+        \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor. As a result they are reactive applications which means they process HTTP requests in a asynchronous and non blocking manner.
+        \item All of them expose a HTTP API for fetching metrics about their resource usage, JVM status, geofencing operations and ... .
+        \item After successful deployment, they will be registered into a service discovery tool called Consul.
+    \end{itemize}
+
+    \subsection{Inter microservices communication}
+    At the moment there is no need for HTTP communication between FenceX microservices.
+    However, they can find each other's IP by querying Consul on the fly.
+
+    The communication style of microservices in FenceX is asynchronous and event driven.
+    Which means there are Kakfa topics available for publishing events and subscribing to them.
+    This topics are partitioned so each instance of the microservice will subscribe to a sub set of partitions.
+    This is a load sharing strategy which helps with scalability.
+    \ref{fig:physical-dfg} illustrates involved (Kafka) topics in the pipeline in addition to the state stores (database)
+    attached to/used by each task.
+    Fundamentally each of those state stores are backed by a topic (chagelog).
 
 
+    \section{Microservices internal design and implentation}
+    Apart from common fact stated preciously, FenceX microservices can be described in a more detailed way as following:
+
+    \subsection{Location-update-publisher}
+    Location-update-publisher is a simple Kafka publisher.
+    A source in the stream processing pipeline.
+    It can be exposed to outside world using both RabbitMQ and HTTP adapters.
+    The adapters receive location reports.
+    Reports will be mapped to the event schema that other microservices
+    understand and finally the event will be published into a topic called \emph{location-updates}.
+    This is a stateless service, so it can be scaled out very easy.
+    Since the functionality of this service is simple, each instance doesn't need to be rich in resources.
+
+    \subsection{location-aggregate}
+    Location-aggregate is a Kafka Streams applications.
+    It's internal stream starts with subscribing to\emph{location-updates}, continues with a filter and finally
+    aggregated into a Global KTable which is backed by an in-memory H2 database.
+    Which means once a location report received by location-aggregate, it will be first checked for validity and then
+    saved into an in-memory co-located database.
+    The save is an update operation most of the time.
+    Updating the latest captured location for a mover.
+    H2 provides geospatial indexing.
+    Upon each update, the index will be updated as well, so the database will become ready for being queries against a
+    fence.
+    By database, we mean a single big table.
+    \subsubsection{co-located database}
+    Usually in information systems, databases have their own cluster and deployed on machines other than the one on
+    which applications are deployed.
+    This is done in order to abstract away availability and scalability challenges of data(base) from developers.
+    The disadvantage is that accessing such a database can only happen over network which is an IO operation with
+    relatively high latency.
+    Since we aimed for high throughput (low latency) geofencing in FenceX, we decided to use a databases process
+    deployed tightly togheger with location-aggregate.
+    The life cycle of this database is managed by location-aggregate.
+    In fact, it's a library within the application.
+    In summary, we used an embedded database.
+    The direct result is that the network call for accessing this database is only within range of localhost, so the
+    latency is minimum.
+    \subsubsection{In memory database}
+    Usually database systems are configured to use disk as storage which allows them grow very big.
+    The downside with this approach is the IO intensiveness of interacting with disk which means latency.
+    Although very high throughput SSD hard drives exists, not only their price tag is high but also they are still
+    not as fast as memory.
+    Our goal being minimizing IO latency, the H2 database not only is configured to use memory as storage but also
+    using it in an asynchronous non-blocking manner (nioMemFS).
+    Which means H2 will act as if a file system exists on the memory and will access it using Java NIO technology.
+    \subsubsection{Inconsistency}
+    Using database systems maintaining their own dedicated cluster, means no need for being worry about the
+    possible inconsistency problems.
+    The nodes in the cluster need to be consistent after all, even if only they act as cold idle replicas.
+    Co-located in memory databases, on the other hand, usually doesn't have any consideration for replication and/or
+    consistency.
+    Since we want to scale out poll leg of FenceX, facing inconsistency issues is inevitable.
+    So we need a way to make each instances of location-aggregate (all of the H2 instances) have same data, same
+    image of the world.
+    H2 provides an out-of-the-box solution for keeping its inatances consistent, even when configured to be embedded
+    and in memory.
+    However, after some trial and error we did not find it reliable.
+    So it is up to us to keep the instances of location-aggregate consistent.
+    Kafka Streams Global KTables are state stores that have same data regardless of instance.
+    They are equivalent to kafka subscribers each having a different group name;
+    which means they get events from all of the partitions.
+    Normal KTables only keep a subset of world image which corresponds to the partitions they listen to.
+
+    So if we put the H2 database underneath a Global KTable, Kafka Streams out of box keeps the H2 instances
+    consistent.
+    \emph{Eventually consistent} However!
+
+
+
+
+
+
+
+
+    \subsubsection{Inconsistency}
+
+
+
+
+
+
+
+    \begin{figure}[ht]
+        \caption{Physical data flow graph of FenceX - larger size available in the appendix}
+        \label{fig:physical-dfg}
+        \includegraphics[scale=0.2]{images/physical-data-flow-diagram.png}
+        \centering
+    \end{figure}
 
 
     \nocite{*}

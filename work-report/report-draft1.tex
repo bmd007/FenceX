@@ -190,6 +190,15 @@
     From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of these legs have their own characteristics and require individual attention.
 
     \section{Physical data flow graph}
+
+
+    \begin{figure}[ht]
+        \caption{Physical data flow graph of FenceX - larger size available in the appendix}
+        \label{fig:physical-dfg}
+        \includegraphics[scale=0.2]{images/physical-data-flow-diagram.png}
+        \centering
+    \end{figure}
+
     Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be deployed as instances of microservices containing stream processing pipe line tasks. Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
 
     The combination of tasks below will be deployed as one microservice:
@@ -280,40 +289,40 @@
     Since we want to scale out poll leg of FenceX, facing inconsistency issues is inevitable.
     So we need a way to make each instances of location-aggregate (all of the H2 instances) have same data, same
     image of the world.
-    H2 provides an out-of-the-box solution for keeping its inatances consistent, even when configured to be embedded
+    H2 provides an out-of-the-box solution for keeping its instances consistent, even when configured to be embedded
     and in memory.
     However, after some trial and error we did not find it reliable.
     So it is up to us to keep the instances of location-aggregate consistent.
     Kafka Streams Global KTables are state stores that have same data regardless of instance.
     They are equivalent to kafka subscribers each having a different group name;
-    which means they get events from all of the partitions.
+    which means they get events from all partitions.
     Normal KTables only keep a subset of world image which corresponds to the partitions they listen to.
 
     So if we put the H2 database underneath a Global KTable, Kafka Streams out of box keeps the H2 instances
     consistent.
     \emph{Eventually consistent} However!
+    Eventaully consistent means the consistency of data among instances of location-aggregate is not of ACID nature.
+    Once a location update is published, the time taking for each instance to capture the location update and change
+    its state accordingly, varies from an instance to another.
+    This time is a factor of, for example, current load of each instance.
+
+    Each Kafka Streams state store is backed by a topic called change log.
+    This topic is durable and is saved on disk by kafka.
+    Each Kafka Streams application attached on such a store, subscribe to that topic once it's up and running and
+    populate it's KTables.
+    That topic contains all changes that has happened to the state of application, the data in the KTable.
+    So in case something happens to one of the instances (or all of them for that matter), after a restart or bringing
+    a new fresh instance up, the instance recover/creates it own images of the world just by subscribing to change
+    log topic.
+    The subscription can be from last seen offset or from offset zero, depending on the state of underlying store.
+    Sometimes the stores are back by a database using file system as storage.
+
+    So finally we resolved the mystery of inconsistency in FenceX. Also, we covered some aspects of the work which
+    makes FenceX high throughput.
+
+    \subsubsection{realtime-fencing}
 
 
-
-
-
-
-
-
-    \subsubsection{Inconsistency}
-
-
-
-
-
-
-
-    \begin{figure}[ht]
-        \caption{Physical data flow graph of FenceX - larger size available in the appendix}
-        \label{fig:physical-dfg}
-        \includegraphics[scale=0.2]{images/physical-data-flow-diagram.png}
-        \centering
-    \end{figure}
 
 
     \nocite{*}

@@ -77,10 +77,20 @@
     \listoffigures
     \newpage
 
-    \section{FenceX: High throughput scalable geofencing}
+
+    \section{abstract}
 
     \subsection{Note for readers}
-    This document is structured in a top-down style. Which means initially the work is described with assumption that readers are familiar with all the mentioned technologies, patterns, buzz words and ... . And initially the number of references is low. Later in following sections, we tried to cover the used technologies, patterns and ... separately to the extend that context of thesis allows and most of the references are made in those sections.
+    This document is structured in a top-down style.
+    Which means initially the work is described with assumption that readers are familiar with all the mentioned
+    technologies,  patterns, buzz words and ... .
+    Initially the number of references is low.
+    Later in following sections, we tried to cover the used technologies, patterns and ... separately to the extent
+    that context of thesis allows, and most of the references are made in those sections.
+
+    \part[FenceX]{FenceX: High throughput scalable geofencing}
+
+    \chapter{Introduction}
 
     \section{Geofencing}
     TODO expand
@@ -166,25 +176,40 @@
         \centering
     \end{figure}
 
-    \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line. It has HTTP and RabbitMQ adaptors which is used by movers. Movers send messages or http requests in order report their latest location. Location-update-publisher turns each report into a event and publishes it into a kafka topic called \textbf{location-updates}.
+    \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line.
+    It has HTTP and RabbitMQ adaptors which is used by movers.
+    Movers send messages or http requests in order report their latest location.
+    Location-update-publisher turns each report into a event and publishes it into a kafka topic called \textbf{location-updates}.
 
     \paragraph{filter}, as the name suggests, is responsible for avoiding not desired location updates to find their way further down in the stream. Checks can be against null values or invalid latitude/longitude.
 
     \paragraph{location-aggregate} is responsible for keeping a view of latest location of each mover by subscribing to the stream of location updates coming out of filter. It has a local database of mover-locations which applies geospatial index on the data. As a result, the query by fence is becomes possible. So location-aggregate is responsible for answering queries both by mover id and fence (geospatial shape).
 
-    \paragraph{fence-aggregate} is responsible to keep track of predefined fences (for real time intersection scenarios).  It exposes HTTP APIs for CRUD operations. The fences are kept in an temporal KTable (kafka streams notion of table) and backed by a durable Kafka topic. In other words, each operation (CRUD) on each fence is initially a Kafka event which is later processed by fence-aggregate into a fence. The producer of those events is also fence-aggregate. In more technical terms, fence-aggregate is using event-sourcing architecture internally.
+    \paragraph{fence-aggregate} is responsible to keep track of predefined fences (for real time intersection scenarios).
+    It exposes HTTP APIs for CRUD operations.
+    The fences are kept in an temporal KTable (kafka streams notion of table) and backed by a durable Kafka topic.
+    In other words, each operation (CRUD) on each fence is initially a Kafka event which is later processed by fence-aggregate into a fence. The producer of those events is also fence-aggregate. In more technical terms, fence-aggregate is using event-sourcing architecture internally.
 
-    \paragraph{fence-location-intersection} (join) has a view of predefined fences (managed by fence-aggregate) in shape of a key:value table. Key is id of mover for which the fence (value) is defined. fence-location-intersection is a join between that table and stream of location updates coming out of filter. Those location updates also has a key:value form. Key is the mover id and value is the reported location. And finally, the join operation is to check if the fence in table contains the location in the update. The result of this intersection will be events like mover X is (not) in the predefined fence.
+    \paragraph{fence-location-intersection} (join) has a view of predefined fences (managed by fence-aggregate) in shape of a key:value table.
+    Key is id of mover for which the fence (value) is defined.
+    fence-location-intersection is a join between that table and stream of location updates coming out of filter.
+    Those location updates also has a key:value form. Key is the mover id and value is the reported location.
+    And finally, the join operation is to check if the fence in table contains the location in the update.
+    The result of this intersection will be events like mover X is (not) in the predefined fence.
 
-    \paragraph{alarming} is responsible for responding to the events coming out of fence-location-intersection. Implementation of this operator is not withing boundaries of this thesis. So we won't describe its details.
+    \paragraph{alarming} is responsible for responding to the events coming out of fence-location-intersection.
+    Implementation of this operator is not withing boundaries of this thesis. So we won't describe its details.
 
 
     \subsection{Push and Poll legs}
     As described previously, FenceX provides two styles of geofencing, On demand and real time.
 
-    Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature. Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic. The fence will be checked against the whole data base of mover locations. \textbf{location-aggregate} is responsible for this style of fencing. Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg. So \textbf{location-aggregate} is poll leg of FenceX.
+    Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature.
+    Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic. The fence will be checked against the whole data base of mover locations. \textbf{location-aggregate} is responsible for this style of fencing. Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg. So \textbf{location-aggregate} is poll leg of FenceX.
 
-    Calculating fence-point intersection for every location report, on the other hand, is of real time nature. For each new location report, system pushes a intersection calculation result. \textbf{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
+    Calculating fence-point intersection for every location report, on the other hand, is of real time nature.
+    For each new location report, system pushes a intersection calculation result.
+    \textbf{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
     In this style the defined fences are more static and don't change frequently over time.
 
     From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of these legs have their own characteristics and require individual attention.
@@ -320,7 +345,7 @@
     So finally we resolved the mystery of inconsistency in FenceX. Also, we covered some aspects of the work which
     makes FenceX high throughput.
 
-    \subsubsection{realtime-fencing}
+    \subsection{realtime-fencing}
     Realtime-fencing is a Kafka Streams application responsible for keeping track of fences, receiving location updates
     and joining them.
     The join operation is fence-point intersection.
@@ -341,12 +366,11 @@
     value is the WKT string describing the geospatial shape of the fence.
     Any operation on the fences should first be published as an event and later caputured by realtime-fencing up and
     running instances.
-    The event will be proccesed, and a suitable change will happen on the data in the related state store.
+    The event will be processed, and a suitable change will happen on the data in the related state store.
     This approach (event-sourcing) is one of special styles of event driven architectures which feels very natural
     when implemented using Kafka Streams.
-    Using this architecture leads to a eventual consistency which is usually the case with all of the event based
-    systems.
-    The benefit is huge potential for scalability.
+    Using this architecture leads to a eventual consistency which is usually the case with all event based systems.
+    The benefit is the huge potential for scalability.
     Also, the source of truth in such systems is the event\_log topic rather then the database (state store).
     Whatever happens to the whole application, the state can be easily recovered by bringing a new instance of
     application up and making it subscribe to event\_log topic from offset zero.
@@ -383,11 +407,140 @@
     geospatial point-shape intersection.
     Which we call point-fence intersection.
     Output of function should be a Key:Value pair with the mover ID being the key and the value is result of
-    intersecion.
+    intersection.
     So after the join we end up with a stream of moverId:intersection-status updates.
     At the moment we have not continued the stream but ideally the status should be published into another kafka
     topic so that other operation down the stream processing pipeline can use it, like alarming.
 
+
+
+    \section{Non functional characteristics}
+    In this section we describe how different non functional requirements of system has been achieved based on the
+    design and architectueral decisions.
+    \subsection{Availability}
+    Availability has many aspects in software development specifically when it comes to distributed systems.
+    The main practice to achieve high availability is to scale out meaning deploying more than one instance of the
+    application, application subcomponents for that matter.
+    In case of microservices, more than one instance of each microservice should be deployed.
+    In the same way deploying more than one task of each operation makes sense in stream processing realm.
+    The benefits of scaling out in terms of availability are as following:
+    \begin{itemize}
+        \item[Operational availability] If a sub set of deployed services stop responding for any reason, the rest of
+        up and running instances
+        can take over the work.
+        \item[Data availability] Data can be replicated over different instances of services so if something goes
+        wrong with one of the instances, the data will not get compromised.
+        The process of data can even be continued without any special change being noticed in the overall behaviour of
+        system.
+        \item[Availability under varrying load] Will be explained as scalability in the next section
+    \end{itemize}
+
+    In FenceX it's easily possible to deploy as many instances of microservice as required by non-functional boundaries
+    of corresponding users and use cases.
+    We use a container orchestration tool called Nomad for managing deployment of FenceX microservices.
+    Which allows for a joyful experience of managing containers.
+    While being a full fledged production level container orchestration tool, It's not as complicated as Kubernetes.
+
+    \subsubsection{back pressure}
+    ???
+
+    \subsubsection{rebalancing}
+
+    \subsection{Scalability}
+    A software system being scalable in simple terms means that system can handle different sizes and frequencies of
+    input load successfully.
+    There are different elements in a software system that can grow:
+    \begin{itemize}
+        \item Data size in data bases
+        \item API call (incoming HTTP requests for example)
+        \item Input rate in stream processing systems (Rate at which events arrive)
+        \item Number of parallel inter dependent operations
+        \item Number of parallel independent operations
+        \item Number of active threads in the thread based systems
+        \item Queue size (number of events in kafka topic for example)
+        \item Stack size
+        \item Number of users using the system at the same time
+        \item Number of system subcomponents (number of microservices or number of stream processing operations)
+        \item Number of people can work on development the system at the same time (organizational scalability)
+    \end{itemize}
+    A scalable software system keeps responding/processing successfully with reasonable throughput and latency even if
+    any (or all) of the factors mentioned above grow hugely in size or in rate.
+    The growth can happen step by step over a window of time or like a sudden sock in a moment.
+
+    \subsubsection{Data scalability}
+    In FenceX data scalability is limited by the number of rows that an H2 in memory table can keep. Which is ??.
+    This can be limited because each H2 in memory table in FenceX is below a global KTable which means it has the whole
+    image of world.
+    Otherwise the other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
+    fact that data in that state store, is partitioned over available instances of realtime-fencing.
+    So if defined fence sizes grow, horizontally scaling realtime-fencing will just deal with it.
+
+    \subsubsection{incoming HTTP requests}
+    All HTTP APIs in FenceX are implemented using reactive stack (instead of thread based servlet stack) using Spring
+    webflux library.
+    Reactive in this context means asynchronous non-blocking IO which allows each instance to process much more HTTP
+    requests providing having same resources.
+    In simple terms no CPU cycles will be wasted for/while WAITING for IO results.
+
+    Also, deploying more than one instance of each microservice allows for load distribution.
+    A load balancing solution (client side load balancing in case of FenceX) distributes the HTTP calls over up and
+    running instances of target microservice.
+    So more requests can be responded at the same time.
+    This is called scaling out which is opposite to scale up.
+    When scaling up, we increase the resources available to each component, to each instance.
+    Scaling up (scaling vertically) is usually expensive and does not provide other types of scalability
+    (organizational scalability for example).
+
+    \subsubsection{stream processing systems input rate}
+    In event driven systems specifically stream processing ones, the input is incoming events and messages waiting to
+    be processed.
+    Location reports in case of FenceX.
+    For FenceX to be able to handle high rates of input, the events are published into Kafka topics.
+    Kafka topics are partitioned.
+    Each task (microservice instance) once is up, healthy and ready for processing, subscribe to a subset of those
+    partitions.
+    Which means the event processing load is distributed among available tasks.
+    This is called \textbf{data parallelism} in stream processing.
+    When same tasks process different data.
+    Appying this, which is basically scaling out, allows for dealing with high rates of input.
+    Just by deploying more instances of microservices, we end up having more capacity for processing incoming events.
+    It is by the way very important to have more partitions than number of deployed instances.
+    Otherwise, we will end up with idle tasks.
+
+    \subsubsection{Design and organizational complexity}
+    Over time as system evolves and provides more functionality, keeping all the codes in one service brings various
+    non-technical problems.
+    In short, we will end up with one big service which is very hard to maintain, deploy, debug, build, reason about
+    and most importantly change.
+    In such service everything is couple together due to high reliance on code reuse.
+    The alternative is to break down this monolith into different microservices each of them responsible for doing
+    mainly one thing.
+    They will have their own database, build and deployment process and ... .
+    These microservices ideally share nothing and communicate ONLY using messages (reactive).
+    Such de coupled micoservices can be introduced over time to the whole system when ever new requirements requires so.
+    This way development and design of new features is independent from others;
+    so the best fitting internal architecture, language, database, code style and ... can be selected for that specific
+    service.
+
+    Such an independence also allows multiple people, multiple teams for that matter, to work at the same on the same
+    overall system.
+    There is a practical limit on how many people can work at the same time on the same code base as an example.
+    When system code is distributed over different code bases, a lot of people can work at the same time on the
+    system and deliver value.
+
+    \subsubsection{other scalability aspects}
+    ?????
+
+
+
+
+
+
+
+
+
+
+    \subsection{Throughput}
 
 
 

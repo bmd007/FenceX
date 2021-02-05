@@ -47,10 +47,11 @@ It is responsibility of Kafka client library to put/read events into/from differ
 Kafka topics have a replication factor that events from each topic will get replicated into different kafka (cluster) nodes
 accordingly. Such event replication helps with availability and resiliency of FenseX.
 
-We also have different operations subscribing to the same topic (task parallelism). Those operators are
-loosely coupled by sharing as little as possible.
-They achieve it by having their own databases. Such isolation of operations and data, makes the system 
-very resilient. Because local errors in one operation do not bring the whole system down.
+We also have different operations subscribing to the same topic (task parallelism).
+Those operators are loosely coupled by sharing as little as possible.
+They achieve it by having their own databases.
+Such isolation of operations and data, makes the system very resilient. 
+Because local errors in one operation do not bring the whole system down.
 
 
 #### Logical data flow diagram

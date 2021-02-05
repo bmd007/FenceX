@@ -1,4 +1,4 @@
-\documentclass[a4, 14.49pt]{article}
+\documentclass[a4, 14.49pt]{report}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -166,7 +166,7 @@
         \centering
     \end{figure}
 
-    \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line. It has HTTP and RabbitMQ adaptors which is used by movers. Movers send messages or http requests in order report their latest location. Location-update-publisher turns each report into a event and publishes it into a kafka topic called \emph{location-updates}.
+    \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line. It has HTTP and RabbitMQ adaptors which is used by movers. Movers send messages or http requests in order report their latest location. Location-update-publisher turns each report into a event and publishes it into a kafka topic called \textbf{location-updates}.
 
     \paragraph{filter}, as the name suggests, is responsible for avoiding not desired location updates to find their way further down in the stream. Checks can be against null values or invalid latitude/longitude.
 
@@ -182,9 +182,9 @@
     \subsection{Push and Poll legs}
     As described previously, FenceX provides two styles of geofencing, On demand and real time.
 
-    Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature. Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic. The fence will be checked against the whole data base of mover locations. \emph{location-aggregate} is responsible for this style of fencing. Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg. So \emph{location-aggregate} is poll leg of FenceX.
+    Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature. Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic. The fence will be checked against the whole data base of mover locations. \textbf{location-aggregate} is responsible for this style of fencing. Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg. So \textbf{location-aggregate} is poll leg of FenceX.
 
-    Calculating fence-point intersection for every location report, on the other hand, is of real time nature. For each new location report, system pushes a intersection calculation result. \emph{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
+    Calculating fence-point intersection for every location report, on the other hand, is of real time nature. For each new location report, system pushes a intersection calculation result. \textbf{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
     In this style the defined fences are more static and don't change frequently over time.
 
     From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of these legs have their own characteristics and require individual attention.
@@ -203,9 +203,9 @@
 
     The combination of tasks below will be deployed as one microservice:
     \begin{itemize}
-        \item{location-update-publisher} alone makes a microservice called \emph{location-update-publisher}.
-        \item{filter and location-aggregate} together make a microservice called \emph{location-aggregate}. This the poll leg of FenceX.
-        \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \emph{realtime-fencing}. This the push leg of FenceX.
+        \item{location-update-publisher} alone makes a microservice called \textbf{location-update-publisher}.
+        \item{filter and location-aggregate} together make a microservice called \textbf{location-aggregate}. This the poll leg of FenceX.
+        \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \textbf{realtime-fencing}. This the push leg of FenceX.
     \end{itemize}
 
     You can see that each microservice exists two times in \ref{fig:physical-dfg} differed by color. It means FenseX deploys more than one instance of each microservice for scalability and resiliency purposes.
@@ -243,13 +243,13 @@
     It can be exposed to outside world using both RabbitMQ and HTTP adapters.
     The adapters receive location reports.
     Reports will be mapped to the event schema that other microservices
-    understand and finally the event will be published into a topic called \emph{location-updates}.
+    understand and finally the event will be published into a topic called \textbf{location-updates}.
     This is a stateless service, so it can be scaled out very easy.
     Since the functionality of this service is simple, each instance doesn't need to be rich in resources.
 
     \subsection{location-aggregate}
     Location-aggregate is a Kafka Streams application.
-    It's internal stream starts with subscribing to\emph{location-updates}, continues with a filter and finally
+    It's internal stream starts with subscribing to\textbf{location-updates}, continues with a filter and finally
     aggregated into a Global KTable which is backed by an in-memory H2 database.
     Which means once a location report received by location-aggregate, it will be first checked for validity and then
     saved into an in-memory co-located database.
@@ -300,7 +300,7 @@
 
     So if we put the H2 database underneath a Global KTable, Kafka Streams out of box keeps the H2 instances
     consistent.
-    \emph{Eventually consistent} However!
+    \textbf{Eventually consistent} However!
     Eventually consistent means the consistency of data among instances of location-aggregate is not of ACID nature.
     Once a location update is published, the time taking for each instance to capture the location update and change
     its state accordingly, varies from an instance to another.
@@ -327,15 +327,15 @@
     It has two internal streams.
     One for processing location updates, and the other is for aggregating fences.
     \subsubsection{event-sourcing}
-    One of the internal streams starts with subscribing to \emph{fence_event_log} topic.
+    One of the internal streams starts with subscribing to \textbf{fence_event_log} topic.
     The publisher to this topic is realtime-fencing itself.
     It exposes two HTTP APIs CRUD operations on fences (only create is implemented for now).
     When create fence API, for instance, is called, apart from possible initial validations, the
-    only thing that happens is publishing an (kafka) event to \emph{fence_event_log} topic.
-    \emph{fenceCreatedEvent} in this case.
+    only thing that happens is publishing an (kafka) event to \textbf{fence_event_log} topic.
+    \textbf{fenceCreatedEvent} in this case.
     No fence is created yet or saved anywhere in the system, however that's how an event-sourcing based application
     works.
-    The stream that starts with subscribing to \emph{fence_event_log} topic, receives those events and aggregates
+    The stream that starts with subscribing to \textbf{fence_event_log} topic, receives those events and aggregates
     them into a Kafka Streams KTable.
     A key:value table in which key is the ID of mover for whom the fence is defined;
     value is the WKT string describing the geospatial shape of the fence.
@@ -356,7 +356,6 @@
     events that has happened.
     It's worthy to mention that the event_log topic can be used as an activity log for monitoring and debugging purposes.
 
-
     In realtime-fencing the KTable keeping the fences is backed by a change log style topic similar to what we
     described about location-aggregate.
     The difference here however is that the KTable keeping fences is not global.
@@ -372,7 +371,7 @@
     So far we described one the internal streams of realtime-fencing, the one related to aggregating fences.
 
     \subsubsection{Join stream}
-    The other internal stream of realtime-fencing starts with subscribing to\emph{location-updates}, continues with a
+    The other internal stream of realtime-fencing starts with subscribing to \textbf{location-updates}, continues with a
     filter and finally a join operation.
     A join between this stream of location updates and the table of fences.
     The stream is a key:value stream.

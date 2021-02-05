@@ -1,4 +1,4 @@
-\documentclass[a4, 14.49pt]{report}
+\documentclass[a4]{report}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -327,15 +327,15 @@
     It has two internal streams.
     One for processing location updates, and the other is for aggregating fences.
     \subsubsection{event-sourcing}
-    One of the internal streams starts with subscribing to \textbf{fence_event_log} topic.
+    One of the internal streams starts with subscribing to \textbf{fence\_event\_log} topic.
     The publisher to this topic is realtime-fencing itself.
     It exposes two HTTP APIs CRUD operations on fences (only create is implemented for now).
     When create fence API, for instance, is called, apart from possible initial validations, the
-    only thing that happens is publishing an (kafka) event to \textbf{fence_event_log} topic.
+    only thing that happens is publishing an (kafka) event to \textbf{fence\_event\_log} topic.
     \textbf{fenceCreatedEvent} in this case.
     No fence is created yet or saved anywhere in the system, however that's how an event-sourcing based application
     works.
-    The stream that starts with subscribing to \textbf{fence_event_log} topic, receives those events and aggregates
+    The stream that starts with subscribing to \textbf{fence\_event\_log} topic, receives those events and aggregates
     them into a Kafka Streams KTable.
     A key:value table in which key is the ID of mover for whom the fence is defined;
     value is the WKT string describing the geospatial shape of the fence.
@@ -347,14 +347,14 @@
     Using this architecture leads to a eventual consistency which is usually the case with all of the event based
     systems.
     The benefit is huge potential for scalability.
-    Also, the source of truth in such systems is the event_log topic rather then the database (state store).
+    Also, the source of truth in such systems is the event\_log topic rather then the database (state store).
     Whatever happens to the whole application, the state can be easily recovered by bringing a new instance of
-    application up and making it subscribe to event_log topic from offset zero.
+    application up and making it subscribe to event\_log topic from offset zero.
     Or in case of a bug in business logic that resulted in a wrong state, a correct state can be rebuilt after fixing
     the bug.
     These benefits come from the fact that the only durable data in this architecture is immutable facts, the
     events that has happened.
-    It's worthy to mention that the event_log topic can be used as an activity log for monitoring and debugging purposes.
+    It's worthy to mention that the event\_log topic can be used as an activity log for monitoring and debugging purposes.
 
     In realtime-fencing the KTable keeping the fences is backed by a change log style topic similar to what we
     described about location-aggregate.

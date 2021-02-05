@@ -415,7 +415,7 @@
 
 
     \section{Non functional characteristics}
-    In this section we describe how different non functional requirements of system has been achieved based on the
+    In this section we describe how different non-functional requirements of system has been achieved based on the
     design and architectueral decisions.
     \subsection{Availability}
     Availability has many aspects in software development specifically when it comes to distributed systems.
@@ -517,8 +517,8 @@
     mainly one thing.
     They will have their own database, build and deployment process and ... .
     These microservices ideally share nothing and communicate ONLY using messages (reactive).
-    Such de coupled micoservices can be introduced over time to the whole system when ever new requirements requires so.
-    This way development and design of new features is independent from others;
+    Such de coupled microservices can be introduced over time to the whole system when ever new requirements requires so.
+    This way development and design of new features is independent of others;
     so the best fitting internal architecture, language, database, code style and ... can be selected for that specific
     service.
 
@@ -532,16 +532,40 @@
     ?????
 
 
-
-
-
-
-
-
-
-
     \subsection{Throughput}
+    For FenceX throughput of two types of operations matter the most.
+    Throughput of HTTP requests for querying the database of locations against a fence (poll leg throughput).
+    And, throughput of fence-point intersections (push leg throughput).
+    Throughput is usually closely related to scalability since high throughput is achievable only under high input
+    load.
+    \subsubsection{Poll leg throughput}
+    Is the number of queries (by fence) that FenceX can respond to successfully in a unit of time (seconds).
+    This throughput is a factor of number of queries one can send to FenceX which is the input rate in the poll leg
+    context.
+    Another effective factor is the latency of each query.
+    This latency depends on the amount of IO involved, geospatial index algorithm, network access latency, CPU speed
+    and number of parallel queries.
+    In FenecX we minimized the network latency and IO latency by using an embedded co-located in-memory database.
+    Also using reactive programming for implementing HTTP APIs, removes the latency that waiting for blocking IO
+    operations imposes.
 
+    Also, using microservices architecture and scaling out the poll leg instances leads to more capacity for responding
+    to simultaneous queries.
+
+    We calculate the poll leg throughput by increasing a counter everytime FenceX respond to a query successfully.
+    This counter is a metric gathered every now and again by a time series database called Prometheus.
+    \subsubsection{Push leg throughput}
+    Is the number of fence-point intersections that FenceX can calculate in a unit of time (seconds).
+    This throughput depends on the input rate (rate of incoming location updates) and how many instances of push leg
+    are up and running.
+    By scaling the realtime-fencing microservice out, we allow for parallel intersections to happen (data parallelism).
+    Which means FenceX can calculate more intersections per unit of time.
+    The trigger for each intersection operation is a location update which is received as a kafka event coming through
+    kafka topic partitions.
+    So theoretically number of partitions in the kafka topic is also a factor.
+
+    We calculate the push leg throughput by increasing a counter everytime FenceX calculates a fence-point intersection.
+    This counter is a metric gathered every now and again by a time series database called Prometheus.
 
 
 

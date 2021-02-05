@@ -231,7 +231,7 @@
     This is a load sharing strategy which helps with scalability.
     \ref{fig:physical-dfg} illustrates involved (Kafka) topics in the pipeline in addition to the state stores (database)
     attached to/used by each task.
-    Fundamentally each of those state stores are backed by a topic (chagelog).
+    Fundamentally each of those state stores are backed by a topic (changelog).
 
 
     \section{Microservices internal design and implentation}
@@ -248,7 +248,7 @@
     Since the functionality of this service is simple, each instance doesn't need to be rich in resources.
 
     \subsection{location-aggregate}
-    Location-aggregate is a Kafka Streams applications.
+    Location-aggregate is a Kafka Streams application.
     It's internal stream starts with subscribing to\emph{location-updates}, continues with a filter and finally
     aggregated into a Global KTable which is backed by an in-memory H2 database.
     Which means once a location report received by location-aggregate, it will be first checked for validity and then
@@ -266,14 +266,14 @@
     The disadvantage is that accessing such a database can only happen over network which is an IO operation with
     relatively high latency.
     Since we aimed for high throughput (low latency) geofencing in FenceX, we decided to use a databases process
-    deployed tightly togheger with location-aggregate.
+    deployed tightly together with location-aggregate.
     The life cycle of this database is managed by location-aggregate.
     In fact, it's a library within the application.
     In summary, we used an embedded database.
     The direct result is that the network call for accessing this database is only within range of localhost, so the
     latency is minimum.
     \subsubsection{In memory database}
-    Usually database systems are configured to use disk as storage which allows them grow very big.
+    Usually database systems are configured to use disk as storage which allows them to grow very big.
     The downside with this approach is the IO intensiveness of interacting with disk which means latency.
     Although very high throughput SSD hard drives exists, not only their price tag is high but also they are still
     not as fast as memory.
@@ -301,7 +301,7 @@
     So if we put the H2 database underneath a Global KTable, Kafka Streams out of box keeps the H2 instances
     consistent.
     \emph{Eventually consistent} However!
-    Eventaully consistent means the consistency of data among instances of location-aggregate is not of ACID nature.
+    Eventually consistent means the consistency of data among instances of location-aggregate is not of ACID nature.
     Once a location update is published, the time taking for each instance to capture the location update and change
     its state accordingly, varies from an instance to another.
     This time is a factor of, for example, current load of each instance.
@@ -321,6 +321,74 @@
     makes FenceX high throughput.
 
     \subsubsection{realtime-fencing}
+    Realtime-fencing is a Kafka Streams application responsible for keeping track of fences, receiving location updates
+    and joining them.
+    The join operation is fence-point intersection.
+    It has two internal streams.
+    One for processing location updates, and the other is for aggregating fences.
+    \subsubsection{event-sourcing}
+    One of the internal streams starts with subscribing to \emph{fence_event_log} topic.
+    The publisher to this topic is realtime-fencing itself.
+    It exposes two HTTP APIs CRUD operations on fences (only create is implemented for now).
+    When create fence API, for instance, is called, apart from possible initial validations, the
+    only thing that happens is publishing an (kafka) event to \emph{fence_event_log} topic.
+    \emph{fenceCreatedEvent} in this case.
+    No fence is created yet or saved anywhere in the system, however that's how an event-sourcing based application
+    works.
+    The stream that starts with subscribing to \emph{fence_event_log} topic, receives those events and aggregates
+    them into a Kafka Streams KTable.
+    A key:value table in which key is the ID of mover for whom the fence is defined;
+    value is the WKT string describing the geospatial shape of the fence.
+    Any operation on the fences should first be published as an event and later caputured by realtime-fencing up and
+    running instances.
+    The event will be proccesed, and a suitable change will happen on the data in the related state store.
+    This approach (event-sourcing) is one of special styles of event driven architectures which feels very natural
+    when implemented using Kafka Streams.
+    Using this architecture leads to a eventual consistency which is usually the case with all of the event based
+    systems.
+    The benefit is huge potential for scalability.
+    Also, the source of truth in such systems is the event_log topic rather then the database (state store).
+    Whatever happens to the whole application, the state can be easily recovered by bringing a new instance of
+    application up and making it subscribe to event_log topic from offset zero.
+    Or in case of a bug in business logic that resulted in a wrong state, a correct state can be rebuilt after fixing
+    the bug.
+    These benefits come from the fact that the only durable data in this architecture is immutable facts, the
+    events that has happened.
+    It's worthy to mention that the event_log topic can be used as an activity log for monitoring and debugging purposes.
+
+
+    In realtime-fencing the KTable keeping the fences is backed by a change log style topic similar to what we
+    described about location-aggregate.
+    The difference here however is that the KTable keeping fences is not global.
+    So each instance of realtime-fencing has a subset of defined fences corresponding to the partitions of
+    kafka topic listening to.
+    Since load balancers does not know what instances is responsible for what fences at any given point in time, in
+    order to query this KTable, a select all query for example, each instance that receives the query, will gather
+    data from other instances.
+    Such data gathering should be party implemented by us using some related features of Kafka Streams.
+    In case queries more complex than select one or select all were required, this approach would not work.
+    Mainly because the KTable is only a simple key:value table.
+
+    So far we described one the internal streams of realtime-fencing, the one related to aggregating fences.
+
+    \subsubsection{Join stream}
+    The other internal stream of realtime-fencing starts with subscribing to\emph{location-updates}, continues with a
+    filter and finally a join operation.
+    A join between this stream of location updates and the table of fences.
+    The stream is a key:value stream.
+    Key is the mover ID for whom the value, location report, is published.
+    A join between this stream and the fence KTable means whenever a new location update is received for a mover,
+    the fence defined for that mover (if exists) will be fetched.
+    Now a function can be called with the these inputs: ID of mover, the defined fence and the newly received location update.
+    In our case implementation of the function is calculating if the new location is within the defined fence, A
+    geospatial point-shape intersection.
+    Which we call point-fence intersection.
+    Output of function should be a Key:Value pair with the mover ID being the key and the value is result of
+    intersecion.
+    So after the join we end up with a stream of moverId:intersection-status updates.
+    At the moment we have not continued the stream but ideally the status should be published into another kafka
+    topic so that other operation down the stream processing pipeline can use it, like alarming.
+
 
 
 

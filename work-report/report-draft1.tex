@@ -693,23 +693,59 @@
     Using this setup, we created realtime graphs that shows pull and push throughput of FenceX in addition to other
     information like push and poll input rate.
     As a result we do not need to calculate the throughput after each experiment.
-    We can just have a look at corresponding graphs during execution of test scenarion.
+    We can just have a look at corresponding graphs during execution of test scenario in order to see the realtime
+    value of throughput and input rate.
+
 
     \subsection{Push leg}
-    Firstly, we define fences for movers using all the trips in the bench-marking application database.
-    Then we sent a socking stream of location reports into the system.
-    We have graphs prodcued that show the total number of intersections happening in push leg of system.
-    We repeated this experiment while varying the shock size in order to realize the peak throughput
-    of system with current available resources.
+    The process of push throughput experiments are as following:
+    \begin{itemize}
+        \item[1-] We defined fences for movers using all the trips in the bench-marking application database.
+        \item[2-] We sent a shocking stream of location reports into the FenceX.
+        \item[3-] We checked the throughput.
+        \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
+        more CPU) until finding peak throughput and a possible upper bound on throughput.
+    \end{itemize}
 
-    #### Experiment 1
-    ##### Deployment view
-    - Application              , #of instances,     RAM       ,      CPU
-    - location-update-publisher,      4       ,         500 MB,   500 Mhz
-    - location-aggregate       ,      3       ,        2500 MB,  2000 Mhz
-    - realtime-fencing         ,      4       ,         800 MB,  700 Mhz
-    - location-updates topic has replication factor of 3 and 12 partitions
-    #### Result
+    \subsubsection{Experiment 1}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c}
+            Application               &     #of instances        & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 500       &   500      \\
+            location-aggregate        &          3               & 2000 Mhz  &   2500 MB  \\
+            realtime-fencing          &                          & 700       &   800      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Results}
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex1-1 - larger size available in the appendix}
+        \label{fig:ex1-1}
+        \includegraphics[scale=images/evaluation/ex1-benchmarking(15,6).png]
+        \centering
+    \end{figure}
+
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex1-2 - larger size available in the appendix}
+        \label{fig:ex1-2}
+        \includegraphics[scale=images/evaluation/ex1-benchmarking(19,7).png]
+        \centering
+    \end{figure}
+
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex1-3 - larger size available in the appendix}
+        \label{fig:ex1-3}
+        \includegraphics[scale=images/evaluation/ex1-benchmarking(22,9).png]
+        \centering
+    \end{figure}
+
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex1-4 - larger size available in the appendix}
+        \label{fig:ex1-4}
+        \includegraphics[scale=images/evaluation/ex1-benchmarking(23,10).png]
+        \centering
+    \end{figure}
 
 
 

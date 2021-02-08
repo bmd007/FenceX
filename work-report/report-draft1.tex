@@ -706,7 +706,7 @@
         \item[2-] We sent a shocking stream of location reports into the FenceX.
         \item[3-] We checked the throughput.
         \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
-        more CPU) until finding peak throughput and a possible upper bound on throughput.
+        more CPU) until finding peak throughput and/or a possible upper bound on throughput.
     \end{itemize}
 
     \subsubsection{Experiment 1}
@@ -779,6 +779,75 @@
     much the exact parent of changes in input rate (location updates/sec).
     So there is no point in continuing push throughput experiments with current available hardware power.
 
+
+    \subsection{Poll leg}
+    The process of poll throughput experiments are as following:
+    \begin{itemize}
+        \item[1-] We defined fences for movers using all the trips in the bench-marking application database.
+        \item[2-] We sent a many location updates to FenceX.
+        \item[2-] We sent a shocking load queries (query by fence) to FenceX.
+        \item[3-] We checked the throughput.
+        \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
+        more MEMORY) until finding peak throughput and/or a possible upper bound on throughput.
+    \end{itemize}
+
+    \subsubsection{Experiment 3}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 500       &   500      \\
+            location-aggregate        &          2               & 2500      &   3200     \\
+            realtime-fencing          &          4               & 700       &   800      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Results}
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex3}
+        \label{fig:ex3}
+        \includegraphics[scale=0.4]{images/evaluation/ex3-benchmarking(16,9).png}
+    \end{figure}
+
+    Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and poll
+    throughput (number of queries answered without error) with the yellow line.
+
+    \subsubsection{Experiment 4}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 500       &   500      \\
+            location-aggregate        &          2               & 2700      &   2700     \\
+            realtime-fencing          &          4               & 700       &   800      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Results}
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex4-1}
+        \label{fig:ex4-1}
+        \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(19,10).png}
+    \end{figure}
+
+
+    \paragraph{Results}
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex4-2}
+        \label{fig:ex4-2}
+        \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(22,10).png}
+    \end{figure}
+
+    Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to experiment 3 graphs.
+
+    Experiments 3 and 4 show that we failed to increase the input rate as we progressed.
+    Although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
+    again the bottleneck was input rate which is limited by our physical available resources.
+    We can clearly see in the graphs that regardless of setup, poll throughput (queries/sec) follows pretty
+    much the exact parent of changes in input rate (queries sent/sec).
+    So there is no point in continuing poll throughput experiments with current available hardware.
+    However, the highest input rate we managed to produce during these experiments was around 12K queries per second
+    and FenceX just managed to handle it very well with the given deployment setup.
 
 
     \nocite{*}

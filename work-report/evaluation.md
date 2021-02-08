@@ -75,7 +75,7 @@ Comparing to [1], we have #TODO
 ### Poll leg
 #### Description: stress test
 Firstly we defined some fences and send some location updates for some movers.
-Then we sent a socking load of query by fence request to the system.
+Then we sent a shocking load of query by fence request to the system.
 We have graphs that show the total number of queries answered by poll leg of system.
 We repeated this experiment while varying the load in order to realize the peak throughput
 of system with current available resources.

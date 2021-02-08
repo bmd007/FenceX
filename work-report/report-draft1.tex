@@ -622,6 +622,16 @@
     Nevertheless, we have deployed another instance of bench-marking into server1 getting high throughput out of
     bench-marking applications is a very expensive in terms of resources.
 
+    It is also important to note that FenceX had 4 major Kafka topics.
+    \textit{fence_event_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
+        realtime-fencing-fence-state-store-changelog}.
+    All of these topics were configred to have 3 replicas and 12 partitions.
+    These numbers are selected corresponding to availalbe resources to the overal system.
+    The process of selecting them correctly is out of the countext of this thesis.
+    The important factor however is to have a high enough replication factor to achieve availability (3 at least) and
+    high enough number of partitions to avoid idle subscribers.
+
+
     \paragraph{}
     After preparing the infrastructure, Nomad calculated the whole available resources to the application that will
     be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memrory. ??? I'm not sure it's CPU power
@@ -665,7 +675,23 @@
     Mostly during our evaluations the bottleneck to throughput was our input rate.
 
 
-    \subsection{}
+    \section{Pure throughput}
+    ### Push leg
+    #### Description: stress test
+    Firstly we defined some fences for some movers.
+    Then we sent a socking stream of location-updates into the system.
+    We have graphs that show the total number of intersections happening in push leg of system.
+    We repeated this experiment while varying the shock size in order to realize the peak throughput
+    of system with current available resources.
+
+    #### Experiment 1
+    ##### Deployment view
+    - Application              , #of instances,     RAM       ,      CPU
+    - location-update-publisher,      4       ,         500 MB,   500 Mhz
+    - location-aggregate       ,      3       ,        2500 MB,  2000 Mhz
+    - realtime-fencing         ,      4       ,         800 MB,  700 Mhz
+    - location-updates topic has replication factor of 3 and 12 partitions
+    #### Result
 
 
 

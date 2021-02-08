@@ -569,6 +569,106 @@
 
 
 
+    \section{Underlying Ideas and sciense}
+    In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
+    We cover them only to the extent that context of this thesis allows.
+
+    \subsection{Stream processing}
+
+    \subsection{Geofencing}
+
+
+    \subsubsection{WKT}
+
+    \subsection{Microservices}
+
+
+
+    \chapter{Evaluation}
+    In this chapter we explain the process and results of evaluating FenceX.
+    This process consist of many experiments with different setup and goals.
+    Each experiment had a preparation phase, execution, observation and finally comparison.
+
+    \section{Deployment}
+    The deployment configuration for FenceX microservices in production depends on the exact needs of business.
+    It is also always limited to the hardware resources available, like any other software.
+    During evaluation of FenceX for this thesis we had access to 4 virtual machines with the following resources
+    available to them.
+    \begin{center}
+        \begin{tabular}{ c c c c}
+            Server  & CPU CORES & RAM(GB)  & Main responsibility     \\
+            server1 & 8         & 16       &       Master keeper      \\
+            server2 & 4         & 8        &       Nomad worker node \\
+            server3 & 4         & 8        &       Nomad worker node \\
+            server4 & 4         & 16       &       Benchmarking    \\
+        \end{tabular}
+    \end{center}
+
+
+    Figure \ref{fig:infrastructure} illustrates how FenceX deployment looks from infrastructure point of view in a
+    possible evaluation scenario.
+    The only difference compared to other evaluation scenarios is the number of deployed instances of FenceX
+    microservices like realtime-fencing.
+
+    \begin{figure}[ht]
+        \caption{FenceX infrastructure setup for evaluation - larger size available in the appendix}
+        \label{fig:infrastructure}
+        \includegraphics[scale=images/Infrsutracture.png]
+        \centering
+    \end{figure}
+
+    \ref{fig:infrastructure} does not include server4 since that server only run an instance of benchmarking app
+    which is not part of the FenceX solution package.
+    Nevertheless, we have deployed another instance of bench-marking into server1 getting high throughput out of
+    bench-marking applications is a very expensive in terms of resources.
+
+    \paragraph{}
+    After preparing the infrastructure, Nomad calculated the whole available resources to the application that will
+    be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memrory. ??? I'm not sure it's CPU power
+    per core or in totall???
+
+    \subsection{Bench-marking app}
+    Before diving into the test cases, it worth the effort to explain how bench-marking app works and what options it
+    provides.
+
+    Generally speaking it is a microservice similar to other services in FenceX.
+    It regitser itself into Consul and has HTTP APIs.
+    It is based on spring-webflux reactive stack in order to handle IO better.
+    The role of bench-marking is to imitate the behaviour of real world mover location report publishers,
+    smartwatches or car gps modules for example.
+
+    bnech-marking has a dataset of real taxi trips ??thanks to Cabonline generousness??.
+    Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one of
+    those
+    points.
+    The points are in form of coordinates (latitude, longitude) and the fences are WKT strings.
+    Eah trip has an average of 17 points and in total around 500 trips are in the database.
+
+    \paragraph{}
+    bench-marking can send HTTP requests to realtime-fencin and define fences for movers.
+    For simplicity mover ID will the trip ID.
+
+    \paragraph{}
+    bench-marking can send HTTP requests to locatin-update-publisher and report coordinates for each trip.
+    The result in FenceX will be stream of location updates published into the pipeline.
+
+    \paragraph{}
+    bench-marking can send HTTP requests to location-aggregate and query its location database against the fence
+    defined for each trip.
+
+    bench-marking can do operations mentioned above for all the trips repeatedly very fast in order to push a
+    stressful load of inputs into the FenceX pipeline.
+    It can also keep the size of load low while keeping it ongoing (non stop) over time.
+
+    It appeared that producing stressful loads of HTTP request or ongoing flows of them is a very expensive operation
+    in terms of memory usage and CPU usage to some extent.
+    Mostly during our evaluations the bottleneck to throughput was our input rate.
+
+
+    \subsection{}
+
+
+
     \nocite{*}
     \bibliography{sources}
     \bibliographystyle{IEEEtran}

@@ -668,19 +668,37 @@
 
     bench-marking can do operations mentioned above for all the trips repeatedly very fast in order to push a
     stressful load of inputs into the FenceX pipeline.
-    It can also keep the size of load low while keeping it ongoing (non stop) over time.
+    It can also keep the size of load low while keeping it ongoing (non-stop) over time.
 
     It appeared that producing stressful loads of HTTP request or ongoing flows of them is a very expensive operation
     in terms of memory usage and CPU usage to some extent.
     Mostly during our evaluations the bottleneck to throughput was our input rate.
 
-
     \section{Pure throughput}
-    ### Push leg
-    #### Description: stress test
-    Firstly we defined some fences for some movers.
-    Then we sent a socking stream of location-updates into the system.
-    We have graphs that show the total number of intersections happening in push leg of system.
+    In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
+    calculate the peak throughput based on overall available resources.
+    Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.
+    In on demand style, the input rate is the number of HTTP reuqests per second that system receives.
+    For realtime operations, the input rate will be number of location reports arrived at system per second.
+    As mentioned previously, for each setup, exists a threshold for input rate above which throughput won't go any
+    higher by increasing input.
+
+    \paragraph{}
+    In order to calculate the throughput in each experiment, we use a combination of tools, Prometheus and Grafana.
+    Prometheus is a time series database that polls different types of metrics out of each of our FenceX
+    microservices on a frequent basis.
+    Grafana is a  visualization tool that reads metric data from Prometheus and illustrates it into a veriety of graphs.
+    The metrics can be general like CPU usage or number of JVM threads.
+    They can also be custom to each application like number of fence-point intersection calculations.
+    Using this setup, we created realtime graphs that shows pull and push throughput of FenceX in addition to other
+    information like push and poll input rate.
+    As a result we do not need to calculate the throughput after each experiment.
+    We can just have a look at corresponding graphs during execution of test scenarion.
+
+    \subsection{Push leg}
+    Firstly, we define fences for movers using all the trips in the bench-marking application database.
+    Then we sent a socking stream of location reports into the system.
+    We have graphs prodcued that show the total number of intersections happening in push leg of system.
     We repeated this experiment while varying the shock size in order to realize the peak throughput
     of system with current available resources.
 

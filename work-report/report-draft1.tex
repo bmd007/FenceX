@@ -170,10 +170,10 @@
     \end{itemize}
 
     \begin{figure}[ht]
-        \caption{Logical data flow graph of FenceX - larger size available in the appendix}
+        \caption{Logical data flow graph of FenceX}
         \label{fig:logical-dfg}
         \includegraphics[scale=0.2]{images/logical-data-flow-diagram.png}
-        \centering
+       
     \end{figure}
 
     \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line.
@@ -205,7 +205,11 @@
     As described previously, FenceX provides two styles of geofencing, On demand and real time.
 
     Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature.
-    Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic. The fence will be checked against the whole data base of mover locations. \textbf{location-aggregate} is responsible for this style of fencing. Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg. So \textbf{location-aggregate} is poll leg of FenceX.
+    Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic.
+    The fence will be checked against the whole data base of mover locations.
+    \textbf{location-aggregate} is responsible for this style of fencing.
+    Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg.
+    So \textbf{location-aggregate} is poll leg of FenceX.
 
     Calculating fence-point intersection for every location report, on the other hand, is of real time nature.
     For each new location report, system pushes a intersection calculation result.
@@ -218,10 +222,10 @@
 
 
     \begin{figure}[ht]
-        \caption{Physical data flow graph of FenceX - larger size available in the appendix}
+        \caption{Physical data flow graph of FenceX}
         \label{fig:physical-dfg}
         \includegraphics[scale=0.2]{images/physical-data-flow-diagram.png}
-        \centering
+       
     \end{figure}
 
     Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be deployed as instances of microservices containing stream processing pipe line tasks. Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
@@ -416,7 +420,7 @@
 
     \section{Non functional characteristics}
     In this section we describe how different non-functional requirements of system has been achieved based on the
-    design and architectueral decisions.
+    design and architectural decisions.
     \subsection{Availability}
     Availability has many aspects in software development specifically when it comes to distributed systems.
     The main practice to achieve high availability is to scale out meaning deploying more than one instance of the
@@ -566,8 +570,7 @@
 
     We calculate the push leg throughput by increasing a counter everytime FenceX calculates a fence-point intersection.
     This counter is a metric gathered every now and again by a time series database called Prometheus.
-
-
+    
 
     \section{Underlying Ideas and sciense}
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
@@ -600,7 +603,7 @@
             server1 & 8         & 16       &       Master keeper      \\
             server2 & 4         & 8        &       Nomad worker node \\
             server3 & 4         & 8        &       Nomad worker node \\
-            server4 & 4         & 16       &       Benchmarking    \\
+            server4 & 4         & 16       &       Benchmarking      \\
         \end{tabular}
     \end{center}
 
@@ -611,10 +614,9 @@
     microservices like realtime-fencing.
 
     \begin{figure}[ht]
-        \caption{FenceX infrastructure setup for evaluation - larger size available in the appendix}
+        \caption{FenceX infrastructure setup for evaluation}
         \label{fig:infrastructure}
-        \includegraphics[scale=images/Infrsutracture.png]
-        \centering
+        \includegraphics[scale=0.2]{images/Infrsutracture.png}
     \end{figure}
 
     \ref{fig:infrastructure} does not include server4 since that server only run an instance of benchmarking app
@@ -623,8 +625,8 @@
     bench-marking applications is a very expensive in terms of resources.
 
     It is also important to note that FenceX had 4 major Kafka topics.
-    \textit{fence_event_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
-        realtime-fencing-fence-state-store-changelog}.
+    \textit{fence\_event\_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
+    realtime-fencing-fence-state-store-changelog}
     All of these topics were configred to have 3 replicas and 12 partitions.
     These numbers are selected corresponding to availalbe resources to the overal system.
     The process of selecting them correctly is out of the countext of this thesis.
@@ -655,7 +657,7 @@
     Eah trip has an average of 17 points and in total around 500 trips are in the database.
 
     \paragraph{}
-    bench-marking can send HTTP requests to realtime-fencin and define fences for movers.
+    bench-marking can send HTTP requests to realtime-fencing and define fences for movers.
     For simplicity mover ID will the trip ID.
 
     \paragraph{}
@@ -710,42 +712,72 @@
     \subsubsection{Experiment 1}
     \paragraph{Deployment view}
     \begin{center}
-        \begin{tabular}{ c c c c}
-            Application               &     #of instances        & CPU(MHz)  & RAM(MB)    \\
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
             location-update-publisher &          4               & 500       &   500      \\
-            location-aggregate        &          3               & 2000 Mhz  &   2500 MB  \\
-            realtime-fencing          &                          & 700       &   800      \\
+            location-aggregate        &          3               & 2000      &   2500     \\
+            realtime-fencing          &          4               & 700       &   800      \\
         \end{tabular}
     \end{center}
 
     \paragraph{Results}
     \begin{figure}[ht]
-        \caption{FenceX push throughput ex1-1 - larger size available in the appendix}
+        \caption{FenceX push throughput ex1-1}
         \label{fig:ex1-1}
-        \includegraphics[scale=images/evaluation/ex1-benchmarking(15,6).png]
-        \centering
+        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(15,6).png}
     \end{figure}
 
     \begin{figure}[ht]
-        \caption{FenceX push throughput ex1-2 - larger size available in the appendix}
+        \caption{FenceX push throughput ex1-2}
         \label{fig:ex1-2}
-        \includegraphics[scale=images/evaluation/ex1-benchmarking(19,7).png]
-        \centering
+        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(19,7).png}
     \end{figure}
 
     \begin{figure}[ht]
-        \caption{FenceX push throughput ex1-3 - larger size available in the appendix}
+        \caption{FenceX push throughput ex1-3}
         \label{fig:ex1-3}
-        \includegraphics[scale=images/evaluation/ex1-benchmarking(22,9).png]
-        \centering
+        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(22,9).png}
     \end{figure}
 
     \begin{figure}[ht]
-        \caption{FenceX push throughput ex1-4 - larger size available in the appendix}
+        \caption{FenceX push throughput ex1-4}
         \label{fig:ex1-4}
-        \includegraphics[scale=images/evaluation/ex1-benchmarking(23,10).png]
-        \centering
+        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(23,10).png}
     \end{figure}
+
+    The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3} and \ref{fig:ex1-4} illustrate input rate
+    (location-updates per second) with green line and push throughput (number of fence-point intersection
+    calculations per second) with the blue line.
+    These figures show that when we tried different input rates (ranging from 8K/s to 15K/s), the throughput was
+    following the change patterns in input rate.
+    Also, throughput were mainly always as high as input rate.
+    The highest input rate we managed to produce during these experiments was around 15K location updates per second
+    and FenceX just managed to handle it very well with the given deployment setup.
+
+    \subsubsection{Experiment 2}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          5               & 400       &   700      \\
+            location-aggregate        &          3               & 2200      &   2600     \\
+            realtime-fencing          &          5               & 400       &   700      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Results}
+    \begin{figure}[ht]
+        \caption{FenceX push throughput ex2}
+        \label{fig:ex2}
+        \includegraphics[scale=0.4]{images/evaluation/ex2-benchmarking(24,10).png}
+    \end{figure}
+    The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1.
+    
+    So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
+    application.
+    We can clearly see in the graphs that regardless of setup, push throughput (intersections/sec) follows pretty
+    much the exact parent of changes in input rate (location updates/sec).
+    So there is no point in continuing push throughput experiments with current available hardware power.
 
 
 

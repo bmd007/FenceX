@@ -1,5 +1,7 @@
 /articles/
 
+/auxil/
+
 HELP.md
 .gradle
 /build/

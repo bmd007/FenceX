@@ -600,7 +600,7 @@
     \begin{center}
         \begin{tabular}{ c c c c}
             Server  & CPU CORES & RAM(GB)  & Main responsibility     \\
-            server1 & 8         & 16       &       Master keeper      \\
+            server1 & 8         & 16       &       Master keeper     \\
             server2 & 4         & 8        &       Nomad worker node \\
             server3 & 4         & 8        &       Nomad worker node \\
             server4 & 4         & 16       &       Benchmarking      \\
@@ -644,12 +644,12 @@
     provides.
 
     Generally speaking it is a microservice similar to other services in FenceX.
-    It regitser itself into Consul and has HTTP APIs.
+    It registers itself into Consul and has HTTP APIs.
     It is based on spring-webflux reactive stack in order to handle IO better.
     The role of bench-marking is to imitate the behaviour of real world mover location report publishers,
     smartwatches or car gps modules for example.
 
-    bnech-marking has a dataset of real taxi trips ??thanks to Cabonline generousness??.
+    bench-marking has a dataset of real taxi trips ??thanks to Cabonline generousness??.
     Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one of
     those
     points.
@@ -848,6 +848,126 @@
     So there is no point in continuing poll throughput experiments with current available hardware.
     However, the highest input rate we managed to produce during these experiments was in the range of [12-13]K queries
     per second which FenceX just managed to handle very well.
+
+
+    \section{Availability}
+    In this section we cover the experiments we have conducted in order to test availability of FenceX.
+    More precisely, we start an ongoing load or stream of input.
+    Once throughput becomes stable, we restart one of the instances of involved microservices.
+    The overall expectation is that during the restart, until the service becomes up and running again, the throughput
+    goes down and afterward goes up again to the previous value.
+    The main factor affecting the time takes until the service is up and running again is re-balancing.
+    Kafka topics have consumer groups.
+    Each member of a group, listens to a subset of partitions of that topic.
+    This essentially results in data parallelism.
+    A topic can have multiple groups listening to it which essentially is foundation of task parallelism.
+    Re-balancing happens when one of the group members becomes unhealthy and stops subscribing to its assigned
+    partitions.
+    At this moment, other healthy group member should take over the dangling partitions.
+    The processes of reassigning the dangling partitions to healthy subscribers is called re-balancing.
+    The time a possibly successful re-balancing takes depends on the number of partitions and available
+    healthy subscribers.
+    So the time takes until throughput goes back to previous value is also not fixed.
+
+    Please note that after a restart, there will be two re-balancings.
+    One will be once the service under restart goes down and one once it come back up and running.
+    If the remaining services after first re-balancing, had enough resources availalbe, the throughput won't change
+    that much.
+    Specially for lower incoming loads.
+
+    \subsection{Push leg}
+    The process experiments are as following:
+    \begin{itemize}
+        \item[1-] We defined fences for movers using all the trips in the bench-marking application database.
+        \item[2-] We start an ongoing stream of location report toward FenceX.
+        \item[3-] We wait until throughput becomes stable.
+        \item[4-] We restart on of the instances of realtime-fencing.
+        \item[5-] We assert that throughput drops.
+        \item[6-] We wait until successful re-balancing.
+        \item[7-] We assert that throughput is back to previous value.
+        \item[8-] We repeat the experiment with difference of restarting two instances instead of one.
+    \end{itemize}
+
+    \subsubsection{Experiment 5}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          5               & 400       &   700      \\
+            location-aggregate        &          2               & 2700      &   2700     \\
+            realtime-fencing          &          6               & 400       &   800      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Results}
+    \begin{figure}[ht]
+        \caption{FenceX push leg availability ex5-1}
+        \label{fig:ex5-1}
+        \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
+    \end{figure}
+
+    \begin{figure}[ht]
+        \caption{FenceX push leg availability ex5-2}
+        \label{fig:ex5-2}
+        \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
+    \end{figure}
+
+    In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
+    Green line illustrates the ongoing input stream of location updates and pink point shows
+    number of up and running realtime-fencing instances.
+    As you can see in \ref{fig:ex5-1} and \ref{fig:ex5-2}, there are two points in the timeline at which number of
+    realtime-fencing
+    instances goes down (by 1 and 2) and later comes back to 6 again.
+    During the time which takes for all 6 instances to be up and running again, throughput slightly drops and
+    eventually recovers.
+    Since we are using kafka topics as durable storage of location updates, the location updates which
+    didn't get a chance to get processed, get it after re-balancing.
+    As a result, we have even a higher throughput than input rate temporarily after re-balancing finishes.
+
+    \subsection{Poll leg}
+    The process experiments are as following:
+    \begin{itemize}
+        \item[1-] We defined fences and sent location updates for movers using all the trips in the bench-marking
+        application database.
+        \item[2-] We start an ongoing load of queries (query by fence) to FenceX.
+        \item[3-] We wait until throughput becomes stable.
+        \item[4-] We restart on of the instances of location-aggregate.
+        \item[5-] We assert that throughput drops.
+        \item[6-] We wait until successful re-balancing.
+        \item[7-] We assert that throughput is back to previous value.
+        \item[8-] We repeat the experiment with difference of restarting two instances instead of one.
+    \end{itemize}
+
+    \subsubsection{Experiment 7??}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          0               & 400       &   700      \\
+            location-aggregate        &          4               & 2700      &   2700     \\
+            realtime-fencing          &          0               & 400       &   800      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX poll leg availability ex7}
+        \label{fig:ex7}
+        \includegraphics[scale=0.4]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
+    \end{figure}
+
+    In figure \ref{fig:ex7} the purple line is essentially the input rate (number of queries received by FenceX per
+    second)
+    and the yellow line shows the rate of queries answered successfully.
+    Red line shows how many queires FenceX failed to respond.
+    A failure to respond in this incoming load range means the service that was supposed to answer the query was not
+    up and running (due to restart) at that moment.
+    As you can see once restart and re-balancing finishes successfully, the throughput increases back to the previous
+    value and error rate drop back to zero.
+    Please note that re-balancing has no direct affect on queries by fence.
+    However, health of each Kafka or Kafka Stream application is dependent to a successful re-balancing.
+
+
 
 
     \nocite{*}

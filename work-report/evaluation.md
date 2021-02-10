@@ -166,7 +166,7 @@ reports its status to Consul (service registry), Consul asks services about thei
 (Initially it's up to Nomad to tell about instances to Consul).
 So when we restart an instance of location-aggregate, consul won't get informed about it
 soon enough and keeps giving IP of the restarted instance to bench-marking application.
-Which leads to queries reaching the instance when it's state it under preparation and
+Which leads to queries reaching the instance when it's state is under preparation and
 resulting errors avoids a successful restart.
 
 One way to solve this in production is to use BLUE/GREEN deployment strategy. This approach is

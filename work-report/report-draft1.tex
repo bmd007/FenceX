@@ -616,7 +616,7 @@
     \begin{figure}[ht]
         \caption{FenceX infrastructure setup for evaluation}
         \label{fig:infrastructure}
-        \includegraphics[scale=0.2]{images/Infrsutracture.png}
+        \includegraphics[scale=0.6]{images/Infrsutracture.png}
     \end{figure}
 
     \ref{fig:infrastructure} does not include server4 since that server only run an instance of benchmarking app
@@ -702,9 +702,9 @@
     \subsection{Push leg}
     The process of push throughput experiments are as following:
     \begin{itemize}
-        \item[1-] We defined fences for movers using all the trips in the bench-marking application database.
-        \item[2-] We sent a shocking stream of location reports into the FenceX.
-        \item[3-] We checked the throughput.
+        \item[1-] Define fences for movers using all the trips in the bench-marking application database.
+        \item[2-] send a shocking stream of location reports into the FenceX.
+        \item[3-] Check the throughput.
         \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
         more CPU) until finding peak throughput and/or a possible upper bound on throughput.
     \end{itemize}
@@ -783,10 +783,10 @@
     \subsection{Poll leg}
     The process of poll throughput experiments are as following:
     \begin{itemize}
-        \item[1-] We defined fences for movers using all the trips in the bench-marking application database.
-        \item[2-] We sent a many location updates to FenceX.
-        \item[2-] We sent a shocking load queries (query by fence) to FenceX.
-        \item[3-] We checked the throughput.
+        \item[1-] Define fences for movers using all the trips in the bench-marking application database.
+        \item[2-] Send a many location updates to FenceX.
+        \item[2-] Send a shocking load queries (query by fence) to FenceX.
+        \item[3-] Check the throughput.
         \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
         more MEMORY) until finding peak throughput and/or a possible upper bound on throughput.
     \end{itemize}
@@ -878,14 +878,14 @@
     \subsection{Push leg}
     The process experiments are as following:
     \begin{itemize}
-        \item[1-] We defined fences for movers using all the trips in the bench-marking application database.
-        \item[2-] We start an ongoing stream of location report toward FenceX.
-        \item[3-] We wait until throughput becomes stable.
-        \item[4-] We restart on of the instances of realtime-fencing.
-        \item[5-] We assert that throughput drops.
-        \item[6-] We wait until successful re-balancing.
-        \item[7-] We assert that throughput is back to previous value.
-        \item[8-] We repeat the experiment with difference of restarting two instances instead of one.
+        \item[1-] Define fences for movers using all the trips in the bench-marking application database.
+        \item[2-] Start an ongoing stream of location report toward FenceX.
+        \item[3-] Wait until throughput becomes stable.
+        \item[4-] Restart on of the instances of realtime-fencing.
+        \item[5-] Assert that throughput drops.
+        \item[6-] Wait until successful re-balancing.
+        \item[7-] Assert that throughput is back to previous value.
+        \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
 
     \subsubsection{Experiment 5}
@@ -929,13 +929,13 @@
     \begin{itemize}
         \item[1-] We defined fences and sent location updates for movers using all the trips in the bench-marking
         application database.
-        \item[2-] We start an ongoing load of queries (query by fence) to FenceX.
-        \item[3-] We wait until throughput becomes stable.
-        \item[4-] We restart on of the instances of location-aggregate.
-        \item[5-] We assert that throughput drops.
-        \item[6-] We wait until successful re-balancing.
-        \item[7-] We assert that throughput is back to previous value.
-        \item[8-] We repeat the experiment with difference of restarting two instances instead of one.
+        \item[2-] Start an ongoing load of queries (query by fence) to FenceX.
+        \item[3-] Wait until throughput becomes stable.
+        \item[4-] Restart on of the instances of location-aggregate.
+        \item[5-] Assert that throughput drops.
+        \item[6-] Wait until successful re-balancing.
+        \item[7-] Assert that throughput is back to previous value.
+        \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
 
     \subsubsection{Experiment 7??}
@@ -957,8 +957,7 @@
     \end{figure}
 
     In figure \ref{fig:ex7} the purple line is essentially the input rate (number of queries received by FenceX per
-    second)
-    and the yellow line shows the rate of queries answered successfully.
+    second) and the yellow line shows the rate of queries answered successfully.
     Red line shows how many queires FenceX failed to respond.
     A failure to respond in this incoming load range means the service that was supposed to answer the query was not
     up and running (due to restart) at that moment.
@@ -967,6 +966,138 @@
     Please note that re-balancing has no direct affect on queries by fence.
     However, health of each Kafka or Kafka Stream application is dependent to a successful re-balancing.
 
+
+    \section{Strong scalability}
+    If a software has strong scalability properties means providing same load, the more you scale it out, the better
+    it performances.
+    For a given circumstance, there might be a point after which scaling out more won't affect the performance anymore.
+    The load can be data set size, table size, incoming http query rate and ... .
+    Performance is also case and context dependent.
+    It can be query latency, throughput and ... .
+    In stream processing systems like the load is the rate of input, rate of incoming events, the rate at
+    which source produces input in to the piple line.
+    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP request for queries by
+    fence.
+    And, for push leg is the rate at which location reports arrive.
+
+    Performance in case of our experiments for FenceX specifically is push leg and poll leg throughput.
+
+    The process of strong scalability experiments are as following:
+    \begin{itemize}
+        \item[1-] Define fences for movers using all the trips in the bench-marking application database.
+        \item[2-] Start an ongoing stream of location report with fixed rate toward FenceX.
+        \item[3-] Deploy only one instance of realtime-fencing (should not to be rich in resources, we want it to
+        be overwhelmed).
+        \item[4-] Check the throughput. Hopefully it is much lower than the input rate.
+        \item[5-] Deploy one more instances of realtime-fencing with exactly same resources as previous one.
+        \item[6-] Assert an increase in throughput.
+        \item[7-] Keep adding instances and asserting increase in throughput until throughput stops increasing.
+    \end{itemize}
+
+    During these experiments, each time we deploy one more instance of realtime-fencing, a re-balancing happens which
+    avoids some incoming location updates from being processed.
+    Those location updates get buffered in the topic and after re-balancing will get their chance to be processed.
+    A direct consequence of such buffering is that at some points in the experiments, the throughput we observe is
+    higher than the input rate.
+    This is because the input stream is ongoing and fixed rate.
+
+    \subsubsection{Experiment 8}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 200       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          1               & 30       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg strong scalability ex8}
+        \label{fig:ex8}
+        \includegraphics[scale=0.4]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
+    \end{figure}
+
+    In figure \ref{fig:ex8} the green line is essentially the input rate (number of location updates per second),
+    yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
+    deployed instances of realtime-fencing.
+    Figures in following push leg string scalability experiments can also be read in the same way as experiment 8.
+
+    So \ref{fig:ex8} illustrates that one instance of realtime-fencing with the rather low given resources, can only
+    handle one 3rd (5K out of 15K) of input rate.
+
+
+    \subsubsection{Experiment 9}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 200       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          2               & 30       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg strong scalability ex9}
+        \label{fig:ex9}
+        \includegraphics[scale=0.4]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
+    \end{figure}
+
+    Looking at figure \ref{fig:ex9} we can easily observ that once the second instance is up and running, after
+    re-balancing, throughput goes proportionally up.
+    From 5K/s to 10K/s.
+    At this point we can guess that without chaning anything, just adding one more instance of realtime-fencing
+    should be enough to cover the whole 15K/s input rate.
+    15K location updates per second is the highest input rate that we could produce in a stable manner.
+
+    \subsubsection{Experiment 10}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 200       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          3               & 30       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg strong scalability ex10}
+        \label{fig:ex10}
+        \includegraphics[scale=0.4]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
+    \end{figure}
+    As we expected, deploying three intances of realtime-fencing with the given resources, was enough to process 15K
+    location updates per second.
+    Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
+    Around the end parts of the graph, throughput is higher than input rate.
+
+    \subsubsection{Experiment 11}
+    Now in order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
+    add another instance as the final step.
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 200       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          4               & 30       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg strong scalability ex11}
+        \label{fig:ex11}
+        \includegraphics[scale=0.4]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
+    \end{figure}
+    The clear observation is that adding one more instance didn't have any special effect on the throughput.
+    This is expected since throughput can not exceed input rate regardless of processing power.
+    However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
+    graph.
 
 
 

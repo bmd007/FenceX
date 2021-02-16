@@ -1332,6 +1332,84 @@
     We have concluded that push leg of FenceX managed to scale well in face of increasing load.
 
 
+    \subsection{Poll leg}
+    The process of poll leg weak scalability experiments are as following:
+    \begin{itemize}
+        \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
+        \item[2-] Start an ongoing load of queries (query by fence) with fixed low rate.
+        \item[3-] Deploy only one instance of location-aggregate (should not be too rich in resources, we want it to
+        be overwhelmed).
+        \item[4-] Check the throughput. Hopefully it is equal to input rate.
+        \item[5-] Deploy one more instances of location-aggregate with exactly same resources as previous one. Also,
+        increase the input rate (like double).
+        \item[6-] Assert that throughput covers the input rate.
+        \item[7-] Keep adding instances, increasing input rate and asserting increase in throughput until throughput
+        stops increasing.
+    \end{itemize}
+
+    Relaying on the observations from previous experiments, two instances of location-aggregate (with minimum
+    resources for working smoothly) can easily cover our maximum capacity for producing input load.
+    So there is no point in carrying out weak scalability experiments for poll leg.
+
+    \section{Free fall scalability}
+    In order to stress test stream processing systems or when trying to find out how they can scale under high rates
+    of input load, naturally we need to be able to produce high rates of input in the first place.
+    This can be challenging when the input data is complex to produce and/or available resources to our input
+    producers is limited.
+    Stream processing systems relay on some sort of buffering which means events should be stored somewhere so
+    that processors can handle them when they are ready.
+    That's how they get some sort of back pressure in reactive systems terminology.
+    In case of FenceX, that buffer is the Kafka topics which can grow very large without any problem.
+
+    So instead of trying to produce a high rate of input in realtime, we can buffer large number of events in a Kafka
+    topic (waiting to be picked up and processed) while processors are down.
+    When enough events got accumulated, we stop buffering event and deploy event processors.
+    Now processors can read the events with the least possible IO involved.
+    Applying this approach, we can assess how well an event processor can be scaled when there is almost no factor
+    involved other than input rate and processing power.
+
+    \subsection{Push leg}
+    The process of free fall scalability experiment is as following:
+    \begin{itemize}
+        \item[1-] Play with different input rates and deployment configurations to get a feeling of how to tune the
+        system for best performance
+        \item[2-] Undeploy all of the realtime-fencing instances.
+        \item[3-] Start an ongoing stream of location report with fixed rate toward FenceX.
+        \item[4-] Wait 5 minutes or so.
+        \item[5-] Now that there is plenty of location updates buffered in the Kafka topic, stop the stream of
+        location updates.
+        \item[6-] Deploy realtime-fencing instances according to the previously discovered deployment configuration.
+        \item[7-] Check the throughput and assert that it's much higher than maxixmum oberserved throughput in
+        previous experiments.
+    \end{itemize}
+
+
+    \subsubsection{Experiment 24}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &        4 - 0             & 400       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &        0 - 12            & 60        &   500      \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg free fall scalability ex24}
+        \label{fig:ex24}
+        \includegraphics[scale=0.4]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
+    \end{figure}
+    In figure \ref{fig:ex24} the green line is input rate (number of location updates per second),
+    yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
+    deployed instances of realtime-fencing.
+    Orange dots illustrates number of up and running instances of location-update-publisher.
+    We can clearly observe that after re-balancing among 10 newly deplyed instance of realtime-fencing is finished,
+    throughput has picked very fast to about 65K fence-point intersections per second.
+
+
+
 
     \nocite{*}
     \bibliography{sources}

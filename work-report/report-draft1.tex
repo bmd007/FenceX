@@ -1368,6 +1368,10 @@
     Applying this approach, we can assess how well an event processor can be scaled when there is almost no factor
     involved other than input rate and processing power.
 
+    This style of testing is only applicable to push leg since the concept of buffering work differently in terms of
+    HTTP request.
+    Basically HTTP based communication does not support back pressure.
+
     \subsection{Push leg}
     The process of free fall scalability experiment is as following:
     \begin{itemize}
@@ -1405,7 +1409,7 @@
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
     deployed instances of realtime-fencing.
     Orange dots illustrates number of up and running instances of location-update-publisher.
-    We can clearly observe that after re-balancing among 10 newly deplyed instance of realtime-fencing is finished,
+    We can clearly observe that after re-balancing among 10 newly deployed instance of realtime-fencing is finished,
     throughput has picked very fast to about 65K fence-point intersections per second.
 
 

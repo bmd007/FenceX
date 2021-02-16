@@ -1023,7 +1023,7 @@
     In figure \ref{fig:ex8} the green line is essentially the input rate (number of location updates per second),
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
     deployed instances of realtime-fencing.
-    Figures in following push leg string scalability experiments can also be read in the same way as experiment 8.
+    Figures in following push leg strong scalability experiments can also be read in the same way as experiment 8.
 
     So \ref{fig:ex8} illustrates that one instance of realtime-fencing with the rather low given resources, can only
     handle one 3rd (5K out of 15K) of input rate.
@@ -1118,7 +1118,7 @@
 
     During these experiments, each time we deploy one more instance of location-aggregate, a re-balancing happens which
     avoids some queries from being answered.
-    Those queires will be considered as failed.
+    Those queries will be considered as failed.
 
     \subsubsection{Experiment 17}
     \paragraph{Deployment view}
@@ -1180,6 +1180,156 @@
     About half of the input rate we can produce at maximum in a stable ongoing manner.
     So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
 
+
+
+
+
+    \section{Weak scalability}
+    If a software has weak scalability properties, it means providing a load which is increasing step by step over
+    time, the more you scale the software out, the better it performs.
+    For a given circumstance, there might be a point after which more scale out or more load won't affect
+    the performance anymore.
+    The load can be data set size, table size, incoming http query rate and ... .
+    Performance is also case and context dependent.
+    It can be query latency, throughput and ... .
+    In stream processing systems, load is the rate of input, rate of incoming events, the rate at
+    which source publishes input in to the piple line.
+    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
+    fence.
+    And, for push leg is the rate at which location reports arrive.
+
+    Performance in case of our experiments for FenceX specifically, is throughput of push leg and poll leg.
+
+    \subsection{Push leg}
+    The process of weak scalability experiments are as following:
+    \begin{itemize}
+        \item[1-] Define fences for movers using all the trips in the bench-marking application database.
+        \item[2-] Start an ongoing stream of location report with fixed low rate toward FenceX.
+        \item[3-] Deploy only one instance of realtime-fencing (should not be too rich in resources, we want it to
+        be overwhelmed).
+        \item[4-] Check the throughput. Hopefully it is equal to input rate.
+        \item[5-] Deploy one more instances of realtime-fencing with exactly same resources as previous one. Also,
+        increase the input rate (like double).
+        \item[6-] Assert that throughput covers the input rate.
+        \item[7-] Keep adding instances, increasing input rate and asserting increase in throughput until throughput 
+        stops increasing.
+    \end{itemize}
+
+    During these experiments, each time we deploy one more instance of realtime-fencing, a re-balancing happens which
+    avoids some incoming location updates from being processed.
+    Those location updates get buffered in the topic and after re-balancing will get their chance to be processed.
+    A direct consequence of such buffering is that at some points in the experiments, the throughput we observe might be
+    higher than the input rate.
+    This is because the input stream is ongoing and fixed rate.
+
+    \subsubsection{Experiment 19}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 400       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          1               & 60       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg weak scalability ex19}
+        \label{fig:ex19}
+        \includegraphics[scale=0.4]{images/evaluation/ex19-benchmarking-ongoing-1per16sec.png}
+    \end{figure}
+
+    In figure \ref{fig:ex19} the green line is input rate (number of location updates per second),
+    yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
+    deployed instances of realtime-fencing.
+    Figures in following push leg weak scalability experiments can also be read in the same way as experiment 19.
+
+    So far with one limited in resources instance of realtime-fencing, FenceX has managed to deal with around 2K
+    location updates per second succesfully in a stable manner.
+
+    \subsubsection{Experiment 20}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 400       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          2               & 60       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg weak scalability ex20}
+        \label{fig:ex20}
+        \includegraphics[scale=0.4]{images/evaluation/ex20-benchmarking-ongoing-1per10sec.png}
+    \end{figure}
+
+    Two such instances of realtime-fencing managed to handle around 3K location updates per second.
+
+
+    \subsubsection{Experiment 21}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 400       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          4               & 60       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg weak scalability ex21}
+        \label{fig:ex21}
+        \includegraphics[scale=0.4]{images/evaluation/ex21-benchmarking-ongoing-1per6sec.png}
+    \end{figure}
+    Four such instances of realtime-fencing managed to handle around 5K location updates per second.
+
+
+    \subsubsection{Experiment 22}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 400       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          5               & 60       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg weak scalability ex22}
+        \label{fig:ex22}
+        \includegraphics[scale=0.4]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
+    \end{figure}
+    Five such instances of realtime-fencing managed to handle around 15K location updates per second.
+
+    \subsubsection{Experiment 23}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          4               & 400       &   700      \\
+            location-aggregate        &          0               & 2700      &   2700     \\
+            realtime-fencing          &          10              & 60       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX push leg weak scalability ex23}
+        \label{fig:ex23}
+        \includegraphics[scale=0.4]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
+    \end{figure}
+    Ten such instances of realtime-fencing managed to handle around 15K location updates per second.
+    However, in experiment 23 our intention was to increase input rate to above 15K/s which we did not manage due to
+    limitations on the available resources to bench-marking application.
+    So we will not continue weak scalability experiments for push log further.
+    We have concluded that push leg of FenceX managed to scale well in face of increasing load.
 
 
 

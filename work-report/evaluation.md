@@ -344,7 +344,7 @@ won't increase throughout.
 #### Result
 ![poll-benchmarking-ongoing-2*4sec](/work-report/images/evaluation/ex18-benchmarking-ongoing-2per4sec.png)
 
-we can not go further in this experiment because we can not produce a high enough input rate to overwhelm 2 intances of
+we can not go further in this experiment because we can not produce a high enough input rate to overwhelm 2 instances of
 location-aggregate
 
 conclusion ?
@@ -454,3 +454,4 @@ input load, is equivalent to stay alive during and after free fall.
 #### Result
 ![push-benchmarking-ongoing-1*2sec](/work-report/images/evaluation/ex24-benchmarking-ongoing-1per2sec.png)
 
+    

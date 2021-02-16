@@ -976,12 +976,13 @@
     It can be query latency, throughput and ... .
     In stream processing systems like the load is the rate of input, rate of incoming events, the rate at
     which source produces input in to the piple line.
-    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP request for queries by
+    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
     fence.
     And, for push leg is the rate at which location reports arrive.
 
-    Performance in case of our experiments for FenceX specifically is push leg and poll leg throughput.
+    Performance in case of our experiments for FenceX specifically, is  throughput of push leg and poll leg.
 
+    \subsection{Push leg}
     The process of strong scalability experiments are as following:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
@@ -1070,7 +1071,7 @@
         \label{fig:ex10}
         \includegraphics[scale=0.4]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
     \end{figure}
-    As we expected, deploying three intances of realtime-fencing with the given resources, was enough to process 15K
+    As we expected, deploying three instances of realtime-fencing with the given resources, was enough to process 15K
     location updates per second.
     Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
     Around the end parts of the graph, throughput is higher than input rate.
@@ -1098,6 +1099,87 @@
     This is expected since throughput can not exceed input rate regardless of processing power.
     However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
     graph.
+
+
+
+
+    \subsection{Poll leg}
+    The process of poll leg strong scalability experiments are as following:
+    \begin{itemize}
+        \item[1-] Send location reports for movers using all the trips in the bench-marking application database.
+        \item[2-] Start an ongoing load of queries (query by fence) with fixed rate.
+        \item[3-] Deploy only one instance of location-aggregate (should not be too rich in resources, we want it to be
+        overwhelmed).
+        \item[4-] Check the throughput. Hopefully it is much lower than the input rate.
+        \item[5-] Deploy one more instances of location-aggregate with exactly same resources as previous one.
+        \item[6-] Assert an increase in throughput.
+        \item[7-] Keep adding instances and asserting increase in throughput until throughput stops increasing.
+    \end{itemize}
+
+    During these experiments, each time we deploy one more instance of location-aggregate, a re-balancing happens which
+    avoids some queries from being answered.
+    Those queires will be considered as failed.
+
+    \subsubsection{Experiment 17}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          0               & 200       &   700      \\
+            location-aggregate        &          1               & 100      &   1500     \\
+            realtime-fencing          &          0               & 30       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX poll leg strong scalability ex17}
+        \label{fig:ex17}
+        \includegraphics[scale=0.4]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
+    \end{figure}
+
+    \subsubsection{Experiment 18}
+    \paragraph{Deployment view}
+    \begin{center}
+        \begin{tabular}{ c c c c }
+            Application               &  number of instances     & CPU(MHz)  & RAM(MB)    \\
+            location-update-publisher &          0               & 200       &   700      \\
+            location-aggregate        &          2               & 100      &   1500     \\
+            realtime-fencing          &          0               & 30       &   500       \\
+        \end{tabular}
+    \end{center}
+
+    \paragraph{Result}
+    \begin{figure}[ht]
+        \caption{FenceX poll leg strong scalability ex18}
+        \label{fig:ex18}
+        \includegraphics[scale=0.4]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
+    \end{figure}
+
+    In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line is represents input rate, number of incoming HTTP
+    requests.
+    Orange line illustrates throughput which is number of queries responded successully.
+    Orange dots also, show how many instances of location-aggregate are up and running.
+    As figures show, FenceX has managed to handle 2k queries
+    per second with one not so much rich instance of location-aggregate.
+    Adding one more instance resulted in throughput becoming equal to input rate (~6K queries per second).
+
+    One of the differences between push and poll leg is that, minimum resources required for poll leg to function
+    smoothly is much higher than push leg.
+    This is due to the fact that poll leg has global in memory data store.
+    Also, the amount of data exists in poll leg is substantially higher.
+    There is usually way more location updates for each mover than fences.
+    In fact currently, there will be at most one fence in push leg for each mover compared to many location updates
+    in poll leg.
+    Please note that at each instance in time, there is only one location record for each mover in location-agreggate
+    database (not many).
+    But it processes more than one location update for each mover over time.
+
+    As an overall consequence, when we deploy even one instance of location-aggregate, it's already rich enough to be
+    able to answer many HTTP requests (query by fence).
+    About half of the input rate we can produce at maximum in a stable ongoing manner.
+    So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
+
 
 
 

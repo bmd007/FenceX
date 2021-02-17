@@ -17,7 +17,7 @@ you can find out what points are in the specified geometry.
  * addiction control
 ##### poll vs push style
 In poll style of geofencing, fences are highly dynamic. So when 
-there is a fence, we use that fence to query a data base of points.
+there is a fence, we use that fence to query a database of points.
 
 In push style of geofencing, fences are less changing. Once a new position 
 update arrives for a mover, new position gets checked against being inside a

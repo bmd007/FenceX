@@ -239,7 +239,9 @@
 
     \end{figure}
 
-    Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be deployed as instances of microservices containing stream processing pipe line tasks. Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
+    Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be
+    deployed as instances of microservices containing stream processing pipe line tasks.
+    Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
 
     The combination of tasks below will be deployed as one microservice:
     \begin{itemize}
@@ -432,7 +434,7 @@
     topic so that other operation down the stream processing pipeline can use it, like alarming.
 
 
-    \section{Non functional characteristics}
+    \section{Nonfunctional characteristics}
     In this section we describe how different non-functional requirements of system has been achieved based on the
     design and architectural decisions.
 
@@ -548,8 +550,6 @@
     When system code is distributed over different code bases, a lot of people can work at the same time on the
     system and deliver value.
 
-    \subsubsection{Other scalability aspects}
-    ?????
 
     \subsection{Throughput}
     For FenceX throughput of two types of operations matter the most.
@@ -593,14 +593,101 @@
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
     We cover them only to the extent that context of this thesis allows.
 
-    \subsection{Stream processing}
-    ??
     \subsection{Geofencing}
     ??
     \subsubsection{WKT}
     ??
+
+    \subssection{Reactive systems}
+
     \subsection{Microservices}
     ??
+
+    \subsection{Stream processing \cite{flink}}
+    Stream processing refers to a special style of reactive systems.
+    It is also equivalent to data flow programming in which a graph of operators exists.
+    These operators receive events as a result of work of other operators, process them and produce other events.
+    These events represent immutable facts, something that has happened.
+    The order at which events arrive to next operator matters so usually in stream processing systems, a publish
+    subscribe pattern is an action which is implemented using some sort of queue, journal, commit log or topic.
+
+
+    The foundation of a stream processing pipeline is its data flow graph.
+    \subsubsection{Data flow graph}
+    Data flow graph is a useful tool to express and study how data is flown in a stream processing system.
+    There are two type of data flow graphs: \textbf{logical} and \textbf{physical}.
+    In a logical data flow graph nodes represent \textbf{operators} like sum, count, filter, aggregate and ... .
+    It does not give any information about deployment.
+    On the other hand, a physical data flow graph illustrates how exactly the pipeline looks when deployed.
+    Like how many instances of each \textbf{task} should be deployed.
+    Task is equivalent of operator but in physical data flow graph.
+    We implement an operator and deploy it as some tasks.
+    Similar to implementing a microservice and deploying some instances of it.
+
+    \begin{figure}[ht]
+        \caption{Example of physical data flow graph}
+        \label{physical-data-flow-graph-example}
+        \includegraphics[scale=0.4]{images/physical-data-flow-graph.png}
+    \end{figure}
+    Graph \ref{physical-data-flow-graph-example} shows an example of a physical data flow graph with 6 tasks (3
+    operators).
+    This pipeline counts occurrences of each hashtag in a stream of tweets which includes following operators:
+    \begin{itemize}
+        \item A source that brings tweets into the stream processing pipeline
+        \item A processor that extracts hashtags
+        \item A stateful processor that counts occurrences of each hashtag
+        \item A sink that represents end of this pipeline which receives realtime count of each hashtag. It might
+        save results in a file or publish them to another system.
+    \end{itemize}
+
+    \subsubsection{Parallelism}
+    There are two types of parallelism is stream processing systems:
+    \paragraph{task parallelism}
+    Tasks from different operators process same data.
+    Imagine having a stream of tweets.
+    One operator extract hashtags, another one extracts mentions and maybe another counts number of words in each
+    tweet.
+
+    \paragraph{Data parallelism}
+    Tasks from same operator process different data.
+    The data (event) in the topics of pipeline is in key:value format.
+    Data with same key ends up in the same task unless the corresponding task stops working (re-balancing).
+    Data parallelism is achievable by technics like partitioning of topic which is implemented by tools like Kafka.
+    Data parallelism is basically equivalent to concept of scaling out in microservices terminology (scaling
+    horizontally).
+
+    \subsubsection{Latency}
+    Latency, in stream processing systems, is defined as the time takes for ONE event to be processed.
+    In an ideal stream processing system, the latency reflects the actual processing work on the events.
+    Which means events don't wait to be processed.
+    In other words events get processed as soon as they arrive.
+    \textbf{95th-percentile latency value of 10ms`} is an example of expressing latency in stream processing system.
+    It means 95 percent of events are processed within 10 ms.
+    Obviously, the lower the latency, the better.
+
+    \subsubsection{Throughput}
+    Throughput, in stream processing systems, dependens on both latency and input rate.
+    So low throughput doesn't necessarily mean high latency.
+    A better metric is \textbf{peak throughput} which shows the limit on the performance of system at maximum load.
+    When system reaches peak throughput, increasing input load, will actually reduce throughput and can even lead to
+    data loss (due to buffer overflow).
+
+    \subsubsection{Operations}
+    An operator processes only ONE event at a time.
+
+    There are two types of operations:
+    \textbf{Stateless} operations like filter and map are not concerned with past.
+    They are easier to scale and more resilient.
+    While \textbf{stateful} operations keep a snapshot of past (state).
+    The state may mutate after processing each event.
+    Operations like sum, count, average, aggregate and ... are stateful.
+    Such operations are harder to scale.
+    The hardship comes from the fact that apart from scaling out the tasks, the state part assinged to each task need
+    to become co-located for the task.
+    It brings challenges like the best partitioning policy and correct key selection.
+    For example when partitioning geospatial data partitioning policy may differ based on the use case.
+
+
 
     \chapter{Evaluation}
     In this chapter we explain the process and results of evaluating FenceX.

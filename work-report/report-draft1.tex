@@ -179,10 +179,10 @@
     need to have same image of world, same data more precisely.
     The location updates or queries sent to the system by clients, can end up in any of the available instances due
     to load balancing.
-    Otherwise there should be way to shard the data between instances and tell clients how to select the correct
+    Otherwise, there should be way to shard the data between instances and tell clients how to select the correct
     instance to which send a location update or query.
     We went to replication over sharding with hope of keeping clients and data management simple.
-    So we need to some how make those instances have the same image of the world (same data) otherwise, their results
+    So we need to somehow make those instances have the same image of the world (same data) otherwise, their results
     will be inconsistent.
 
     So far we have exchanged IO for the holly inconsistency issue of distributed systems.
@@ -1177,7 +1177,7 @@
     Performance is also case and context dependent.
     It can be query latency, throughput and ... .
     In stream processing systems like the load is the rate of input, rate of incoming events, the rate at
-    which source produces input in to the piple line.
+    which source produces input in to the pipeline.
     In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
     fence.
     And, for push leg is the rate at which location reports arrive.

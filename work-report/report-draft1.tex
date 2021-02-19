@@ -95,24 +95,62 @@
 
 
     \section{Geofencing}
-    TODO expand
+    Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
+    This can be done in two styles: push and poll.
+    In poll style, a fence (geospatial shape) is queried against a database of coordinates (mover-id:geospatial point).
+    The result is all coordinates residing in the fence.
+    This type of geofencing relies on geospatial indexing.
+    So updating and querying the database of coordinates is CPU intensive.
 
+    On the other hand in push style, fences are pretty much predefined.
+    Whenever coordinates of a mover changes (a location update report arrives), an intersection check between a
+    predefined fence and the newly reported coordinate will happen.
+    Although no geosptial indexing is necessarily involved, the intersection checking operation is still CPU
+    intensive due to the required mathematical calculations.
 
-    Geofencing essentially is checking whether a geosptial point is inside a geospatial shape or not. This can be done in two styles: push and poll.
-
-    In poll style, a fence (geospatial shape) is queried against a database of coordinates (mover-id:geospatial point). The result is all of the coordinates that reside in the fence. This type of geofencing relies on geospatial indexing. So updating and querying the database of coordinates is CPU intensive.
-
-    On the other hand in push style, fences are pretty much predefined. Whenever coordinates of a mover changes (a location update report arrives), an intersection check between a predefined fence and the newly reported coordinate will happen. Although no geosptial indexing is necessarily involved, the intersection checking operation is still CPU intensive.
-
+    We can compare these two styles as following:
     \begin{itemize}
         \item In poll style we have a \textbf{database of locations} and in push style, a \textbf{database of fences}.
         \item Poll style geofencing has an \textbf{on demand} nature while push style is of \textbf{real time} nature.
-        \item Poll style fencing use cases: Taxi/police/ambulance dispatch. Disaster management.
-        \item Push style fencing use cases: Elderly/Kid/Pet care. Gambling addiction management.
+        \item Poll style fencing use cases: Taxi/police/ambulance dispatch, disaster management and ... .
+        \item Push style fencing use cases: Elderly/Kid/Pet care, (gambling) addiction management, ... .
     \end{itemize}
 
-    Please note that using poll/push terminology is an idea brought up in this thesis in order to facilitate conversations about different approaches to geofencing.
+    Please note that using poll/push terminology is an idea brought up in this thesis in order to facilitate
+    conversations about different approaches to geofencing.
 
+    \subsection{WKT \cite{WKT}}
+    In order to represent geospatial data several standards are available.
+    One of the most popular standards which most of the database systems understand out of the box is called WKT.
+    WKT (well known text) is a text mark up language which is a format for geometric information.
+    Items below are examples of WKT strings representing raw geometry data.
+    \begin{itemize}
+        \item POINT(6 10): a point with x=6 and y=10
+        \item LINESTRING(3 4,10 50,20 25): a line consisting of 3 points.
+        \item POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)): two squres one convering the other
+        \item MULTIPOINT((3.5 5.6),(4.8 10.5)): just two points
+        \item MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4)): two lines
+        \item MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))
+        \item GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))
+        \item POINT ZM (1 1 5 60)
+        \item POINT M (1 1 80)
+        \item POINT EMPTY
+        \item MULTIPOLYGON EMPTY
+    \end{itemize}
+
+    Instead of relative values for X,Y and Z, geographic coordinates (latitude, longitude) cane be used in oder to
+    represent geospatial data.
+
+    \begin{figure}[ht]
+        \caption{Texas WKT illustration}
+        \label{fig:texas}
+        \includegraphics[scale=0.4]{images/texas.png}
+    \end{figure}
+    Figure \ref{fig:texas} illustrates usage of an online tool \cite{WKTtool} to show a geospatial WKT on a map.
+    The WKT refers to borders of state Texas in US which is taken from \cite{WKTs}.
+
+    In this thesis we used WKT to represent all the invovled gepspatial data.
+    We mainly used POINT() to model locations and MULTIPOLYGON() for fences.
 
     \section{Problem statement}
     Both styles of geofencing are CPU intensive.
@@ -127,52 +165,104 @@
     In this thesis we focused on the later and tried to minimize the IO latency.
 
     \paragraph{}
-    We decided to use co-located in memory databases to minimize IO. Everything will be fine until our systems faces an amount of load which can not be handled properly even after scaling up. At this stage we scale the system out and deploy more than one instance of the program. This will also help with resiliency of system; if one of the instances of program goes down or stop responding for some reason, the system can still keep serving with remaining available instances.
+    We decided to use co-located in memory databases to minimize IO.
+    Everything will be fine until our systems faces an amount of load which can not be handled properly even after scaling up.
+    At this stage we scale the system out and deploy more than one instance of the program.
+    This will also help with resiliency of system;
+    if one of the instances of program goes down or stop responding for some reason, the system can still keep
+    serving with remaining available instances.
 
     \paragraph{}
-    Until now we achieved high throughput, scalability and resiliency by minimizing IO latency and scaling the application out. Which means we ended up with a distributed system containing some components (instances of our application) that need to have same image of world, same data more precisely. The location updates or queries sent to the system by clients, can end up in any of the available instances due to load balancing. Otherwise there should be way to shard the data between instances and tell clients how to select the correct instance to which send a location update or query. We went to replication over sharding with hope of keeping clients and data management simple. So we need to some how make those instances have the same image of the world (same data) otherwise their results will be inconsistent.
+    Until now, we achieved high throughput, scalability and resiliency by minimizing IO latency and scaling the
+    application out.
+    Which means we ended up with a distributed system containing some components (instances of our application) that
+    need to have same image of world, same data more precisely.
+    The location updates or queries sent to the system by clients, can end up in any of the available instances due
+    to load balancing.
+    Otherwise there should be way to shard the data between instances and tell clients how to select the correct
+    instance to which send a location update or query.
+    We went to replication over sharding with hope of keeping clients and data management simple.
+    So we need to some how make those instances have the same image of the world (same data) otherwise, their results
+    will be inconsistent.
 
-    So far we have exchanged IO for the holly inconsistency issue of distributed systems. So the challenge is to keep the throughput, scalability and resiliency of geofencing system high while avoiding inconsistency among it's components.
+    So far we have exchanged IO for the holly inconsistency issue of distributed systems.
+    So the challenge is to keep the throughput, scalability and resiliency of geofencing system high while avoiding
+    inconsistency among it's components.
 
     \subsection{Functional requirements}
-    Movers want their location reports be received by FenceX. This report contains the coordinate (latitude, longitude) at which mover was located when producing the report. A timestamp might be included in the report as well.
+    Movers want their location reports be received by FenceX.
+    This report contains the coordinate (latitude, longitude) at which mover was located when producing the report.
+    A timestamp might be included in the report as well.
 
-    Movers want their latest reported location to be available for being queried by their ID. (Movers want their latest reported location be memorised by system.)
+    Movers want their latest reported location to be available for being queried by their ID (Movers want their
+    latest reported location be memorised by system).
 
-    Users want to be able to send a geospatial shape (fence) to the system and in turn get movers (id:location) who are in the fence (according to their latest location report) = on demand fencing
+    Users want to be able to send a geospatial shape (fence) to the system and in turn get movers (id:location) who
+    are in the fence (according to their latest location report) = on demand fencing
 
     Users want to be able to create/update/remove/query a fence (geospatial shape) for each mover (by id).
 
-    Movers expect each of the location reports to be checked against a potentially fence for them. Which mean for each location report for each mover, potentially a fence-point intersection should be
-    calculated. The result of each intersection is if the reported coordinate located within the predefined fence. In case no fence is defined for a specific mover, no fence-point intersection should be calculated.
+    Movers expect each of the location reports to be checked against a potential fence for them.
+    Which mean for each location report for each mover, potentially a fence-point intersection should be calculated.
+    The result of each intersection is if the reported coordinate located within the predefined fence.
+    In case no fence is defined for a specific mover, no fence-point intersection should be calculated.
 
     \subsection{Nonfunctional requirements}
-    As a result of required system being a general geofencing provider, the required precision of system might vary based on the users and use cases. So FenceX should be able to ingest very high rates of location reports. Looking at potential use cases, in some the report rate could be like one report per mover every 1 minute and maximum of 1K active movers at the same time.
-    Other cases might involve 1 location report per mover every 5 second with 1M active movers. So FenceX should have a very high capacity to handle load and stress.
+    As a result of required system being a general geofencing provider,  the required precision of system might vary
+    based on the users and use cases.
+    So FenceX should be able to ingest very high rates of location reports.
+    Looking at potential use cases, in some the report rate could be like one report per mover every 1 minute and
+    maximum of 1K active movers at the same time.
+    Other cases might involve 1 location report per mover every 5 second with 1M active movers.
+    So FenceX should have a very high capacity to handle load and stress.
 
-    Since based on the use case, the required scalability of system may differ, the users of system should be able to tune the system in according to their needs. Or at least the fact that scalability requirements are not fixed over time should be factored in the design,
+    Since based on the use case, the required scalability of system may differ, the users of system should be able to
+    tune the system in according to their needs.
+    Or at least the fact that scalability requirements are not fixed over time should be factored in the design,
 
-    Availability of FenceX should relay on modules so that if something goes wrong in one part of it, the other parts keep working. If FenceX stops receiving location reports, for instance, it should be still possible to query the saved locations by mover id and/or fence. In some cases it is acceptable to miss some location updates for some movers while in others, missing location reports is not tolerable due to high precision requirements.
+    Availability of FenceX should relay on modules so that if something goes wrong in one part of it, the other parts
+    keep working.
+    If FenceX stops receiving location reports, for instance, it should be still possible to query the saved
+    locations by mover id and/or fence.
+    In some cases it is acceptable to miss some location updates for some movers while in others, missing location
+    reports is not tolerable due to high precision requirements.
 
-    The time that takes for FenceX to answer a query by fence or calculate a fence-point intersection should not be a factor of the incoming load. In other words, the latency of those two operations should be reasonably low and should not increase as the load on the system increases. Such low latency will play a important role in the overall throughput of FenceX.
+    The time that takes for FenceX to answer a query by fence or calculate a fence-point intersection should not be a
+    factor of the incoming load.
+    In other words, the latency of those two operations should be reasonably low and should not increase as the load
+    on the system increases.
+    Such low latency will play a important role in the overall throughput of FenceX.
 
-
-    Consistency level required for geofencing applications is not strong so eventual consistency will suffice. Once a location report has received, it might takes a fraction of time until the view of FenceX about corresponding mover changes. Before that, latest previously captured report and finalized view is valid and used. Same goes for predefined fences. So no need for distributed transactions or implementation of Saga as there is not much of intertwined that can go wrong.
-
+    Consistency level required for geofencing applications is not strong so eventual consistency will suffice.
+    Once a location report has received, it might takes a fraction of time until the view of FenceX about
+    corresponding mover
+    changes. Before that, latest previously captured report and finalized view is valid and used.
+    Same goes for predefined fences. So no need for distributed transactions or implementation of Saga as there is
+    not much of intertwined that can go wrong.
 
     \chapter{Suggested solution}
-    FenceX is a stream processing system designed and implemented into microservices. It can also be identified as a reactive distributed system that is applying event driven architecture for communication of its modules. These four big software architectural names are pretty much the same thing in the context of FenceX with their different being point of view. To avoid repeating same vocabulary over and over in this document, we use the terminology specific to each of these realms interchangeably on precisely when applicable. The listing below illustrates words that refer to similar things but originate to different terminologies.
+    FenceX is a stream processing system designed and implemented into microservices.
+    It can also be identified as a reactive distributed system that is applying event driven architecture for
+    communication of its modules.
+    These four big software architectural names are pretty much the same thing in the context of FenceX with their
+    different being point of view.
+    To avoid repeating same vocabulary over and over in this document, we use the terminology specific to each of
+    these realms interchangeably on precisely when applicable.
+    The listing below illustrates words that refer to similar things but originate to different terminologies.
 
     \begin{itemize}
         \item[Microservice] microservice, service, operation, event processor,  processor, subscriber, publisher, module and subsystem.
         \item[Instance] instance, task
     \end{itemize}
 
-    The exact meaning of each of the mentioned vocabulary and architectural styles will be discussed in following chapters. In case you are not familiar with any of them, please have a look at the corresponding chapters first.
+    The exact meaning of each of the mentioned vocabulary and architectural styles will be discussed in following
+    chapters.
+    In case you are not familiar with any of them, please have a look at the corresponding chapters first.
 
 
     \section{Overall system look}
-    As you can see in the figure \ref{fig:logical-dfg}, FenceX has 6 operators. Some of them are stateful and backed by a state store and some of them are stateless.
+    As you can see in the figure \ref{fig:logical-dfg}, FenceX has 6 operators.
+    Some of them are stateful and backed by a state store and some of them are stateless.
     The exact details are as below in relation to state:
 
     \begin{itemize}
@@ -192,19 +282,30 @@
     Movers send messages or http requests in order report their latest location.
     Location-update-publisher turns each report into a event and publishes it into a kafka topic called \textbf{location-updates}.
 
-    \paragraph{filter}, as the name suggests, is responsible for avoiding not desired location updates to find their way further down in the stream. Checks can be against null values or invalid latitude/longitude.
+    \paragraph{filter}, as the name suggests, is responsible  for avoiding not desired location updates to find their
+    way further down in the stream.
+    Checks can be against null values or invalid latitude/longitude.
 
-    \paragraph{location-aggregate} is responsible for keeping a view of latest location of each mover by subscribing to the stream of location updates coming out of filter. It has a local database of mover-locations which applies geospatial index on the data. As a result, the query by fence is becomes possible. So location-aggregate is responsible for answering queries both by mover id and fence (geospatial shape).
+    \paragraph{location-aggregate} is responsible for keeping a view of the latest location of each mover by
+    subscribing to the stream of location updates coming out of filter.
+    It has a local database of mover-locations which applies geospatial index on the data.
+    As a result, the query by fence is becomes possible.
+    So location-aggregate is responsible for answering queries both by mover id and fence (geospatial shape).
 
     \paragraph{fence-aggregate} is responsible to keep track of predefined fences (for real time intersection scenarios).
     It exposes HTTP APIs for CRUD operations.
-    The fences are kept in an temporal KTable (kafka streams notion of table) and backed by a durable Kafka topic.
-    In other words, each operation (CRUD) on each fence is initially a Kafka event which is later processed by fence-aggregate into a fence. The producer of those events is also fence-aggregate. In more technical terms, fence-aggregate is using event-sourcing architecture internally.
+    The fences are kept in a temporal KTable (kafka streams notion of table) and backed by a durable Kafka topic.
+    In other words, each operation (CRUD) on each fence is initially a Kafka event which is later processed by
+    fence-aggregate into a fence.
+    The producer of those events is also fence-aggregate.
+    In more technical terms, fence-aggregate is using event-sourcing architecture internally.
 
-    \paragraph{fence-location-intersection} (join) has a view of predefined fences (managed by fence-aggregate) in shape of a key:value table.
+    \paragraph{fence-location-intersection} (join) has a view of predefined fences (managed by fence-aggregate) in
+    shape of a key:value table.
     Key is id of mover for which the fence (value) is defined.
     fence-location-intersection is a join between that table and stream of location updates coming out of filter.
-    Those location updates also has a key:value form. Key is the mover id and value is the reported location.
+    Those location updates also has a key:value form.
+    Key is the mover id and value is the reported location.
     And finally, the join operation is to check if the fence in table contains the location in the update.
     The result of this intersection will be events like mover X is (not) in the predefined fence.
 
@@ -215,23 +316,25 @@
     As described previously, FenceX provides two styles of geofencing, On demand and real time.
 
     Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature.
-    Which means when ever a client demands a geofencing operation, they send a http query. In this style, fences are very dynamic.
+    Which means when ever a client demands a geofencing operation, they send a http query.
+    In this style, fences are very dynamic.
     The fence will be checked against the whole data base of mover locations.
     \textbf{location-aggregate} is responsible for this style of fencing.
-    Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are considered poll leg.
+    Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are
+    considered poll leg.
     So \textbf{location-aggregate} is poll leg of FenceX.
 
     Calculating fence-point intersection for every location report, on the other hand, is of real time nature.
     For each new location report, system pushes a intersection calculation result.
-    \textbf{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
+    \textbf{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the
+    push leg of FenceX.
     In this style the defined fences are more static and don't change frequently over time.
 
-    From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of these legs have their own characteristics and require individual attention.
+    From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of
+    these legs have their own characteristics and require individual attention.
 
 
     \section{Physical data flow graph}
-
-
     \begin{figure}[ht]
         \caption{Physical data flow graph of FenceX}
         \label{fig:physical-dfg}
@@ -240,7 +343,7 @@
     \end{figure}
 
     Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be
-    deployed as instances of microservices containing stream processing pipe line tasks.
+    deployed as instances of microservices containing stream processing pipeline tasks.
     Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
 
     The combination of tasks below will be deployed as one microservice:
@@ -250,7 +353,8 @@
         \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \textbf{realtime-fencing}. This the push leg of FenceX.
     \end{itemize}
 
-    You can see that each microservice exists two times in \ref{fig:physical-dfg} differed by color. It means FenseX deploys more than one instance of each microservice for scalability and resiliency purposes.
+    You can see that each microservice exists two times in \ref{fig:physical-dfg} differed by color.
+    It means FenseX deploys more than one instance of each microservice for scalability and resiliency purposes.
     Such characteristics will be discussed in details later.
 
     Below are the facts common about all FenceX microservices:
@@ -593,12 +697,8 @@
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
     We cover them only to the extent that context of this thesis allows.
 
-    \subsection{Geofencing}
-    ??
-    \subsubsection{WKT}
-    ??
+    \subsection{Reactive systems}
 
-    \subssection{Reactive systems}
 
     \subsection{Microservices}
     ??
@@ -608,9 +708,8 @@
     It is also equivalent to data flow programming in which a graph of operators exists.
     These operators receive events as a result of work of other operators, process them and produce other events.
     These events represent immutable facts, something that has happened.
-    The order at which events arrive to next operator matters so usually in stream processing systems, a publish
-    subscribe pattern is an action which is implemented using some sort of queue, journal, commit log or topic.
-
+    The order at which events arrive to the next operator matters; so usually in stream processing systems,
+    publish-subscribe pattern implemented using some sort of queue, journal, commit log or topic is in action.
 
     The foundation of a stream processing pipeline is its data flow graph.
     \subsubsection{Data flow graph}
@@ -642,7 +741,7 @@
 
     \subsubsection{Parallelism}
     There are two types of parallelism is stream processing systems:
-    \paragraph{task parallelism}
+    \paragraph{Task parallelism}
     Tasks from different operators process same data.
     Imagine having a stream of tweets.
     One operator extract hashtags, another one extracts mentions and maybe another counts number of words in each
@@ -730,16 +829,16 @@
     It is also important to note that FenceX had 4 major Kafka topics.
     \textit{fence\_event\_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
         realtime-fencing-fence-state-store-changelog}
-    All of these topics were configred to have 3 replicas and 12 partitions.
-    These numbers are selected corresponding to availalbe resources to the overal system.
-    The process of selecting them correctly is out of the countext of this thesis.
+    All of these topics were configured to have 3 replicas and 12 partitions.
+    These numbers are selected corresponding to available resources to the overal system.
+    The process of selecting them correctly is out of the context of this thesis.
     The important factor however is to have a high enough replication factor to achieve availability (3 at least) and
     high enough number of partitions to avoid idle subscribers.
 
     \paragraph{}
     After preparing the infrastructure, Nomad calculated the whole available resources to the application that will
-    be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memrory. ??? I'm not sure it's CPU power
-    per core or in totall???
+    be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memrory.
+    ??? I'm not sure it's CPU power per core or in total???
 
     \subsection{Benchmarking app}
     Before diving into the test cases, it is worth the effort to explain how bench-marking appliction works and what
@@ -751,10 +850,8 @@
     The role of bench-marking is to imitate the behaviour of real world mover location report publishers,
     smartwatches or car gps modules for example.
 
-    bench-marking has a dataset of real taxi trips ??thanks to Cabonline generousness??.
-    Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one of
-    those
-    points.
+    bench-marking has a dataset of real taxi trips ??thanks to Cabonline's generosity??.
+    Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one of those points.
     The points are in form of coordinates (latitude, longitude) and the fences are WKT strings.
     Eah trip has an average of 17 points and in total around 500 trips are in the database.
 
@@ -763,8 +860,8 @@
     For simplicity mover ID will the trip ID.
 
     \paragraph{}
-    bench-marking can send HTTP requests to locatin-update-publisher and report coordinates for each trip.
-    The result in FenceX will be stream of location updates published into the pipeline.
+    bench-marking can send HTTP requests to location-update-publisher and report coordinates for each trip.
+    The result in FenceX will be a stream of location updates published into the pipeline.
 
     \paragraph{}
     bench-marking can send HTTP requests to location-aggregate and query its location database against the fence
@@ -777,7 +874,6 @@
     It appeared that producing stressful loads of HTTP request or ongoing flows of them is a very expensive operation
     in terms of memory usage and CPU usage to some extent.
     Mostly during our evaluations the bottleneck to throughput was our input rate.
-
 
     \section{Pure throughput}
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also

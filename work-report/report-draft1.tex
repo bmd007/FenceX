@@ -90,9 +90,7 @@
 
     \part[FenceX]{FenceX: High throughput scalable geofencing}
 
-
     \chapter{Introduction}
-
 
     \section{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
@@ -235,10 +233,11 @@
 
     Consistency level required for geofencing applications is not strong so eventual consistency will suffice.
     Once a location report has received, it might takes a fraction of time until the view of FenceX about
-    corresponding mover
-    changes. Before that, latest previously captured report and finalized view is valid and used.
-    Same goes for predefined fences. So no need for distributed transactions or implementation of Saga as there is
-    not much of intertwined that can go wrong.
+    corresponding mover changes.
+    Before that, latest previously captured report and finalized view is valid and used.
+    Same goes for predefined fences.
+    So no need for distributed transactions or implementation of Saga as there is not much of intertwined that can go
+    wrong.
 
     \chapter{Suggested solution}
     FenceX is a stream processing system designed and implemented into microservices.
@@ -310,7 +309,8 @@
     The result of this intersection will be events like mover X is (not) in the predefined fence.
 
     \paragraph{alarming} is responsible for responding to the events coming out of fence-location-intersection.
-    Implementation of this operator is not withing boundaries of this thesis. So we won't describe its details.
+    Implementation of this operator is not withing boundaries of this thesis.
+    So we won't describe it in details.
 
     \subsection{Push and Poll legs}
     As described previously, FenceX provides two styles of geofencing, On demand and real time.
@@ -332,7 +332,6 @@
 
     From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of
     these legs have their own characteristics and require individual attention.
-
 
     \section{Physical data flow graph}
     \begin{figure}[ht]
@@ -361,7 +360,7 @@
     \begin{itemize}
         \item They are implemented using Java 15.
         \item They are implemented with extensive help from Spring family frameworks and libraries like Spring boot, Spring data, Spring webflux, Spring cloud and many more.
-        \item They are packaged as layered docker images so the deployment artifacts of FenceX are docker images.
+        \item They are packaged as layered docker images, so the deployment artifacts of FenceX are docker images.
         \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor. As a result they are reactive applications which means they process HTTP requests in a asynchronous and non blocking manner.
         \item All of them expose a HTTP API for fetching metrics about their resource usage, JVM status, geofencing operations and ... .
         \item After successful deployment, they will be registered into a service discovery tool called Consul.
@@ -692,7 +691,6 @@
     We calculate the push leg throughput by increasing a counter everytime FenceX calculates a fence-point intersection.
     This counter is a metric gathered every now and again by a time series database called Prometheus.
 
-
     \section{Underlying Ideas and sciense}
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
     We cover them only to the extent that context of this thesis allows.
@@ -785,7 +783,6 @@
     to become co-located for the task.
     It brings challenges like the best partitioning policy and correct key selection.
     For example when partitioning geospatial data partitioning policy may differ based on the use case.
-
 
 
     \chapter{Evaluation}

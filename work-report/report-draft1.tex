@@ -695,10 +695,65 @@
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
     We cover them only to the extent that context of this thesis allows.
 
-    \subsection{Reactive systems}
+    \subsection{Reactive systems \cite{reactive-microsystems} \cite{reactive-manifesto}}
+    A distributed system, in simple terms, is a software having more than one deployable component.
+    These components are sometimes equal and/or sometimes different.
+    However, from point of view of an outside observer, there is only one working system.
+    From within, there are many processes, actors, services or etc working together to serve an overall purpose.
 
+    Among distributed systems architectural styles, reactive is of special interest in this thesis.
+    A reactive system, as defined in reactive manifesto \cite{reactive-manifesto} has the following properties:
+    \begin{itemize}
+        \item[Responsive] a responsive system provides fast response in a consistent manner.
+        \item[Resilient] A resilient system keeps responding to the possible degree in face of failure.
+        \textbf{replication and isolation} are corner stones of resiliency.
+        \item[Elastic] An elastic system keeps responding under varying work load. Avoiding bottlenecks and cost
+        effective resource allocation play an important role in achieving elasticity.
+        \item[Message Driven] Non-blocking asynchronous message passing brings about isolation, location
+        transparency and back pressure for distributed system components.
+    \end{itemize}
+
+    \begin{figure}[ht]
+        \caption{Reactive systems' value chain}
+        \label{fig:reactive-value}
+        \includegraphics[scale=0.4]{images/reactive-traits.png}
+    \end{figure}
+
+    As figure \ref{fig:reactive-value} suggests, designing and implementing a distributed system in reactive style
+    has the following benefits: easier to maintain, easier to change and higher responsiveness.
+
+    So in summary, a reactive system consists of isolated components communicating using asynchronous non-blocking message passing.
+    An ideal reactive system conforms to ACID 2 which means:
+    \begin{itemize}
+        \item[\textbf{A}ssociative] Messages can be grouped together, using a key for example.
+        \item[\textbf{C}ommutative] The oder at which messages arrive to components does not affect the desired
+        outcome.
+        \item[\textbf{I}dempotent] Components of system should receive a message more than once, they act as if message
+        arrived only once.
+        \item[\textbf{D}istibuted] :)
+    \end{itemize}
+
+    When it comes to replication of data over components in a reactive system, in case consistency matters, order of
+    messages becomes important.
+    Order at which messages arrive has a logical time aspect which is important for achieving occasional consistency.
+    It is very challenging for a distributed system to be strongly consistent.
+    So if it is acceptable to relax the requirements to occasional/eventual consistency, a reactive system in which
+    order of messages are reserved works well.
+
+    The style with which messages are produced has a direct effect on system design and implementation.
+    A message can be a query (what is X), an event (X has happened), a command (do X) and an update (X is 232 now).
+    The preferred message semantic in reactive systems is \textbf{event}s.
+    An event represent something that has happened in the past, an immutable truth.
+    Such events can be published into a queue reserving their order.
+    System components can subscribe to the queue and update their own image of the world (state) according to the
+    events that has happened.
+
+    In order to achieve such a system design, events should be considered first in the design rather then domain.
+    Verb first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
 
     \subsection{Microservices}
+    Once upon a time, the whole software which, an information system for example, was a big monolith, one unit of
+    deployment which had only
     ??
 
     \subsection{Stream processing \cite{flink}}
@@ -783,6 +838,12 @@
     to become co-located for the task.
     It brings challenges like the best partitioning policy and correct key selection.
     For example when partitioning geospatial data partitioning policy may differ based on the use case.
+
+    \section{Underlying tools}
+
+    \subsection{Kafka}
+
+    \subsection{KafkaStreams}
 
 
     \chapter{Evaluation}

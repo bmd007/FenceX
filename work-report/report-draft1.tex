@@ -559,7 +559,9 @@
         \item[Availability under varrying load] Will be explained as scalability in the next section
     \end{itemize}
 
-    In FenceX it's easily possible to deploy as many instances of microservice as required by non-functional boundaries
+    When it comes to FenceX, it's easily possible to deploy as many instances of microservice as required by
+    non-functional
+    boundaries
     of corresponding users and use cases.
     We use a container orchestration tool called Nomad for managing deployment of FenceX microservices.
     Which allows for a joyful experience of managing containers.
@@ -593,12 +595,13 @@
     The growth can happen step by step over a window of time or like a sudden sock in a moment.
 
     \subsubsection{Data scalability}
-    In FenceX data scalability is limited by the number of rows that an H2 in memory table can keep. Which is ??.
+    In FenceX, data scalability is limited by the number of rows that an H2 in memory table can keep.
+    Which is ??.
     This can be limited because each H2 in memory table in FenceX is below a global KTable which means it has the whole
     image of world.
-    Otherwise the other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
-    fact that data in that state store, is partitioned over available instances of realtime-fencing.
-    So if defined fence sizes grow, horizontally scaling realtime-fencing will just deal with it.
+    Otherwise, the other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
+    fact that corresponding data store, is partitioned over available instances of realtime-fencing.
+    So if defined fence grow in size, horizontally scaling realtime-fencing will just deal with it.
 
     \subsubsection{Incoming HTTP requests}
     All HTTP APIs in FenceX are implemented using reactive stack (instead of thread based servlet stack) using Spring
@@ -719,11 +722,15 @@
         \includegraphics[scale=0.4]{images/reactive-traits.png}
     \end{figure}
 
+
     As figure \ref{fig:reactive-value} suggests, designing and implementing a distributed system in reactive style
     has the following benefits: easier to maintain, easier to change and higher responsiveness.
 
     So in summary, a reactive system consists of isolated components communicating using asynchronous non-blocking message passing.
-    An ideal reactive system conforms to ACID 2 which means:
+
+    An ideal reactive system conforms to ACID2.
+    ACID2 is the counterpart of ACID in transactional databases.
+    So instead of atomicity, consistency, isolation, durability, ACID2 is:
     \begin{itemize}
         \item[\textbf{A}ssociative] Messages can be grouped together, using a key for example.
         \item[\textbf{C}ommutative] The oder at which messages arrive to components does not affect the desired
@@ -732,6 +739,9 @@
         arrived only once.
         \item[\textbf{D}istibuted] :)
     \end{itemize}
+
+    A reactive system, specially when conforming to ACID2, has potential to scale out very easy to a very a high extent.
+
 
     When it comes to replication of data over components in a reactive system, in case consistency matters, order of
     messages becomes important.
@@ -748,8 +758,8 @@
     System components can subscribe to the queue and update their own image of the world (state) according to the
     events that has happened.
 
-    In order to achieve such a system design, events should be considered first in the design rather then domain.
-    Verb first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
+    In order to achieve such a system design, events should be considered first in the design rather than the domain.
+    Verbs first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
 
     \subsection{Microservices}
     Once upon a time, the whole software which, an information system for example, was a big monolith, one unit of

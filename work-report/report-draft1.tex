@@ -147,7 +147,7 @@
     Figure \ref{fig:texas} illustrates usage of an online tool \cite{WKTtool} to show a geospatial WKT on a map.
     The WKT refers to borders of state Texas in US which is taken from \cite{WKTs}.
 
-    In this thesis we used WKT to represent all the invovled gepspatial data.
+    In this thesis we used WKT to represent all the involved gepspatial data.
     We mainly used POINT() to model locations and MULTIPOLYGON() for fences.
 
     \section{Problem statement}
@@ -273,7 +273,6 @@
         \caption{Logical data flow graph of FenceX}
         \label{fig:logical-dfg}
         \includegraphics[scale=0.2]{images/logical-data-flow-diagram.png}
-
     \end{figure}
 
     \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line.
@@ -338,7 +337,6 @@
         \caption{Physical data flow graph of FenceX}
         \label{fig:physical-dfg}
         \includegraphics[scale=0.2]{images/physical-data-flow-diagram.png}
-
     \end{figure}
 
     Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be
@@ -377,7 +375,6 @@
     \ref{fig:physical-dfg} illustrates involved (Kafka) topics in the pipeline in addition to the state stores (database)
     attached to/used by each task.
     Fundamentally each of those state stores are backed by a topic (changelog).
-
 
     \section{Microservices internal design and implentation}
     Apart from common fact stated preciously, FenceX microservices can be described in a more detailed way as following:
@@ -550,8 +547,7 @@
     The benefits of scaling out in terms of availability are as following:
     \begin{itemize}
         \item[Operational availability] If a sub set of deployed services stop responding for any reason, the rest of
-        up and running instances
-        can take over the work.
+        up and running instances can take over the work.
         \item[Data availability] Data can be replicated over different instances of services so if something goes
         wrong with one of the instances, the data will not get compromised.
         The process of data can even be continued without any special change being noticed in the overall behaviour of
@@ -560,18 +556,34 @@
     \end{itemize}
 
     When it comes to FenceX, it's easily possible to deploy as many instances of microservice as required by
-    non-functional
-    boundaries
-    of corresponding users and use cases.
+    non-functional boundaries of corresponding users and use cases.
     We use a container orchestration tool called Nomad for managing deployment of FenceX microservices.
     Which allows for a joyful experience of managing containers.
-    While being a full fledged production level container orchestration tool, It's not as complicated as Kubernetes.
+    While being a full fledged production level container orchestration tool, it's not as complicated as Kubernetes.
 
-    \subsubsection{Back pressure}
-    ???
+    \subsubsection{Back pressure \cite{reactive-manifesto}}
+    Back pressure, in simple terms, is ability of responder to control the flow of incoming requests.
+    If microservice A is sending an ongoing load of requests to microservice B, if back pressure is enabled for
+    their communication solution, at each point in time, B can take as many requests as it can process and respond at
+    that moment.
+    As a result, B won't get overwhelmed and communication will keep flowing smoothly.
 
-    \subsubsection{Re-balancing}
-    ??
+    HTTP does not support back pressure, so in case of A and B, A can send a big load of requests to B and
+    essentially bring it down.
+    One of the aspects of a reactive system is back pressure.
+    A component in a reactive system should be able to somehow communicate that it's under pressure instead of
+    catastrophically collapse.
+
+    In FenceX, back pressure comes out of the box by using Kafka topics (publish subscribe pattern) for communicating
+    between microservices.
+    Each instance of microservices (task) takes one event at a time from kafka topic, process it and then it takes
+    the next event.
+    Events in kafka topics are also durable so there is no rush for the event processors.
+    As a result, event processing in FenceX will work a smooth flow and microservices can control their incoming load.
+
+    In case of Kafka, due to support for the acknowledgement of being done with processing an event, even if
+    something happens to during processing of an event, event processor will get that event back from topic once it's
+    ready again.
 
     \subsection{Scalability}
     A software system being scalable in simple terms means that system can handle different sizes and frequencies of
@@ -594,14 +606,16 @@
     any (or all) of the factors mentioned above grow hugely in size or in rate.
     The growth can happen step by step over a window of time or like a sudden sock in a moment.
 
-    \subsubsection{Data scalability}
+    \subsubsection{Data scalability \cite{h2}}
     In FenceX, data scalability is limited by the number of rows that an H2 in memory table can keep.
-    Which is ??.
-    This can be limited because each H2 in memory table in FenceX is below a global KTable which means it has the whole
-    image of world.
-    Otherwise, the other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
+    Which is 2^64.
+    This is big enough to not being a limit even for the global KTable in location-aggregate.
+    The other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
     fact that corresponding data store, is partitioned over available instances of realtime-fencing.
-    So if defined fence grow in size, horizontally scaling realtime-fencing will just deal with it.
+    So if defined fences grow in size, horizontally scaling realtime-fencing will just deal with it.
+
+    Maximum number of open transactions each H2 instance can handle is 65535.
+    It is big enough as well to not limit the scalability of FenceX specially when combined with scale out strategy.
 
     \subsubsection{Incoming HTTP requests}
     All HTTP APIs in FenceX are implemented using reactive stack (instead of thread based servlet stack) using Spring
@@ -656,18 +670,15 @@
     When system code is distributed over different code bases, a lot of people can work at the same time on the
     system and deliver value.
 
-
     \subsection{Throughput}
     For FenceX throughput of two types of operations matter the most.
     Throughput of HTTP requests for querying the database of locations against a fence (poll leg throughput).
     And, throughput of fence-point intersections (push leg throughput).
-    Throughput is usually closely related to scalability since high throughput is achievable only under high input
-    load.
+    Throughput is usually closely related to scalability since high throughput is achievable only under high input load.
 
     \subsubsection{Poll leg throughput}
     Is the number of queries (by fence) that FenceX can respond to successfully in a unit of time (seconds).
-    This throughput is a factor of number of queries one can send to FenceX which is the input rate in the poll leg
-    context.
+    This throughput is a factor of number of queries one can send to FenceX which is the input rate in the poll leg context.
     Another effective factor is the latency of each query.
     This latency depends on the amount of IO involved, geospatial index algorithm, network access latency, CPU speed
     and number of parallel queries.
@@ -791,9 +802,11 @@
         \label{physical-data-flow-graph-example}
         \includegraphics[scale=0.4]{images/physical-data-flow-graph.png}
     \end{figure}
+
     Graph \ref{physical-data-flow-graph-example} shows an example of a physical data flow graph with 6 tasks (3
     operators).
     This pipeline counts occurrences of each hashtag in a stream of tweets which includes following operators:
+
     \begin{itemize}
         \item A source that brings tweets into the stream processing pipeline
         \item A processor that extracts hashtags
@@ -850,17 +863,58 @@
     For example when partitioning geospatial data partitioning policy may differ based on the use case.
 
     \section{Underlying tools}
+    In this section we describe some of many technologies which taken into action in order to make FenceX possible.
+    The explanation won't exceed an simple introduction since detailed information goes beyod context of this thesis.
 
-    \subsection{Kafka}
+    \subsection{Kafka \cite{kafka}}
+    Kafka is an event streaming tool.
+    It is a distributed implementation of journal (commit log).
+    Main components in the Kafka ecosystem are: a cluster of servers (brokers) and clients (event producers and consumers).
+    The broker is written in Scala while client libraries are available in variety of programming languages.
 
-    \subsection{KafkaStreams}
+    Kafka is one of the famous go to option when an architecture relies on publish subscribe pattern.
+    It has a concept called \textbf{topic} which is a durable journal (a queue).
+    The subscribers to the topic can be grouped for load distribution purposes.
+    Each topic can be partitioned so that each group member subscribes a partition of a topic.
+    Publisher is responsible to selecting the partition to which a event should be published.
 
+    Events in each partition can be replicated over cluster of Kafka brokers for availability purposes.
+
+    \textbf{only once} and \textbf{at least once} are the available quality of services that Kafka provides.
+
+    When using Kafka, a set of APIs available to use: producer, consumer, admin, connect and \textbf{Kafka Streams}.
+    There are basically way for interacting with broker and their name exposes their functionality.
+
+    \subsection{Kafka Streams}
+    Kafka Streams is a JVM languages compatible library which allows for publishing data into and reading data from a
+    Kafka cluster in form of stream processing operations.
+    A microservices can just add it as a library, connect to Kafka, define an operation like \textbf{filer->aggregate}
+    and become a node in a stream processing pipeline, a node in a data flow graph.
+    The definition of such operations starts with creating a KStream on top of topic.
+    Each event in the topic, will be an event in the stream.
+
+    As opposed to other Kafka apis like producer that are stateless, Kafka Streams supports both stateless and
+    stateful operations.
+    For stateful operations, Kafka Streams ask for defining a KTable.
+    KTable is a key:value table which is essentially backed by a kafka topic as source of truth.
+    However, for ease of accesibilty, the data in the topic gets loaded into a database which is RocksDB by default.
+    In case of FenceX, in poll leg, we have used H2 in an in-memory fashion.
+
+    Kafka Streams concept of KTable is not much different from concept of a Table in a traditional database.
+    So it is not unexpected for it to allow for join operations.
+    A join operation can be defined between: two KStreams, two KTables, a KTable and a KStream.
+    In FenceX we have joined a KTable with a KStream.
+    Which means each time an event comes to the stream, a function will be called with two inputs: the event and the
+    key:value record in the KTable with the same key as the event.
+
+    Kafka Streams also supports concepts like event time which allows for defining windowing operations.
+    A use case could be counting number of clicks on a link during each 5 minutes window when each click results in
+    an event.
 
     \chapter{Evaluation}
     In this chapter we explain the process and results of evaluating FenceX.
     This process consist of many experiments with different setup and goals.
     Each experiment had a preparation phase, execution, observation and finally comparison.
-
 
     \section{Deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.

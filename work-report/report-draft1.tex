@@ -608,7 +608,7 @@
 
     \subsubsection{Data scalability \cite{h2}}
     In FenceX, data scalability is limited by the number of rows that an H2 in memory table can keep.
-    Which is 2^64.
+    Which is 2 to the power of 64.
     This is big enough to not being a limit even for the global KTable in location-aggregate.
     The other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
     fact that corresponding data store, is partitioned over available instances of realtime-fencing.

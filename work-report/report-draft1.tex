@@ -205,7 +205,7 @@
     The result of each intersection is if the reported coordinate located within the predefined fence.
     In case no fence is defined for a specific mover, no fence-point intersection should be calculated.
 
-    \subsection{Nonfunctional requirements}
+    \subsection{Non-functional requirements}
     As a result of required system being a general geofencing provider,  the required precision of system might vary
     based on the users and use cases.
     So FenceX should be able to ingest very high rates of location reports.
@@ -534,7 +534,7 @@
     topic so that other operation down the stream processing pipeline can use it, like alarming.
 
 
-    \section{Nonfunctional characteristics}
+    \section{Non-functional characteristics}
     In this section we describe how different non-functional requirements of system has been achieved based on the
     design and architectural decisions.
 
@@ -772,12 +772,62 @@
     In order to achieve such a system design, events should be considered first in the design rather than the domain.
     Verbs first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
 
-    \subsection{Microservices}
-    Once upon a time, the whole software which, an information system for example, was a big monolith, one unit of
-    deployment which had only
-    ??
+    \subsection{Microservices \cite{microservice-architecture} \cite{microservices-pitfalls} \cite{microservices}}
+    Once upon a time the whole software, an information system for example, was one process deployed manually on a big
+    physically available machine.
+    This software was maintained by a big team in one code base.
+    To change any part of it, was a headache to make sure even the smallest change will not break the whole software.
+    Everything was tightly coupled after all.
+    It was all about code re-use.
+    If developers managed to change it properly, building the code took hours and forget about how long it took to
+    run the tests (if there was any of course).
+    After manually deploying the executable artifact into a physically available server in the corner of office, an
+    equal sing forgoten in a loop condition, brought the whole service down 11 pm same day.
+    Manager panics, wakes every developer who can, with hope of a hot fix.
 
-    \subsection{Stream processing \cite{flink}}
+    Hot fix applied, everyone back to sleep, customers are happy.
+    If fact so happy that they invite their friends to use the service.
+    More clients, more money, great.
+    Too good to be true though.
+    14 pm next day, number of users using the service simultaneously rockets to outside range of available resources.
+    CPU usage is 100 percent, no free memory left on the machine and only one out of 10 user is actually getting
+    service instead of just looking at loading bar.
+
+    Developers run around city to find RAMs with bigger capacity as a temporal solution.
+    IT people start to think about assembling a more powerful server with all brand-new more powerful hardware.
+
+    Those days are gone due to adoption of cloud technologies combined with microservices.
+
+    \paragraph{Microservices} is an architectural style in which software is devided into some small components
+    called services.
+    Those (micro)services communicate with each other and server the overall purpose of software.
+    Each service is maintained by a special team, has its code base, has its own database, exposes its own APIs, is
+    tested independently, is deployed as a separate process and etc.
+
+    The less these services share, the better.
+    Decoupling services as much as possible is an important aspect of microservices.
+    Because for example, the less services are dependent on each other, the easier they can be changed.
+
+    So now that software is developed into microservices, each microservice can be changed independently by the
+    team responsible for maintaining it, deployed separetely after a short build and test process.
+    A bug in one of the services can not bring the whole system down as well.
+    When load on one of the microservices increases, more instances of it can be easily deployed (scale out).
+    And hopefully instead of deploying executable artifact into a physically avaialbe machine in the corner of
+    office, microservices are packaged as docker images and deployed into a container orchestration tool provided as
+    a managed cloud service.
+
+    Of course turning a monolith into a distributed system brings all the challenges of dirstributed systems with it.
+    Having data spread around different services makes strong consistency very hard to achieve.
+    Load balancing between available instances of each service is something new to deal with.
+    Monitoring of and communication between services requires special attention.
+    And so on.
+    In order to solve the mentioned challenges and much more, best practices, design patterns, architectural patterns
+    and tools become handy.
+    System designers and developers select a sub set of these helps based functional and non-functional requirements
+    of their system, size of their organization and ... .
+    API gateway, Service registery, Distributed tracing, CQRS, Saga and ... are some popular examples.
+
+    \subsection{Stream processing \cite{flink} \cite{fast-data-archs}}
     Stream processing refers to a special style of reactive systems.
     It is also equivalent to data flow programming in which a graph of operators exists.
     These operators receive events as a result of work of other operators, process them and produce other events.

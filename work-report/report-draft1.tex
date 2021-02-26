@@ -1863,7 +1863,56 @@
 
     \part[Stateful FAAS]{FenceX: Statefull Function as a serivce platform}
 
+    \chapter{FenceX as FAAS provider}
+    FenceX apart from being a geofencing system, as described in the previous part of the report, can also be
+    considered as an implementation for idea of function as a service.
+    Stateful function as a service actually.
+    In a sence, geofencing is just one special usage our system.
+    So other types of computation can also be implemented in the same way without changing the architecture in any
+    significant manner.
+    In the following sections we will explain what is FAAS and how FenceX is a FAAS provider.
+
     \section{FAAS}
+    Imagine a start up company is shaping around a brilliant brand new audio compression algorithm.
+    Two computer science engineers came up with a algorithm and now want to make money out of it.
+    They don't want to publish any software or library but an online service, a few APIs (HTTP for example) only.
+    They are very confident enough in their work to know that once their service is up and running, lot of companies
+    want to use their service right away.
+    Which means huge number of requests to handle.
+    So however they design and implement a system around their algorithm, it should be highly scalable and efficient.
+
+
+    Based on what we described about resilient highly scalable systems with high throughput, they should select
+    microservices as architecture for their software behind their APIs.
+    They need to sit and design different microservices, hire developers to help with implementation and maintenance,
+    hire an operations team for maintaining container orchestration tools (among others) and so many other activities
+    before even they can start coding. Let alone deploying a feature into production
+
+    However, they are thinking about a short time to market since they have noticed an opportunity soon to pop up in
+    market for their service to be used vastly.
+    Also, since they are a small startup, they are low on budget.
+    Most probably they can only hire one part-time front-end developer to create a website for introduction
+    purposes.
+
+    So far apparently they can not achieve a highly scalable system.
+    But what if they could just focus on the implementation of their algorithm?
+    Just like they are implementing a function in the middle of nowhere.
+    After all, they are implementing an audio compression algorithm.
+    After all it's just some calculation and computation over an input then producing an output.
+    So what if they could just implement that function, give the code to a cloud service with promise of no more work
+    or implementation being needed.
+    The compression algorithm will be exposed as an HTTP API exposed to internet.
+    The start up people won't need to be worry about anything else.
+    The cloud provider will take the code, build it somehow, and bring enough instances of the result up and running
+    according to the incoming load.
+    So dynamic scalability out of the box.
+
+    Payment will be based on number of processed requests or running time of functions.
+
+    What we just described is the sell speak for function as a service idea.
+    Which is provided nowadays by most of cloud providers.
+    AWS lambda is the most famous one.
+    ......
 
     \section{Stateful FAAS}
 

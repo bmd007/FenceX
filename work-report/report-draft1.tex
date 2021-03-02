@@ -1873,58 +1873,159 @@
     In the following sections we will explain what is FAAS and how FenceX is a FAAS provider.
 
     \section{FAAS}
-    Imagine a start up company is shaping around a brilliant brand new audio compression algorithm.
-    Two computer science engineers came up with a algorithm and now want to make money out of it.
+    Imagine a start up company is shaping around a brilliant brand-new audio compression algorithm.
+    Two computer science engineers came up with an algorithm and now want to make money out of it.
     They don't want to publish any software or library but an online service, a few APIs (HTTP for example) only.
-    They are very confident enough in their work to know that once their service is up and running, lot of companies
+    They are confident enough in their work to know that once their service is up and running, a lot of companies
     want to use their service right away.
     Which means huge number of requests to handle.
     So however they design and implement a system around their algorithm, it should be highly scalable and efficient.
 
-
     Based on what we described about resilient highly scalable systems with high throughput, they should select
     microservices as architecture for their software behind their APIs.
-    They need to sit and design different microservices, hire developers to help with implementation and maintenance,
-    hire an operations team for maintaining container orchestration tools (among others) and so many other activities
-    before even they can start coding. Let alone deploying a feature into production
+    They need to sit and design different microservices, hire developers to help them with implementation and
+    maintenance, hire an operations team for maintaining container orchestration tools (among others), and so many
+    other activities before even they can start coding.
+    Let alone deploying a feature into production
 
     However, they are thinking about a short time to market since they have noticed an opportunity soon to pop up in
     market for their service to be used vastly.
-    Also, since they are a small startup, they are low on budget.
+    Also, since they are a small startup, they are low on the budget.
     Most probably they can only hire one part-time front-end developer to create a website for introduction
     purposes.
 
     So far apparently they can not achieve a highly scalable system.
-    But what if they could just focus on the implementation of their algorithm?
+    What if they could just focus on the implementation of their algorithm?
     Just like they are implementing a function in the middle of nowhere.
-    After all, they are implementing an audio compression algorithm.
+    A C function, or a python function for that matter.
+    They are implementing an audio compression algorithm.
     After all it's just some calculation and computation over an input then producing an output.
-    So what if they could just implement that function, give the code to a cloud service with promise of no more work
-    or implementation being needed.
+    So what if they could just implement that function, give it to a cloud service with promise of no more work
+    required for exposing the API to internet.
     The compression algorithm will be exposed as an HTTP API exposed to internet.
+    It can also be configured to be triggered upon receiving a Kafka event, grpc call, AMQP message and much more .
     The start up people won't need to be worry about anything else.
-    The cloud provider will take the code, build it somehow, and bring enough instances of the result up and running
-    according to the incoming load.
+    The cloud provider will take the code, build it somehow, and bring enough instances of the resulted artifact up and
+    running according to the incoming load.
     So dynamic scalability out of the box.
 
     Payment will be based on number of processed requests or running time of functions.
 
-    What we just described is the sell speak for function as a service idea.
-    Which is provided nowadays by most of cloud providers.
+    Any change to the code will be just changing a function.
+
+    What we just described is the sell speak for the function as a service idea.
+    Which is provided nowadays by most cloud providers.
     AWS lambda is the most famous one.
-    ......
 
-    \section{Stateful FAAS}
+    \section{Stateless FAAS}
+    In FAAS model, apart from separating business logic and execution platfrom, storage is also separated from
+    execution platform.
+    That is because of storage being not easy to scale in a distributed fashion.
+    As a consequence, having very small computation units working totally decoupled, comes with price of not being
+    able to access storage.
+    Or not being able to access storage in the classic way.
+    IO is usually an expensive operation regardless of execution model.
+    When it comes to FAAS, IO becomes much harder to achieve due to following reasons:
 
-    \section{Stream processing and FAAS}
+    \paragraph{Network:} Since there is no storage and file system attached to each function, all IO should happen
+    over network which brings about high latency which reduces throughput as a result.
+
+    \paragraph{Run time limitation:} Each function, once called, has a limited time to live.
+    If computation does not finish during the time limit, there will be no more chance to continue it.
+    The high latency of IO over network does not match this limitation.
+
+    \paragraph{Decoupled context:} Since all the running instances of the function are totally decoupled, there is
+    not way for them to share something, a connection to database for example.
+    So each time a function requires database or storage connection, a brand-new connection should be created.
+    Which results in unnecessary latency, too many connections, loss of execution time budget and ... .
+
+    As a result, FAAS model is better to be used for stateless operations.
+    Creating a thumbnail for an image, compressing an image or piece of audio and etc.
+    All the required computation can be carried out without need for storage or database.
+
+    So what about stateful operations?
+    Can't we enjoy the high level abstraction of FAAS model with stateful operations?
+
+    \section{Stream processing and Stateful FAAS}
+    For developers (users of FAAS platform), the function they implement has only some inputs parameters and an output.
+    The input parameters can be drived from the triggering event/request/message.
+    This is not different from implementing operations in a stream processing pipeline.
+    Each stream processing pipeline, ragardless of being stateful or stateless, is very similar to a function which
+    has an input (triggering event) and an output (resulting event if any).
+    For stateful operations, another input parameter exists which the latest captured for the key of the event.
+    Please remember that in stream processing systems, events and states are key:value tuples.
+
+    So we can actually implement a FAAS platform by modeling it as a stream processing pipeline.
+    What we need is a source operation which has some adaptors.
+    The adaptors turn an incoming request, HTTP for example, into a Kafka event so that operations down the pipeline
+    can process them.
+    Of course this implementation is asynchronous and eventually consistent.
+    Paying that cost, brings about the benefit of Stateful operations.
+    Since we can just enjoy stateful operations in a stream processing pipeline in a highly scalable manner,
+    a FAAS platform implemented by stream processing pipeline allows for definition of stateful functions as well.
+
+    The only thing that users of system (developers) should do is to implement body of stream processing operations.
 
     \section{FenceX and FAAS}
+    FenceX, as described previously, is a stream processing pipeline among many other things.
+    It has both stateful and stateless operations.
+    However, FenceX is designed in a way that operations are defined by architecture by their implementation should
+    be provided as libraries.
+    Each operation on execution, uses an object of a Java Class called Function.
+    The mentioned library provides instances of those Functions.
+    So such library can be provided by users of FenceX (developers) in the same way that FAAS users provide
+    implementation for their functions.
+    The signature of functions however is pre-defined due to architectural decisions.
+    And the available operations to implement are also limited to what is needed for the architecture.
+
+    So FenceX is an implementation for the idea of Stateful FAAS.
+    It allows for distributed de-coupled highly scalable stateful function by limiting what function can be implemented.
+    In a sense the implementation of those functions can be anything, so the limitation is more conceptual.
+
+    Since FenceX needs that complied version of Functions, they can be implemented in pretty much any JVM language as
+    far as they can be compiled into a Java class (Java byte code).
+    Being language agnostic is another promise of FAAS idea which FenceX delivers to some extent.
 
     \section{Comparison}
+    In this section we compare how FenceX has achieved stataful FAAS compared to other available works.
+    \subsection{Cloudburst: stateful functions-as-a-service \cite{Functions-as-a-Service-2020}}
+    \cite{Functions-as-a-Service-2020} in order to make stateful FAAS possible, relies on co-locating cache and
+    functions.
+    Each function accesses the cache as storage of state.
+    Functions are executed by function executors which are deployed in virtual machines.
+    For each virtual machine, one cache instance exists.
+    In order to keep the caches consistent, they are backed by an auto-scaling key:value store called Anna.
+    And Anna uses lattice composition to fight inconsistency.
 
-    \subsection{1 maghale faas implementation}
+    Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
+    order to gain high scalability.
+
+    \paragraph{Comparison with FenceX}
+    \begin{center}
+        \begin{tabular}{ c c}
+            Property/System           & FenceX                       &    \cite{Functions-as-a-Service-2020} \\
+            Consistency               & Eventual                     &         Strong                         \\
+            Statefulness stretegy     & Stream processing            &         Co-located caches               \\
+            Underlaying system        & Kafka/Spring/KafkaStreams    &            Anna                          \\
+            ACID2 conforming          & yes                          &            yes                            \\
+            Data replication          & yes                          &            yes                            \\
+            Function execution retry  & yes                          &            yes                            \\
+            State as KEY:VALUE data   & yes                          &            yes                            \\
+            Custom functions          & pratically yes               &            yes                            \\
+            Underlaying system        & Kafka/Spring/KafkaStreams    &            Anna                          \\
+        \end{tabular}
+    \end{center}
 
     \section{Future work}
+    FenceX is only the core/kernel part of a FAAS platform.
+    In order to make it a fully functioning cloud service, some other tools and layers should be built around and
+    upon it.
+    For example, a web UI in which developers implement their fucntions (simple cases) and the system compilies
+    the code itself and generate the library.
+
+    Next step is to use that library to build microservices envolved in FenceX.
+    Then deploying them.
+    This whole process can be automated.
 
     \nocite{*}
     \bibliography{sources}

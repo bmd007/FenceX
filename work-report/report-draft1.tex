@@ -77,20 +77,39 @@
     \listoffigures
     \newpage
 
-
     \section{abstract}
-    ?
+    Emergence of smart vehicles in addition to the fact that basically every person with a smartphone nowadays is a
+    mover to which a GPS sensor is attached, resulted in a great shift in (non-)functional requirements of geofencing
+    systems.
+    They are required now to be able to handle much more load while keeping the service realtime.
+    FenceX is a geofencing system that supports both realtime and on demand geofencing in a highly scalable manner.
+    FenceX delivers geofencing with high throughput and is designed with resiliency and availability in mind.
+    The main pillars of FenceX are stream processing and microservices which resulted in a reactive distributed
+    system.
+    FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
+    Apart from being a geofencing system, FenceX can be considered an implementation for the idea of statul function
+    as a service.
+    This has been achieved by allowing custom implementation for stream processing operations in the pipeline.
+    Since FenceX has both stateful and stateless operations, it can be considered a stateful FAAS platform.
+    While comparing FenceX with other works done, we observed better results in multiple dimensions, peak throughput
+    and resiliency for example.
 
     \subsection{Note for readers}
     This document is structured in a top-down style.
     Which means initially the work is described with assumption that readers are familiar with all the mentioned
-    technologies,  patterns, buzz words and ... .
+    technologies, patterns, buzz words and ... .
     Initially the number of references is low.
     Later in following sections, we tried to cover the used technologies, patterns and ... separately to the extent
     that context of thesis allows, and most of the references are made in those sections.
 
     \section{Acknowledgment}
-    ?
+    Huge thanks and appreciations to all people who had a hand in the actualization of FenceX.
+    First and foremost, my supervisor, Salman Toor, who trusted in me and my idea.
+    Without his continues feedback and support FenceX wouldn't make it to existence.
+    Also my reviwer, Sadi Alawadi, whose feedback was necessary to stay relevant.
+    Huge shut-out to Snic cloud who provided us with computational resources needed for evaluation of FenceX under
+    project \textbf{The effectiveness of vulnerability analysis tools on community-based Docker containers}.
+    Last but not least my friend and ex-college, Juan Fandino, whose work was inspirational for FenceX.
 
     \part[FenceX]{FenceX: High throughput scalable geofencing}
 
@@ -1857,9 +1876,36 @@
     Also, when it comes to throughput, push leg of FenceX has achieved 65k/s which is much higher than 20k/s.
 
     \chapter{Conclusion}
-    ?
+    During this thesis we have combined microservices and stream processing concepts in order to design, implement
+    and evaluate a highly scalable resilient geofencing system called FenceX.
+    FenceX can handle high input rates and deliver high throughput with low latency.
+    FenceX supports two types of geofencing, on demand and realtime.
+    The on demand part is achieved by having a fully replicated co-located in-memory geo aware database.
+    The realtime part is brought about using a distributed join over a partitioned table of fences and an ongoing
+    stream of location reports.
+
+    The result was so scalable that in most evaluation scenarios, we ran out of resources for producing more load
+    before we can hit the upper bound of throughput (with a given deployment config).
+    At best have observed that FenceX can easily handle about 65K fence-point intersections and 15K queries (query by
+    fence) per second.
+    FenceX also has proven to have strong and weak scalability characteristics.
+
+    When it comes to resiliency thanks to replication, scaling out (instead of up), re-balancing features of kafka
+    consumers and highly decoupled components, FenceX has demonstrated being reliable under non-ideal conditions.
+
     \section{Future work}
-    ?
+    During our evaluations, we have used only one type of data collected from real taxi trip.
+    Evaluating FenceX using data collected from people walking in an area can be also very insightful.
+
+    Apart from the data, the implementation of our bench-marking application might have potential to be improved so
+    that more load can be produced with less resources consumed.
+
+    And in terms of features, pattern detection can be the next step for FenceX.
+    Patterns that can be detected while observing events in windows of time.
+    For example when a mover enters a no-go area and gets back out within seconds, an alarm might not needed to be
+    generated.
+    Currently, FenceX just detects enter/exit events on a one by one basis.
+
 
     \part[Stateful FAAS]{FenceX: Statefull Function as a serivce platform}
 
@@ -2002,7 +2048,7 @@
 
     \paragraph{Comparison with FenceX}
     \begin{center}
-        \begin{tabular}{ cr cr cr}
+        \begin{tabular}{ cr cr cr }
             Property/System  & FenceX  &    \cite{Functions-as-a-Service-2020} \\
             Consistency  & Eventual  &  Strong  \\
             Statefulness stretegy  & Stream processing  &  Co-located caches  \\

@@ -87,7 +87,7 @@
     The main pillars of FenceX are stream processing and microservices which resulted in a reactive distributed
     system.
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
-    Apart from being a geofencing system, FenceX can be considered an implementation for the idea of statul function
+    Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
     as a service.
     This has been achieved by allowing custom implementation for stream processing operations in the pipeline.
     Since FenceX has both stateful and stateless operations, it can be considered a stateful FAAS platform.
@@ -98,7 +98,6 @@
     This document is structured in a top-down style.
     Which means initially the work is described with assumption that readers are familiar with all the mentioned
     technologies, patterns, buzz words and ... .
-    Initially the number of references is low.
     Later in following sections, we tried to cover the used technologies, patterns and ... separately to the extent
     that context of thesis allows, and most of the references are made in those sections.
 
@@ -106,9 +105,11 @@
     Huge thanks and appreciations to all people who had a hand in the actualization of FenceX.
     First and foremost, my supervisor, Salman Toor, who trusted in me and my idea.
     Without his continues feedback and support FenceX wouldn't make it to existence.
-    Also my reviwer, Sadi Alawadi, whose feedback was necessary to stay relevant.
+    Also reviewer of this thesis, Sadi Alawadi, whose feedback was necessary to stay relevant.
     Huge shut-out to Snic cloud who provided us with computational resources needed for evaluation of FenceX under
     project \textbf{The effectiveness of vulnerability analysis tools on community-based Docker containers}.
+    Also, Cabonline and my manager there at time,  Emil Ekdahl, for providing us with real taxi trip data
+    (anonymized) which we have used intensively in the evaluation phase.
     Last but not least my friend and ex-college, Juan Fandino, whose work was inspirational for FenceX.
 
     \part[FenceX]{FenceX: High throughput scalable geofencing}
@@ -159,7 +160,7 @@
         \item MULTIPOLYGON EMPTY
     \end{itemize}
 
-    Instead of relative values for X,Y and Z, geographic coordinates (latitude, longitude) cane be used in oder to
+    Instead of relative values for X,Y and Z, geographic coordinates (latitude, longitude) can be used in oder to
     represent geospatial data.
 
     \begin{figure}[ht]
@@ -178,7 +179,7 @@
     Also, geofencing is usually implemented using databases interacting with disk and accessed over network.
     So a combination of natural computational latency and IO latency limits the overall throughput of systems
     providing geofencing services.
-    This get worst in high load high scale use cases.
+    This gets worst in high load high scale use cases.
     As a remedy we can improve the computational aspect of the problem by improving the indexing algorithms.
     However, usually the IO latency is much more effective than operational burden.
     So the other approach to improve the throughput is using co-located in memory databases  which do not interact
@@ -190,7 +191,7 @@
     Everything will be fine until our systems faces an amount of load which can not be handled properly even after scaling up.
     At this stage we scale the system out and deploy more than one instance of the program.
     This will also help with resiliency of system;
-    if one of the instances of program goes down or stop responding for some reason, the system can still keep
+    if one of the instances of program goes down or stops responding for some reason, the system can still keep
     serving with remaining available instances.
 
     \paragraph{}
@@ -202,7 +203,7 @@
     to load balancing.
     Otherwise, there should be way to shard the data between instances and tell clients how to select the correct
     instance to which send a location update or query.
-    We went to replication over sharding with hope of keeping clients and data management simple.
+    We went for replication over sharding with hope of keeping clients and data management simple.
     So we need to somehow make those instances have the same image of the world (same data) otherwise, their results
     will be inconsistent.
 
@@ -223,13 +224,13 @@
 
     Users want to be able to create/update/remove/query a fence (geospatial shape) for each mover (by id).
 
-    Movers expect each of the location reports to be checked against a potential fence for them.
+    Movers expect each of the location reports to be checked against a potential fence.
     Which mean for each location report for each mover, potentially a fence-point intersection should be calculated.
     The result of each intersection is if the reported coordinate located within the predefined fence.
     In case no fence is defined for a specific mover, no fence-point intersection should be calculated.
 
     \subsection{Non-functional requirements}
-    As a result of required system being a general geofencing provider,  the required precision of system might vary
+    As a result of required system being a general geofencing provider, the required precision of system might vary
     based on the users and use cases.
     So FenceX should be able to ingest very high rates of location reports.
     Looking at potential use cases, in some the report rate could be like one report per mover every 1 minute and
@@ -238,7 +239,7 @@
     So FenceX should have a very high capacity to handle load and stress.
 
     Since based on the use case, the required scalability of system may differ, the users of system should be able to
-    tune the system in according to their needs.
+    tune the system according to their needs.
     Or at least the fact that scalability requirements are not fixed over time should be factored in the design,
 
     Availability of FenceX should relay on modules so that if something goes wrong in one part of it, the other parts
@@ -259,28 +260,23 @@
     corresponding mover changes.
     Before that, latest previously captured report and finalized view is valid and used.
     Same goes for predefined fences.
-    So no need for distributed transactions or implementation of Saga as there is not much of intertwined that can go
-    wrong.
+    So no need for distributed transactions or implementation of Saga as there is not much of intertwined
+    interactions that can go wrong.
 
     \chapter{Suggested solution}
     FenceX is a stream processing system designed and implemented into microservices.
     It can also be identified as a reactive distributed system that is applying event driven architecture for
     communication of its modules.
     These four big software architectural names are pretty much the same thing in the context of FenceX with their
-    different being point of view.
+    point of view being different.
     To avoid repeating same vocabulary over and over in this document, we use the terminology specific to each of
-    these realms interchangeably on precisely when applicable.
-    The listing below illustrates words that refer to similar things but originate to different terminologies.
+    these realms interchangeably more precisely when applicable.
+    The listing below illustrates words that refer to similar things but originate from different terminologies.
 
     \begin{itemize}
         \item[Microservice] microservice, service, operation, event processor,  processor, subscriber, publisher, module and subsystem.
         \item[Instance] instance, task
     \end{itemize}
-
-    The exact meaning of each of the mentioned vocabulary and architectural styles will be discussed in following
-    chapters.
-    In case you are not familiar with any of them, please have a look at the corresponding chapters first.
-
 
     \section{Overall system look}
     As you can see in the figure \ref{fig:logical-dfg}, FenceX has 6 operators.
@@ -298,19 +294,20 @@
         \includegraphics[scale=0.2]{images/logical-data-flow-diagram.png}
     \end{figure}
 
-    \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipe line.
+    \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipeline.
     It has HTTP and RabbitMQ adaptors which is used by movers.
-    Movers send messages or http requests in order report their latest location.
-    Location-update-publisher turns each report into a event and publishes it into a kafka topic called \textbf{location-updates}.
+    Movers send messages or HTTP requests in order report their latest location.
+    Location-update-publisher turns each report into an event and publishes it into a kafka topic called
+    \textbf{location-updates}.
 
     \paragraph{filter}, as the name suggests, is responsible  for avoiding not desired location updates to find their
-    way further down in the stream.
+    way further down the stream.
     Checks can be against null values or invalid latitude/longitude.
 
     \paragraph{location-aggregate} is responsible for keeping a view of the latest location of each mover by
     subscribing to the stream of location updates coming out of filter.
     It has a local database of mover-locations which applies geospatial index on the data.
-    As a result, the query by fence is becomes possible.
+    As a result, the query by fence becomes possible.
     So location-aggregate is responsible for answering queries both by mover id and fence (geospatial shape).
 
     \paragraph{fence-aggregate} is responsible to keep track of predefined fences (for real time intersection scenarios).
@@ -335,12 +332,12 @@
     So we won't describe it in details.
 
     \subsection{Push and Poll legs}
-    As described previously, FenceX provides two styles of geofencing, On demand and real time.
+    As described previously, FenceX provides two styles of geofencing, on demand and real time.
 
     Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature.
-    Which means when ever a client demands a geofencing operation, they send a http query.
+    Which means when ever a client demands a geofencing operation, they send a HTTP query.
     In this style, fences are very dynamic.
-    The fence will be checked against the whole data base of mover locations.
+    The fence will be checked against the whole database of mover locations.
     \textbf{location-aggregate} is responsible for this style of fencing.
     Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are
     considered poll leg.
@@ -382,9 +379,10 @@
         \item They are implemented using Java 15.
         \item They are implemented with extensive help from Spring family frameworks and libraries like Spring boot, Spring data, Spring webflux, Spring cloud and many more.
         \item They are packaged as layered docker images, so the deployment artifacts of FenceX are docker images.
-        \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor. As a result they are reactive applications which means they process HTTP requests in a asynchronous and non blocking manner.
+        \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor. As
+        a result they are reactive applications which means they process HTTP requests in an asynchronous and non blocking manner.
         \item All of them expose a HTTP API for fetching metrics about their resource usage, JVM status, geofencing operations and ... .
-        \item After successful deployment, they will be registered into a service discovery tool called Consul.
+        \item After successful deployment, they will be registered into a service discovery tool called Consul\cite{Consul}.
     \end{itemize}
 
     \subsection{Inter microservices communication}
@@ -395,8 +393,8 @@
     Which means there are Kakfa topics available for publishing events and subscribing to them.
     This topics are partitioned so each instance of the microservice will subscribe to a sub set of partitions.
     This is a load sharing strategy which helps with scalability.
-    \ref{fig:physical-dfg} illustrates involved (Kafka) topics in the pipeline in addition to the state stores (database)
-    attached to/used by each task.
+    \ref{fig:physical-dfg} illustrates involved (Kafka) topics in the pipeline in addition to the state stores
+    (database) attached to/used by each task.
     Fundamentally each of those state stores are backed by a topic (changelog).
 
     \section{Microservices internal design and implentation}
@@ -414,16 +412,16 @@
 
     \subsection{location-aggregate}
     Location-aggregate is a Kafka Streams application.
-    It's internal stream starts with subscribing to\textbf{location-updates}, continues with a filter and finally
+    It's internal stream starts with subscribing to \textbf{location-updates}, continues with a filter and finally
     aggregated into a Global KTable which is backed by an in-memory H2 database.
     Which means once a location report received by location-aggregate, it will be first checked for validity and then
     saved into an in-memory co-located database.
     The save is an update operation most of the time.
     Updating the latest captured location for a mover.
     H2 provides geospatial indexing.
-    Upon each update, the index will be updated as well, so the database will become ready for being queries against a
-    fence.
-    By database, we mean a single big table.
+    Upon each update, the index will be updated as well, so that the database will become ready for queries (query by
+    fence).
+    By database though, we mean a single big table here.
 
     \subsubsection{Co-located database}
     Usually in information systems, databases have their own cluster and deployed on machines other than the one on
@@ -446,7 +444,7 @@
     not as fast as memory.
     Our goal being minimizing IO latency, the H2 database not only is configured to use memory as storage but also
     using it in an asynchronous non-blocking manner (nioMemFS).
-    Which means H2 will act as if a file system exists on the memory and will access it using Java NIO technology.
+    Which means H2 will act as if a file system exists on the memory and will access it using Java NIO \cite{JavaNio} technology.
 
     \subsubsection{Inconsistency}
     Using database systems maintaining their own dedicated cluster, means no need for being worry about the
@@ -477,13 +475,13 @@
     Each Kafka Streams state store is backed by a topic called change log.
     This topic is durable and is saved on disk by kafka.
     Each Kafka Streams application attached on such a store, subscribe to that topic once it's up and running and
-    populate it's KTables.
+    populate its KTables.
     That topic contains all changes that has happened to the state of application, the data in the KTable.
     So in case something happens to one of the instances (or all of them for that matter), after a restart or bringing
     a new fresh instance up, the instance recover/creates it own images of the world just by subscribing to change
     log topic.
     The subscription can be from last seen offset or from offset zero, depending on the state of underlying store.
-    Sometimes the stores are back by a database using file system as storage.
+    Sometimes the stores are backed by a database using file system as storage.
 
     So finally we resolved the mystery of inconsistency in FenceX. Also, we covered some aspects of the work which
     makes FenceX high throughput.
@@ -498,7 +496,7 @@
     \subsubsection{Event-sourcing}
     One of the internal streams starts with subscribing to \textbf{fence\_event\_log} topic.
     The publisher to this topic is realtime-fencing itself.
-    It exposes two HTTP APIs CRUD operations on fences (only create is implemented for now).
+    It exposes two HTTP APIs for CRUD operations on fences (only create is implemented for now).
     When create fence API, for instance, is called, apart from possible initial validations, the
     only thing that happens is publishing an (kafka) event to \textbf{fence\_event\_log} topic.
     \textbf{fenceCreatedEvent} in this case.
@@ -530,13 +528,13 @@
     So each instance of realtime-fencing has a subset of defined fences corresponding to the partitions of
     kafka topic listening to.
     Since load balancers does not know what instances is responsible for what fences at any given point in time, in
-    order to query this KTable, a select all query for example, each instance that receives the query, will gather
+    order to query this KTable, a select all query for example, each instance that receives the query, might gather
     data from other instances.
     Such data gathering should be party implemented by us using some related features of Kafka Streams.
     In case queries more complex than select one or select all were required, this approach would not work.
     Mainly because the KTable is only a simple key:value table.
 
-    So far we described one the internal streams of realtime-fencing, the one related to aggregating fences.
+    So far we described one of the internal streams of realtime-fencing, the one related to aggregating fences.
 
     \subsubsection{Join stream}
     The other internal stream of realtime-fencing starts with subscribing to \textbf{location-updates}, continues with a
@@ -580,9 +578,8 @@
 
     When it comes to FenceX, it's easily possible to deploy as many instances of microservice as required by
     non-functional boundaries of corresponding users and use cases.
-    We use a container orchestration tool called Nomad for managing deployment of FenceX microservices.
-    Which allows for a joyful experience of managing containers.
-    While being a full fledged production level container orchestration tool, it's not as complicated as Kubernetes.
+    We use a full fledged production level container orchestration tool called Nomad\cite{nomad} for managing deployment of 
+    FenceX microservices.
 
     \subsubsection{Back pressure \cite{reactive-manifesto}}
     Back pressure, in simple terms, is ability of responder to control the flow of incoming requests.
@@ -602,7 +599,7 @@
     Each instance of microservices (task) takes one event at a time from kafka topic, process it and then it takes
     the next event.
     Events in kafka topics are also durable so there is no rush for the event processors.
-    As a result, event processing in FenceX will work a smooth flow and microservices can control their incoming load.
+    As a result, event processing in FenceX will work as a smooth flow and microservices can control their incoming load.
 
     In case of Kafka, due to support for the acknowledgement of being done with processing an event, even if
     something happens to during processing of an event, event processor will get that event back from topic once it's
@@ -613,17 +610,17 @@
     input load successfully.
     There are different elements in a software system that can grow:
     \begin{itemize}
-        \item Data size in data bases
+        \item Data size in databases
         \item API call (incoming HTTP requests for example)
         \item Input rate in stream processing systems (Rate at which events arrive)
         \item Number of parallel inter dependent operations
         \item Number of parallel independent operations
-        \item Number of active threads in the thread based systems
+        \item Number of active threads in thread based systems
         \item Queue size (number of events in kafka topic for example)
         \item Stack size
         \item Number of users using the system at the same time
         \item Number of system subcomponents (number of microservices or number of stream processing operations)
-        \item Number of people can work on development the system at the same time (organizational scalability)
+        \item Number of people can working on development of the system at the same time (organizational scalability)
     \end{itemize}
     A scalable software system keeps responding/processing successfully with reasonable throughput and latency even if
     any (or all) of the factors mentioned above grow hugely in size or in rate.
@@ -662,7 +659,7 @@
     Location reports in case of FenceX.
     For FenceX to be able to handle high rates of input, the events are published into Kafka topics.
     Kafka topics are partitioned.
-    Each task (microservice instance) once is up, healthy and ready for processing, subscribe to a subset of those
+    Each task (microservice instance) once is up, healthy and ready for processing, subscribes to a subset of those
     partitions.
     Which means, the event processing load is distributed among available tasks.
     This is called \textbf{data parallelism} in stream processing.
@@ -677,7 +674,7 @@
     non-technical problems.
     In short, we will end up with one big service which is very hard to maintain, deploy, debug, build, reason about
     and most importantly change.
-    In such service everything is couple together due to high reliance on code reuse.
+    In such service everything is coupled together due to high reliance on code reuse.
     The alternative is to break down this monolith into different microservices each of them responsible for doing
     mainly one thing.
     They will have their own database, build and deployment process and ... .
@@ -713,7 +710,7 @@
     to simultaneous queries.
 
     We calculate the poll leg throughput by increasing a counter everytime FenceX respond to a query successfully.
-    This counter is a metric gathered every now and again by a time series database called Prometheus.
+    This counter is a metric gathered every now and again by a time series database called Prometheus\cite{prometheus}.
 
     \subsubsection{Push leg throughput}
     Is the number of fence-point intersections that FenceX can calculate in a unit of time (seconds).
@@ -767,7 +764,7 @@
     So instead of atomicity, consistency, isolation, durability, ACID2 is:
     \begin{itemize}
         \item[\textbf{A}ssociative] Messages can be grouped together, using a key for example.
-        \item[\textbf{C}ommutative] The oder at which messages arrive to components does not affect the desired
+        \item[\textbf{C}ommutative] The order at which messages arrive to components does not affect the desired
         outcome.
         \item[\textbf{I}dempotent] Components of system should receive a message more than once, they act as if message
         arrived only once.
@@ -775,7 +772,6 @@
     \end{itemize}
 
     A reactive system, specially when conforming to ACID2, has potential to scale out very easy to a very a high extent.
-
 
     When it comes to replication of data over components in a reactive system, in case consistency matters, order of
     messages becomes important.
@@ -823,7 +819,7 @@
 
     \paragraph{Microservices} is an architectural style in which software is devided into some small components
     called services.
-    Those (micro)services communicate with each other and server the overall purpose of software.
+    Those (micro)services communicate with each other and serve the overall purpose of software.
     Each service is maintained by a special team, has its code base, has its own database, exposes its own APIs, is
     tested independently, is deployed as a separate process and etc.
 
@@ -846,8 +842,8 @@
     And so on.
     In order to solve the mentioned challenges and much more, best practices, design patterns, architectural patterns
     and tools become handy.
-    System designers and developers select a sub set of these helps based functional and non-functional requirements
-    of their system, size of their organization and ... .
+    System designers and developers select a sub set of these helps based on the functional and non-functional
+    requirements of their system, size of their organization and ... .
     API gateway, Service registery, Distributed tracing, CQRS, Saga and ... are some popular examples.
 
     \subsection{Stream processing \cite{flink} \cite{fast-data-archs}}
@@ -856,7 +852,7 @@
     These operators receive events as a result of work of other operators, process them and produce other events.
     These events represent immutable facts, something that has happened.
     The order at which events arrive to the next operator matters; so usually in stream processing systems,
-    publish-subscribe pattern implemented using some sort of queue, journal, commit log or topic is in action.
+    publish-subscribe pattern implemented using some sort of queue, journal, commit log or topic.
 
     The foundation of a stream processing pipeline is its data flow graph.
     \subsubsection{Data flow graph}
@@ -937,7 +933,7 @@
 
     \section{Underlying tools}
     In this section we describe some of many technologies which taken into action in order to make FenceX possible.
-    The explanation won't exceed an simple introduction since detailed information goes beyod context of this thesis.
+    The explanation won't exceed a simple introduction since detailed information goes beyod context of this thesis.
 
     \subsection{Kafka \cite{kafka}}
     Kafka is an event streaming tool.
@@ -948,29 +944,29 @@
     Kafka is one of the famous go to option when an architecture relies on publish subscribe pattern.
     It has a concept called \textbf{topic} which is a durable journal (a queue).
     The subscribers to the topic can be grouped for load distribution purposes.
-    Each topic can be partitioned so that each group member subscribes a partition of a topic.
-    Publisher is responsible to selecting the partition to which a event should be published.
+    Each topic can be partitioned so that each group member subscribes to a partition of a topic.
+    Publisher is responsible for selecting the partition to which an event should be published.
 
     Events in each partition can be replicated over cluster of Kafka brokers for availability purposes.
 
     \textbf{only once} and \textbf{at least once} are the available quality of services that Kafka provides.
 
-    When using Kafka, a set of APIs available to use: producer, consumer, admin, connect and \textbf{Kafka Streams}.
+    When using Kafka, a set of APIs are available to use: producer, consumer, admin, connect and \textbf{Kafka Streams}.
     There are basically way for interacting with broker and their name exposes their functionality.
 
     \subsubsection{Kafka Streams \cite{kafkaStreamsJoins}}
     Kafka Streams is a JVM languages compatible library which allows for publishing data into and reading data from a
     Kafka cluster in form of stream processing operations.
-    A microservices can just add it as a library, connect to Kafka, define an operation like \textbf{filer->aggregate}
-    and become a node in a stream processing pipeline, a node in a data flow graph.
-    The definition of such operations starts with creating a KStream on top of topic.
+    A microservices can just has it as a library, connects to Kafka, defines an operation like \textbf{filer} or
+    \textbf{aggregate} and becomes a node in a stream processing pipeline, a node in a data flow graph.
+    The definition of such operations starts with creating a KStream on top of a topic.
     Each event in the topic, will be an event in the stream.
 
-    As opposed to other Kafka apis like producer that are stateless, Kafka Streams supports both stateless and
+    As opposed to other Kafka APIs like producer that are stateless, Kafka Streams supports both stateless and
     stateful operations.
     For stateful operations, Kafka Streams ask for defining a KTable.
     KTable is a key:value table which is essentially backed by a kafka topic as source of truth.
-    However, for ease of accesibilty, the data in the topic gets loaded into a database which is RocksDB by default.
+    However, for ease of accessibility, the data in the topic gets loaded into a database which is RocksDB by default.
     In case of FenceX, in poll leg, we have used H2 in an in-memory fashion.
 
     Kafka Streams concept of KTable is not much different from concept of a Table in a traditional database.
@@ -1016,14 +1012,14 @@
         \includegraphics[scale=0.6]{images/Infrsutracture.png}
     \end{figure}
 
-    \ref{fig:infrastructure} does not include server4 since that server only run an instance of benchmarking app
+    Figure \ref{fig:infrastructure} does not include server4 since that server only run an instance of benchmarking app
     which is not part of the FenceX solution package.
-    Nevertheless, we have deployed another instance of bench-marking into server1 getting high throughput out of
+    Nevertheless, we have deployed another instance of bench-marking into server1 since getting high throughput out of
     bench-marking applications is a very expensive in terms of resources.
 
     It is also important to note that FenceX had 4 major Kafka topics.
     \textit{fence\_event\_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
-        realtime-fencing-fence-state-store-changelog}
+        realtime-fencing-fence-state-store-changelog}.
     All of these topics were configured to have 3 replicas and 12 partitions.
     These numbers are selected corresponding to available resources to the overal system.
     The process of selecting them correctly is out of the context of this thesis.
@@ -1031,9 +1027,9 @@
     high enough number of partitions to avoid idle subscribers.
 
     \paragraph{}
-    After preparing the infrastructure, Nomad calculated the whole available resources to the application that will
-    be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memrory.
-    ??? I'm not sure it's CPU power per core or in total???
+    After preparing the infrastructure, Nomad calculated the whole available resources to the applications that will
+    be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memory.
+    ??? I'm not sure it's CPU power per core or in total ???
 
     \subsection{Benchmarking app}
     Before diving into the test cases, it is worth the effort to explain how bench-marking appliction works and what
@@ -1045,8 +1041,9 @@
     The role of bench-marking is to imitate the behaviour of real world mover location report publishers,
     smartwatches or car gps modules for example.
 
-    bench-marking has a dataset of real taxi trips ??thanks to Cabonline's generosity??.
-    Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one of those points.
+    bench-marking has a dataset of real taxi trips.
+    Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one
+    of those points.
     The points are in form of coordinates (latitude, longitude) and the fences are WKT strings.
     Eah trip has an average of 17 points and in total around 500 trips are in the database.
 
@@ -1074,13 +1071,14 @@
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
     calculate the peak throughput based on overall available resources.
     Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.
-    In on demand style, the input rate is the number of HTTP reuqests per second that system receives.
+    In on demand style, the input rate is the number of HTTP requests per second that system receives.
     For realtime operations, the input rate will be number of location reports arrived at system per second.
     As mentioned previously, for each setup, exists a threshold for input rate above which throughput won't go any
     higher by increasing input.
 
     \paragraph{}
-    In order to calculate the throughput in each experiment, we use a combination of tools, Prometheus and Grafana.
+    In order to calculate the throughput in each experiment, we use a combination of tools, Prometheus and
+    Grafana\cite{grafana}.
     Prometheus is a time series database that polls different types of metrics out of each of our FenceX
     microservices on a frequent basis.
     Grafana is a visualization tool that reads metric data from Prometheus and illustrates it into a veriety of graphs.
@@ -1178,7 +1176,7 @@
     The process of poll throughput experiments are as following:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
-        \item[2-] Send a many location updates to FenceX.
+        \item[2-] Send many location updates to FenceX.
         \item[2-] Send a shocking load queries (query by fence) to FenceX.
         \item[3-] Check the throughput.
         \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
@@ -1239,7 +1237,7 @@
     So although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
     again the bottleneck was input rate which is limited by our physical available resources.
     We can clearly see in the graphs that regardless of setup, poll throughput (queries/sec) follows pretty
-    much the exact parent of changes in input rate (queries sent/sec).
+    much the exact pattern of changes in input rate (queries sent/sec).
     So there is no point in continuing poll throughput experiments with current available hardware.
     However, the highest input rate we managed to produce during these experiments was in the range of [12-13]K queries
     per second which FenceX just managed to handle very well.
@@ -1334,7 +1332,7 @@
         \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
 
-    \subsubsection{Experiment 7??}
+    \subsubsection{Experiment 7}
 
     \paragraph{Deployment view}
     \begin{center}
@@ -1361,17 +1359,17 @@
     As you can see once restart and re-balancing finishes successfully, the throughput increases back to the previous
     value and error rate drop back to zero.
     Please note that re-balancing has no direct affect on queries by fence.
-    However, health of each Kafka or Kafka Stream application is dependent to a successful re-balancing.
+    However, health of each Kafka or Kafka Stream application is dependent on a successful re-balancing.
 
 
     \section{Strong scalability}
     If a software has strong scalability properties means providing same load, the more you scale it out, the better
     it performances.
     For a given circumstance, there might be a point after which scaling out more won't affect the performance anymore.
-    The load can be data set size, table size, incoming http query rate and ... .
+    The load can be data set size, table size, incoming HTTP query rate and ... .
     Performance is also case and context dependent.
     It can be query latency, throughput and ... .
-    In stream processing systems like the load is the rate of input, rate of incoming events, the rate at
+    In stream processing systems the load is the rate of input, rate of incoming events, the rate at
     which source produces input in to the pipeline.
     In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
     fence.
@@ -1445,7 +1443,7 @@
         \includegraphics[scale=0.4]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
-    Looking at figure \ref{fig:ex9} we can easily observ that once the second instance is up and running, after
+    Looking at figure \ref{fig:ex9} we can easily observe that once the second instance is up and running, after
     re-balancing, throughput goes proportionally up.
     From 5k/s to 10k/s.
     At this point we can guess that without chaning anything, just adding one more instance of realtime-fencing
@@ -1555,7 +1553,7 @@
         \includegraphics[scale=0.4]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
-    In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line is represents input rate, number of incoming HTTP
+    In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line represents input rate, number of incoming HTTP
     requests.
     Orange line illustrates throughput which is number of queries responded successully.
     Orange dots also, show how many instances of location-aggregate are up and running.
@@ -1585,7 +1583,7 @@
     time, the more you scale the software out, the better it performs.
     For a given circumstance, there might be a point after which more scale out or more load won't affect
     the performance anymore.
-    The load can be data set size, table size, incoming http query rate and ... .
+    The load can be data set size, table size, incoming HTTP query rate and ... .
     Performance is also case and context dependent.
     It can be query latency, throughput and ... .
     In stream processing systems, load is the rate of input, rate of incoming events, the rate at
@@ -1814,8 +1812,8 @@
     \section{Related work}
     In this section we will go over two papers which has introduced geofencing systems.
 
-    \subsection{Large Scale Indexing of Geofences}
-    In this article, a poll style on demand geofencing system is introduced that supports large scales
+    \subsection{Large Scale Indexing of Geofences\cite{Cirillo-Jacobs-Martin-Szczytowski-2014}}
+    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that supports large scales
     of data and load.
     This system has a concept of worker which refers to instances of application that answer to queries.
     As apposed to clients which send queries to the worker nodes.
@@ -1827,12 +1825,12 @@
     special treatment.
     As a solution, each worker instance also is responsible for areas around its dedicated region.
 
-    It is notable that software in \cite{Cirillo_Jacobs_Martin_Szczytowski_2014} uses a custom geospatial index,
+    It is notable that software in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} uses a custom geospatial index,
     custom design and implementation.
     Using a custom index most probably means that the whole data is stored and processed in memory which allows for higher throughput.
     We will not, however, describe further the indexing strategy since it is outside context of this thesis.
 
-    Throughput in \cite{Cirillo_Jacobs_Martin_Szczytowski_2014} is defined as number of location updates processed per second.
+    Throughput in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} is defined as number of location updates processed per second.
     Such processing involves updating an index plus a query to find a crossing geofence.
 
     When they are using benefit of localhost communication without any data replication involved (no availability), a
@@ -1841,7 +1839,7 @@
     range at best.
 
     \subsubsection{Comparison}
-    The software introduced in \cite{Cirillo_Jacobs_Martin_Szczytowski_2014}, although having notification
+    The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
     functionalities, is comparable to poll leg of FenceX.
     Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
     scalability.
@@ -1853,18 +1851,18 @@
     As a result, no throughput would be lost during load balancing.
 
     When it comes to numbers, FenceX has achieved a throughput in range of 15k/s compared to sub 10k/s for
-    \cite{Cirillo_Jacobs_Martin_Szczytowski_2014}.
-    Although \cite{Cirillo_Jacobs_Martin_Szczytowski_2014} has done wonderful when no availability was in action
+    \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}.
+    Although \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} has done wonderful when no availability was in action
     (no replication), we do not consider it a win over FenceX.
     FenceX has always been tested with full replication in action.
     So all in all, FenceX has achieved a higher throughout.
 
-    \subsection{Using Complex Event Processing for implementing a geofencing service}
+    \subsection{Using Complex Event Processing for implementing a geofencing service \cite{Nechifor_Comnac_2013}}
     \cite{Nechifor_Comnac_2013} introduces a push style realtime geofencing system that relies on a CEP
     (complex event processing) for fence entrance/exit detection.
-    Which is comparable to functionalities of push leg of FenceX when realtime fence point intersections happen.
+    Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
     System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
-    Unit of concurrency of in \cite{Nechifor_Comnac_2013} is not clear.
+    Unit of concurrency in \cite{Nechifor_Comnac_2013} is not clear.
     So it is not clear what are the bounds for scalability of the introduced system.
 
     Throughput in this system is defined as number of location updates processed per second.
@@ -1907,10 +1905,10 @@
     Currently, FenceX just detects enter/exit events on a one by one basis.
 
 
-    \part[Stateful FAAS]{FenceX: Statefull Function as a serivce platform}
+    \part[Stateful FAAS]{FenceX: Stateful Function as a serivce platform}
 
     \chapter{FenceX as FAAS provider}
-    FenceX apart from being a geofencing system, as described in the previous part of the report, can also be
+    FenceX apart from being a geofencing system as described in the previous part of the report, can also be
     considered as an implementation for idea of function as a service.
     Stateful function as a service actually.
     In a sence, geofencing is just one special usage our system.
@@ -1948,7 +1946,7 @@
     After all it's just some calculation and computation over an input then producing an output.
     So what if they could just implement that function, give it to a cloud service with promise of no more work
     required for exposing the API to internet.
-    The compression algorithm will be exposed as an HTTP API exposed to internet.
+    The compression algorithm will be exposed to internet as an HTTP API.
     It can also be configured to be triggered upon receiving a Kafka event, grpc call, AMQP message and much more .
     The start up people won't need to be worry about anything else.
     The cloud provider will take the code, build it somehow, and bring enough instances of the resulted artifact up and
@@ -1961,10 +1959,10 @@
 
     What we just described is the sell speak for the function as a service idea.
     Which is provided nowadays by most cloud providers.
-    AWS lambda is the most famous one.
+    AWS lambda\cite{lambda} is the most famous one.
 
     \section{Stateless FAAS}
-    In FAAS model, apart from separating business logic and execution platfrom, storage is also separated from
+    In FAAS model, apart from separating business logic and execution platform, storage is also separated from
     execution platform.
     That is because of storage being not easy to scale in a distributed fashion.
     As a consequence, having very small computation units working totally decoupled, comes with price of not being
@@ -1981,7 +1979,7 @@
     The high latency of IO over network does not match this limitation.
 
     \paragraph{Decoupled context:} Since all the running instances of the function are totally decoupled, there is
-    not way for them to share something, a connection to database for example.
+    no way for them to share something, a connection to database for example.
     So each time a function requires database or storage connection, a brand-new connection should be created.
     Which results in unnecessary latency, too many connections, loss of execution time budget and ... .
 
@@ -1994,11 +1992,11 @@
 
     \section{Stream processing and Stateful FAAS}
     For developers (users of FAAS platform), the function they implement has only some inputs parameters and an output.
-    The input parameters can be drived from the triggering event/request/message.
+    The input parameters can be driven from the triggering event/request/message.
     This is not different from implementing operations in a stream processing pipeline.
-    Each stream processing pipeline, ragardless of being stateful or stateless, is very similar to a function which
+    Each stream processing pipeline, regardless of being stateful or stateless, is very similar to a function which
     has an input (triggering event) and an output (resulting event if any).
-    For stateful operations, another input parameter exists which the latest captured for the key of the event.
+    For stateful operations, another input parameter exists which the latest captured state for the key of the event.
     Please remember that in stream processing systems, events and states are key:value tuples.
 
     So we can actually implement a FAAS platform by modeling it as a stream processing pipeline.
@@ -2006,7 +2004,7 @@
     The adaptors turn an incoming request, HTTP for example, into a Kafka event so that operations down the pipeline
     can process them.
     Of course this implementation is asynchronous and eventually consistent.
-    Paying that cost, brings about the benefit of Stateful operations.
+    Paying that cost, brings about the benefit of stateful operations.
     Since we can just enjoy stateful operations in a stream processing pipeline in a highly scalable manner,
     a FAAS platform implemented by stream processing pipeline allows for definition of stateful functions as well.
 
@@ -2015,7 +2013,7 @@
     \section{FenceX and FAAS}
     FenceX, as described previously, is a stream processing pipeline among many other things.
     It has both stateful and stateless operations.
-    However, FenceX is designed in a way that operations are defined by architecture by their implementation should
+    However, FenceX is designed in a way that operations are defined by architecture but their implementation should
     be provided as libraries.
     Each operation on execution, uses an object of a Java Class called Function.
     The mentioned library provides instances of those Functions.

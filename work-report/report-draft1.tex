@@ -114,6 +114,12 @@
         (anonymized) which we have used intensively in the evaluation phase.
         Last but not least my friend and ex-college, Juan Fandino, whose work was inspirational for FenceX.
 
+        \section{Open source}
+        All of the work has been done during this thesis including reports, implementations and ... is available in
+        a Github repository (github.com/bmd007/statefull-geofencing-faas).
+        The content of this repository is available to be used openly.
+        Please feel free to contribute as well.
+
         \part[FenceX]{FenceX: High throughput scalable geofencing}
 
         \chapter{Introduction}
@@ -750,7 +756,7 @@
         \end{itemize}
 
         \begin{figure}[ht]
-            \caption{Reactive systems' value chain}
+            \caption{Reactive systems' value chain \cite{reactive-manifesto}}
             \label{fig:reactive-value}
             \includegraphics[scale=0.4]{images/reactive-traits.png}
         \end{figure}
@@ -830,7 +836,7 @@
         Because for example, the less services are dependent on each other, the easier they can be changed.
 
         So now that software is developed into microservices, each microservice can be changed independently by the
-        team responsible for maintaining it, deployed separetely after a short build and test process.
+        team responsible for maintaining it, deployed separately after a short build and test process.
         A bug in one of the services can not bring the whole system down as well.
         When load on one of the microservices increases, more instances of it can be easily deployed (scale out).
         And hopefully instead of deploying executable artifact into a physically avaialbe machine in the corner of
@@ -869,7 +875,7 @@
         Similar to implementing a microservice and deploying some instances of it.
 
         \begin{figure}[ht]
-            \caption{Example of physical data flow graph}
+            \caption{Example of physical data flow graph \cite{flink}}
             \label{physical-data-flow-graph-example}
             \includegraphics[scale=0.4]{images/physical-data-flow-graph.png}
         \end{figure}
@@ -1031,7 +1037,6 @@
         \paragraph{}
         After preparing the infrastructure, Nomad calculated the whole available resources to the applications that will
         be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memory.
-        ??? I'm not sure it's CPU power per core or in total ???
 
         \subsection{Benchmarking app}
         Before diving into the test cases, it is worth the effort to explain how bench-marking appliction works and what
@@ -1148,6 +1153,8 @@
         The highest input rate we managed to produce during these experiments was around 15K location updates per second
         and FenceX just managed to handle it very well with the given deployment setup.
 
+        \clearpage
+
         \subsubsection{Experiment 2}
 
         \paragraph{Deployment view}
@@ -1173,6 +1180,8 @@
         We can clearly see in the graphs that regardless of setup, push throughput (intersections/sec) follows pretty
         much the exact parent of changes in input rate (location updates/sec).
         So there is no point in continuing push throughput experiments with current available hardware power.
+
+        \clearpage
 
         \subsection{Poll leg}
         The process of poll throughput experiments are as following:
@@ -1206,6 +1215,8 @@
 
         Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and poll
         throughput (number of queries answered without error) with the yellow line.
+
+        \clearpage
 
         \subsubsection{Experiment 4}
 
@@ -1283,6 +1294,9 @@
             \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
         \end{itemize}
 
+
+        \clearpage
+
         \subsubsection{Experiment 5}
 
         \paragraph{Deployment view}
@@ -1334,6 +1348,8 @@
             \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
         \end{itemize}
 
+        \clearpage
+
         \subsubsection{Experiment 7}
 
         \paragraph{Deployment view}
@@ -1355,7 +1371,7 @@
 
         In figure \ref{fig:ex7} the purple line is essentially the input rate (number of queries received by FenceX per
         second) and the yellow line shows the rate of queries answered successfully.
-        Red line shows how many queires FenceX failed to respond.
+        Red line shows how many queries FenceX failed to respond.
         A failure to respond in this incoming load range means the service that was supposed to answer the query was not
         up and running (due to restart) at that moment.
         As you can see once restart and re-balancing finishes successfully, the throughput increases back to the previous
@@ -1399,6 +1415,8 @@
         higher than the input rate.
         This is because the input stream is ongoing and fixed rate.
 
+        \clearpage
+
         \subsubsection{Experiment 8}
 
         \paragraph{Deployment view}
@@ -1426,6 +1444,8 @@
         So \ref{fig:ex8} illustrates that one instance of realtime-fencing with the rather low given resources, can only
         handle one 3rd (5K out of 15K) of input rate.
 
+        \clearpage
+
         \subsubsection{Experiment 9}
 
         \paragraph{Deployment view}
@@ -1448,9 +1468,11 @@
         Looking at figure \ref{fig:ex9} we can easily observe that once the second instance is up and running, after
         re-balancing, throughput goes proportionally up.
         From 5k/s to 10k/s.
-        At this point we can guess that without chaning anything, just adding one more instance of realtime-fencing
+        At this point we can guess that without changing anything, just adding one more instance of realtime-fencing
         should be enough to cover the whole 15k/s input rate.
         15K location updates per second is the highest input rate that we could produce in a stable manner.
+
+        \clearpage
 
         \subsubsection{Experiment 10}
 
@@ -1474,6 +1496,8 @@
         location updates per second.
         Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
         Around the end parts of the graph, throughput is higher than input rate.
+
+        \clearpage
 
         \subsubsection{Experiment 11}
         Now in order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
@@ -1517,6 +1541,8 @@
         avoids some queries from being answered.
         Those queries will be considered as failed.
 
+        \clearpage
+
         \subsubsection{Experiment 17}
 
         \paragraph{Deployment view}
@@ -1528,13 +1554,13 @@
                 realtime-fencing          & 0                   & 30       & 500     \\
             \end{tabular}
         \end{center}
-
-        \paragraph{Result}
         \begin{figure}[ht]
             \caption{FenceX poll leg strong scalability ex17}
             \label{fig:ex17}
             \includegraphics[scale=0.4]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
         \end{figure}
+
+        \clearpage
 
         \subsubsection{Experiment 18}
 
@@ -1589,7 +1615,7 @@
         Performance is also case and context dependent.
         It can be query latency, throughput and ... .
         In stream processing systems, load is the rate of input, rate of incoming events, the rate at
-        which source publishes input in to the piple line.
+        which source publishes input in to the pipeline.
         In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
         fence.
         And, for push leg is the rate at which location reports arrive.
@@ -1618,6 +1644,8 @@
         higher than the input rate.
         This is because the input stream is ongoing and fixed rate.
 
+        \clearpage
+
         \subsubsection{Experiment 19}
 
         \paragraph{Deployment view}
@@ -1645,6 +1673,8 @@
         So far with one limited in resources instance of realtime-fencing, FenceX has managed to deal with around 2K
         location updates per second succesfully in a stable manner.
 
+        \clearpage
+
         \subsubsection{Experiment 20}
 
         \paragraph{Deployment view}
@@ -1666,6 +1696,8 @@
 
         Two such instances of realtime-fencing managed to handle around 3K location updates per second.
 
+        \clearpage
+
         \subsubsection{Experiment 21}
 
         \paragraph{Deployment view}
@@ -1686,6 +1718,8 @@
         \end{figure}
         Four such instances of realtime-fencing managed to handle around 5K location updates per second.
 
+        \clearpage
+
         \subsubsection{Experiment 22}
 
         \paragraph{Deployment view}
@@ -1705,6 +1739,8 @@
             \includegraphics[scale=0.4]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
         \end{figure}
         Five such instances of realtime-fencing managed to handle around 15K location updates per second.
+
+        \clearpage
 
         \subsubsection{Experiment 23}
 
@@ -1785,6 +1821,8 @@
             \item[7-] Check the throughput and assert that it's much higher than maxixmum oberserved throughput in
             previous experiments.
         \end{itemize}
+
+        \clearpage
 
         \subsubsection{Experiment 24}
 
@@ -2065,10 +2103,10 @@
         FenceX is only the core/kernel part of a FAAS platform.
         In order to make it a fully functioning cloud service, some other tools and layers should be built around and
         upon it.
-        For example, a web UI in which developers implement their fucntions (simple cases) and the system compilies
+        For example, a web UI in which developers implement their functions (simple cases) and the system compiles
         the code itself and generate the library.
 
-        Next step is to use that library to build microservices envolved in FenceX.
+        Next step is to use that library to build microservices involved in FenceX.
         Then deploying them.
         This whole process can be automated.
 

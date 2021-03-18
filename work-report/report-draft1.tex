@@ -1313,21 +1313,20 @@
         \begin{figure}[ht]
             \caption{FenceX push leg availability ex5-1}
             \label{fig:ex5-1}
-            \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
+            \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
         \end{figure}
 
         \begin{figure}[ht]
             \caption{FenceX push leg availability ex5-2}
             \label{fig:ex5-2}
-            \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
+            \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
         \end{figure}
 
         In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
         Green line illustrates the ongoing input stream of location updates and pink point shows
         number of up and running realtime-fencing instances.
-        As you can see in \ref{fig:ex5-1} and \ref{fig:ex5-2}, there are two points in the timeline at which number of
-        realtime-fencing
-        instances goes down (by 1 and 2) and later comes back to 6 again.
+        As you can see in \ref{fig:ex5-1} and \ref{fig:ex5-2}, there are points in the timeline at which number of
+        realtime-fencing instances goes down (by 1 and/or 2) and later comes back to 6 again.
         During the time which takes for all 6 instances to be up and running again, throughput slightly drops and
         eventually recovers.
         Since we are using kafka topics as durable storage of location updates, the location updates which

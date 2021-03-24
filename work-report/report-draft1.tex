@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
+\usepackage{tools}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -1130,7 +1131,7 @@
     value of throughput and input rate.
 
     \subsection{Push leg}
-    The process of push throughput experiments are as following:
+    Push throughput experiments process:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] send a shocking stream of location reports into the FenceX.
@@ -1211,7 +1212,8 @@
         \label{fig:ex2}
         \includegraphics[scale=0.4]{images/evaluation/ex2-benchmarking(24,10).png}
     \end{figure}
-    The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1.
+    The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1 (figures \ref{fig:ex1-1} for
+    example).
 
     So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
     application.
@@ -1222,7 +1224,7 @@
     \clearpage
 
     \subsection{Poll leg}
-    The process of poll throughput experiments are as following:
+    Poll throughput experiments process:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Send many location updates to FenceX.
@@ -1302,7 +1304,7 @@
 
     \section{Availability}
     In this section we cover the experiments we have conducted in order to test availability of FenceX.
-    More precisely, we start an ongoing load or stream of input.
+    In order to test FenceX for availability, roughly speaking, we start an ongoing load or stream of input.
     Once throughput becomes stable, we restart one of the instances of involved microservices.
     The overall expectation is that during the restart, until the service becomes up and running again, the throughput
     goes down and afterward goes up again to the previous value.
@@ -1326,7 +1328,7 @@
     Specially for lower incoming loads.
 
     \subsection{Push leg}
-    The process experiments are as following:
+    Push leg availability experiments process:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing stream of location report toward FenceX.
@@ -1381,7 +1383,7 @@
     As a result, we have even a higher throughput than input rate temporarily after re-balancing finishes.
 
     \subsection{Poll leg}
-    The process experiments are as following:
+    Poll leg availability experiments process:
     \begin{itemize}
         \item[1-] We defined fences and sent location updates for movers using all the trips in the bench-marking
         application database.
@@ -1397,7 +1399,6 @@
     \clearpage
 
     \subsubsection{Experiment 7}
-
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1434,9 +1435,9 @@
     If a software has strong scalability properties means providing same load, the more you scale it out, the better
     it performances.
     For a given circumstance, there might be a point after which scaling out more won't affect the performance anymore.
-    The load can be data set size, table size, incoming HTTP query rate and ... .
+    The load can be data set size, table size or incoming HTTP query rate.
     Performance is also case and context dependent.
-    It can be query latency, throughput and ... .
+    It can be query latency or throughput.
     In stream processing systems the load is the rate of input, rate of incoming events, the rate at
     which source produces input in to the pipeline.
     In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
@@ -1446,7 +1447,7 @@
     Performance in case of our experiments for FenceX specifically, is throughput of push leg and poll leg.
 
     \subsection{Push leg}
-    The process of strong scalability experiments are as following:
+    Push leg strong scalability experiments process:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing stream of location report with fixed rate toward FenceX.
@@ -1531,7 +1532,6 @@
     \clearpage
 
     \subsubsection{Experiment 10}
-
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1590,7 +1590,7 @@
     graph.
 
     \subsection{Poll leg}
-    The process of poll leg strong scalability experiments are as following:
+    Poll leg strong scalability experiments process:
     \begin{itemize}
         \item[1-] Send location reports for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed rate.
@@ -1684,9 +1684,9 @@
     time, the more you scale the software out, the better it performs.
     For a given circumstance, there might be a point after which more scale out or more load won't affect
     the performance anymore.
-    The load can be data set size, table size, incoming HTTP query rate and ... .
+    The load can be data set size, table size or incoming HTTP query rate.
     Performance is also case and context dependent.
-    It can be query latency, throughput and ... .
+    It can be query latency or throughput.
     In stream processing systems, load is the rate of input, rate of incoming events, the rate at
     which source publishes input in to the pipeline.
     In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
@@ -1696,7 +1696,7 @@
     Performance in case of our experiments for FenceX specifically, is throughput of push leg and poll leg.
 
     \subsection{Push leg}
-    The process of weak scalability experiments are as following:
+    Push leg weak scalability experiments process:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing stream of location report with fixed low rate toward FenceX.
@@ -1855,7 +1855,7 @@
     We have concluded that push leg of FenceX managed to scale well in face of increasing load.
 
     \subsection{Poll leg}
-    The process of poll leg weak scalability experiments are as following:
+    Poll leg weak scalability experiments process:
     \begin{itemize}
         \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed low rate.
@@ -1896,7 +1896,7 @@
     Basically HTTP based communication does not support back pressure.
 
     \subsection{Push leg}
-    The process of free fall scalability experiment is as following:
+    Push leg free fall scalability experiment process:
     \begin{itemize}
         \item[1-] Play with different input rates and deployment configurations to get a feeling of how to tune the
         system for best performance
@@ -1942,7 +1942,7 @@
 
 
     \section{Related work}
-    In this section we will go over two papers which has introduced geofencing systems.
+    In this section we will go over a couple of papers which has introduced a geofencing systems.
 
     \subsection{Large Scale Indexing of Geofences}
     In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that supports large scales
@@ -1990,8 +1990,8 @@
     So all in all, FenceX has achieved a higher throughout.
 
     \subsection{Using Complex Event Processing for implementing a geofencing service}
-    \cite{Nechifor_Comnac_2013} introduces a push style realtime geofencing system that relies on a CEP
-    (complex event processing) for fence entrance/exit detection.
+    A push style realtime geofencing system has been intoduced in \cite{Nechifor_Comnac_2013}.
+    It relies on a CEP (complex event processing) for fence entrance/exit detection.
     Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
     System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
     Unit of concurrency in \cite{Nechifor_Comnac_2013} is not clear.
@@ -2185,10 +2185,12 @@
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
 
-    \paragraph{Comparison with FenceX}
-    \begin{center}
-        \begin{tabular}{ cr cr cr }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{ |cr|cr|cr| }
+            \hline
             Property/System          & FenceX                    & \cite{Functions-as-a-Service-2020} \\
+            \hline
             Consistency              & Eventual                  & Strong                             \\
             Statefulness stretegy    & Stream processing         & Co-located caches                  \\
             ACID2 conforming         & yes                       & yes                                \\
@@ -2197,8 +2199,11 @@
             State as KEY:VALUE data  & yes                       & yes                                \\
             Custom functions         & practically yes           & yes                                \\
             Underlaying system       & Kafka/Spring/KafkaStreams & Anna                               \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
+        \label{table:fencex-comp}
+    \end{table}
 
 
     \section{Future work}

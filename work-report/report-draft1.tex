@@ -3,7 +3,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
-\usepackage{tools}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -181,7 +180,7 @@
         \item MULTIPOLYGON EMPTY
     \end{itemize}
 
-    Instead of relative values for X,Y and Z, geographic coordinates (latitude, longitude) can be used in oder to
+    Instead of relative values for X,Y and Z, geographic coordinates (latitude, longitude) can be used in order to
     represent geospatial data.
 
     \begin{figure}[ht]
@@ -1061,7 +1060,7 @@
     \textit{fence\_event\_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
         realtime-fencing-fence-state-store-changelog}.
     All of these topics were configured to have 3 replicas and 12 partitions.
-    These numbers are selected corresponding to available resources to the overal system.
+    These numbers are selected corresponding to available resources to the overall system.
     The process of selecting them correctly is out of the context of this thesis.
     The important factor however is to have a high enough replication factor to achieve availability (3 at least) and
     high enough number of partitions to avoid idle subscribers.
@@ -1071,7 +1070,7 @@
     be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memory.
 
     \subsection{Benchmarking app}
-    Before diving into the test cases, it is worth the effort to explain how bench-marking appliction works and what
+    Before diving into the test cases, it is worth the effort to explain how bench-marking application works and what
     options it provides.
 
     Generally speaking it is a microservice similar to other services in FenceX.
@@ -1084,7 +1083,7 @@
     Each trip has an anonymized ID, a set of location reports (points), a geospatial circle (fence) drawn around one
     of those points.
     The points are in form of coordinates (latitude, longitude) and the fences are WKT strings.
-    Eah trip has an average of 17 points and in total around 500 trips are in the database.
+    Each trip has an average of 17 points and in total around 500 trips are in the database.
 
     \paragraph{}
     bench-marking can send HTTP requests to realtime-fencing and define fences for movers.
@@ -1250,7 +1249,7 @@
         \caption{Experiment 3 deployment view}
         \label{table:ex3-dv}
     \end{table}
-    
+
     \begin{figure}[h!]
         \caption{FenceX poll throughput ex3}
         \label{fig:ex3}
@@ -1274,10 +1273,10 @@
             realtime-fencing          & 4                   & 700      & 800     \\
             \hline
         \end{tabular}
-        \caption{Experiment X deployment view}
-        \label{table:ex2-dv}
+        \caption{Experiment 4 deployment view}
+        \label{table:ex4-dv}
     \end{table}
-    
+
     \begin{figure}[h!]
         \caption{FenceX poll throughput ex4-1}
         \label{fig:ex4-1}
@@ -1358,7 +1357,7 @@
         \caption{Experiment 5 deployment view}
         \label{table:ex5-dv}
     \end{table}
-    
+
     \begin{figure}[h!]
         \caption{FenceX push leg availability ex5-1}
         \label{fig:ex5-1}
@@ -1747,7 +1746,7 @@
     Figures in following push leg weak scalability experiments can also be read in the same way as experiment 19.
 
     So far with one limited in resources instance of realtime-fencing, FenceX has managed to deal with around 2K
-    location updates per second succesfully in a stable manner.
+    location updates per second successfully in a stable manner.
 
     \clearpage
 
@@ -1910,8 +1909,6 @@
         previous experiments.
     \end{itemize}
 
-    \clearpage
-
     \subsubsection{Experiment 24}
     \begin{table}[h!]
         \centering
@@ -1940,6 +1937,7 @@
     We can clearly observe that after re-balancing among 10 newly deployed instance of realtime-fencing is finished,
     throughput has picked very fast to about 65K fence-point intersections per second.
 
+    \clearpage
 
     \section{Related work}
     In this section we will go over a couple of papers which has introduced a geofencing systems.
@@ -2171,7 +2169,7 @@
 
 
     \section{Comparison}
-    In this section we compare how FenceX has achieved stataful FAAS compared to other available works.
+    In this section we compare how FenceX has achieved stataful FAAS compared to another available work.
 
     \subsection{Cloudburst: stateful functions-as-a-service}
     \cite{Functions-as-a-Service-2020} in order to make stateful FAAS possible, relies on co-locating cache and
@@ -2186,8 +2184,7 @@
     order to gain high scalability.
 
     \begin{table}[h!]
-        \centering
-        \begin{tabular}{ |cr|cr|cr| }
+        \begin{tabular}{ |l|l|l| }
             \hline
             Property/System          & FenceX                    & \cite{Functions-as-a-Service-2020} \\
             \hline
@@ -2198,13 +2195,12 @@
             Function execution retry & yes                       & yes                                \\
             State as KEY:VALUE data  & yes                       & yes                                \\
             Custom functions         & practically yes           & yes                                \\
-            Underlaying system       & Kafka/Spring/KafkaStreams & Anna                               \\
+            Underlying system       & Kafka/Spring/KafkaStreams & Anna                               \\
             \hline
         \end{tabular}
         \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
         \label{table:fencex-comp}
     \end{table}
-
 
     \section{Future work}
     FenceX is only the core/kernel part of a FAAS platform.

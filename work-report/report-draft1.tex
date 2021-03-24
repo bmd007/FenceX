@@ -1140,8 +1140,6 @@
     \end{itemize}
 
     \subsubsection{Experiment 1}
-
-    \paragraph{Deployment view}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1157,31 +1155,29 @@
         \label{table:ex1-dv}
     \end{table}
 
-    \paragraph{Results}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push throughput ex1-1}
         \label{fig:ex1-1}
         \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(15,6).png}
     \end{figure}
 
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push throughput ex1-2}
         \label{fig:ex1-2}
         \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(19,7).png}
     \end{figure}
 
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push throughput ex1-3}
         \label{fig:ex1-3}
         \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(22,9).png}
     \end{figure}
 
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push throughput ex1-4}
         \label{fig:ex1-4}
         \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(23,10).png}
     \end{figure}
-
 
     The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3} and \ref{fig:ex1-4} illustrate input rate
     (location-updates per second) with green line and push throughput (number of fence-point intersection
@@ -1195,19 +1191,22 @@
     \clearpage
 
     \subsubsection{Experiment 2}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 5                   & 400      & 700     \\
             location-aggregate        & 3                   & 2200     & 2600    \\
             realtime-fencing          & 5                   & 400      & 700     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 2 deployment view}
+        \label{table:ex2-dv}
+    \end{table}
 
-    \paragraph{Results}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push throughput ex2}
         \label{fig:ex2}
         \includegraphics[scale=0.4]{images/evaluation/ex2-benchmarking(24,10).png}
@@ -1235,18 +1234,22 @@
 
     \subsubsection{Experiment 3}
 
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 500      & 500     \\
             location-aggregate        & 2                   & 2500     & 3200    \\
             realtime-fencing          & 4                   & 700      & 800     \\
+            \hline
         \end{tabular}
-    \end{center}
-
-    \paragraph{Results}
-    \begin{figure}[ht]
+        \caption{Experiment 3 deployment view}
+        \label{table:ex3-dv}
+    \end{table}
+    
+    \begin{figure}[h!]
         \caption{FenceX poll throughput ex3}
         \label{fig:ex3}
         \includegraphics[scale=0.4]{images/evaluation/ex3-benchmarking(16,9).png}
@@ -1258,26 +1261,28 @@
     \clearpage
 
     \subsubsection{Experiment 4}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 500      & 500     \\
             location-aggregate        & 2                   & 2700     & 2700    \\
             realtime-fencing          & 4                   & 700      & 800     \\
+            \hline
         \end{tabular}
-    \end{center}
-
-    \paragraph{Results}
-    \begin{figure}[ht]
+        \caption{Experiment X deployment view}
+        \label{table:ex2-dv}
+    \end{table}
+    
+    \begin{figure}[h!]
         \caption{FenceX poll throughput ex4-1}
         \label{fig:ex4-1}
         \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(19,10).png}
     \end{figure}
 
-    \paragraph{Results}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX poll throughput ex4-2}
         \label{fig:ex4-2}
         \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(22,10).png}
@@ -1337,25 +1342,28 @@
     \clearpage
 
     \subsubsection{Experiment 5}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 5                   & 400      & 700     \\
             location-aggregate        & 2                   & 2700     & 2700    \\
             realtime-fencing          & 6                   & 400      & 800     \\
+            \hline
         \end{tabular}
-    \end{center}
-
-    \paragraph{Results}
-    \begin{figure}[ht]
+        \caption{Experiment 5 deployment view}
+        \label{table:ex5-dv}
+    \end{table}
+    
+    \begin{figure}[h!]
         \caption{FenceX push leg availability ex5-1}
         \label{fig:ex5-1}
         \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
     \end{figure}
 
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg availability ex5-2}
         \label{fig:ex5-2}
         \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
@@ -1390,17 +1398,21 @@
 
     \subsubsection{Experiment 7}
 
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 0                   & 400      & 700     \\
             location-aggregate        & 4                   & 2700     & 2700    \\
             realtime-fencing          & 0                   & 400      & 800     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 7 deployment view}
+        \label{table:ex7-dv}
+    \end{table}
 
-    \paragraph{Result}
     \begin{figure}[ht]
         \caption{FenceX poll leg availability ex7}
         \label{fig:ex7}
@@ -1456,19 +1468,22 @@
     \clearpage
 
     \subsubsection{Experiment 8}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 200      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 1                   & 30       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 8 deployment view}
+        \label{table:ex8-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex8}
         \label{fig:ex8}
         \includegraphics[scale=0.4]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
@@ -1485,19 +1500,22 @@
     \clearpage
 
     \subsubsection{Experiment 9}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 200      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 2                   & 30       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 9 deployment view}
+        \label{table:ex9-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex9}
         \label{fig:ex9}
         \includegraphics[scale=0.4]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
@@ -1514,22 +1532,27 @@
 
     \subsubsection{Experiment 10}
 
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 200      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 3                   & 30       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 10 deployment view}
+        \label{table:ex10-dv}
+    \end{table}
 
-    \paragraph{Result}
     \begin{figure}[ht]
         \caption{FenceX push leg strong scalability ex10}
         \label{fig:ex10}
         \includegraphics[scale=0.4]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
     \end{figure}
+
     As we expected, deploying three instances of realtime-fencing with the given resources, was enough to process 15K
     location updates per second.
     Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
@@ -1541,18 +1564,22 @@
     Now in order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
     add another instance as the final step.
 
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 200      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 4                   & 30       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 11 deployment view}
+        \label{table:ex11-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex11}
         \label{fig:ex11}
         \includegraphics[scale=0.4]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
@@ -1582,17 +1609,22 @@
     \clearpage
 
     \subsubsection{Experiment 17}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 0                   & 200      & 700     \\
             location-aggregate        & 1                   & 100      & 1500    \\
             realtime-fencing          & 0                   & 30       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
-    \begin{figure}[ht]
+        \caption{Experiment 17 deployment view}
+        \label{table:ex17-dv}
+    \end{table}
+
+    \begin{figure}[h!]
         \caption{FenceX poll leg strong scalability ex17}
         \label{fig:ex17}
         \includegraphics[scale=0.4]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
@@ -1601,19 +1633,22 @@
     \clearpage
 
     \subsubsection{Experiment 18}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 0                   & 200      & 700     \\
             location-aggregate        & 2                   & 100      & 1500    \\
             realtime-fencing          & 0                   & 30       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 18 deployment view}
+        \label{table:ex18-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX poll leg strong scalability ex18}
         \label{fig:ex18}
         \includegraphics[scale=0.4]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
@@ -1685,19 +1720,22 @@
     \clearpage
 
     \subsubsection{Experiment 19}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 400      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 1                   & 60       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 19 deployment view}
+        \label{table:ex19-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex19}
         \label{fig:ex19}
         \includegraphics[scale=0.4]{images/evaluation/ex19-benchmarking-ongoing-1per16sec.png}
@@ -1714,19 +1752,22 @@
     \clearpage
 
     \subsubsection{Experiment 20}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 400      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 2                   & 60       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 20 deployment view}
+        \label{table:ex20-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex20}
         \label{fig:ex20}
         \includegraphics[scale=0.4]{images/evaluation/ex20-benchmarking-ongoing-1per10sec.png}
@@ -1737,19 +1778,22 @@
     \clearpage
 
     \subsubsection{Experiment 21}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 400      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 4                   & 60       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 21 deployment view}
+        \label{table:ex21-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex21}
         \label{fig:ex21}
         \includegraphics[scale=0.4]{images/evaluation/ex21-benchmarking-ongoing-1per6sec.png}
@@ -1759,19 +1803,22 @@
     \clearpage
 
     \subsubsection{Experiment 22}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 400      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 5                   & 60       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 22 deployment view}
+        \label{table:ex22-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex22}
         \label{fig:ex22}
         \includegraphics[scale=0.4]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
@@ -1781,19 +1828,22 @@
     \clearpage
 
     \subsubsection{Experiment 23}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4                   & 400      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 10                  & 60       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 23 deployment view}
+        \label{table:ex23-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex23}
         \label{fig:ex23}
         \includegraphics[scale=0.4]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
@@ -1863,19 +1913,22 @@
     \clearpage
 
     \subsubsection{Experiment 24}
-
-    \paragraph{Deployment view}
-    \begin{center}
-        \begin{tabular}{ c c c c }
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
             location-update-publisher & 4 - 0               & 400      & 700     \\
             location-aggregate        & 0                   & 2700     & 2700    \\
             realtime-fencing          & 0 - 12              & 60       & 500     \\
+            \hline
         \end{tabular}
-    \end{center}
+        \caption{Experiment 24 deployment view}
+        \label{table:ex24-dv}
+    \end{table}
 
-    \paragraph{Result}
-    \begin{figure}[ht]
+    \begin{figure}[h!]
         \caption{FenceX push leg free fall scalability ex24}
         \label{fig:ex24}
         \includegraphics[scale=0.4]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}

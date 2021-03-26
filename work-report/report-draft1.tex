@@ -1015,8 +1015,7 @@
     \chapter{Experiments and validation}
     In this chapter we explain the process and results of evaluating FenceX.
     This process consist of many experiments with different setup and goals.
-    Each experiment had a preparation phase, execution, observation and finally comparison.
-
+    Each experiment had a preparation phase, execution, observation and finally conclusion.
 
     \section{Deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.
@@ -1051,27 +1050,33 @@
         \includegraphics[scale=0.6]{images/Infrsutracture.png}
     \end{figure}
 
-    Figure \ref{fig:infrastructure} does not include server4 since that server only run an instance of benchmarking app
-    which is not part of the FenceX solution package.
-    Nevertheless, we have deployed another instance of bench-marking into server1 since getting high throughput out of
-    bench-marking applications is a very expensive in terms of resources.
+    Figure \ref{fig:infrastructure} does not include server4 since that server only runs an instance of benchmarking
+    application which is not part of the FenceX solution package.
+    Nevertheless, we have deployed another instance of bench-marking into server1 as well;
+    since getting high throughput out of bench-marking applications is very expensive in terms of resources.
 
     It is also important to note that FenceX had 4 major Kafka topics.
     \textit{fence\_event\_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
         realtime-fencing-fence-state-store-changelog}.
     All of these topics were configured to have 3 replicas and 12 partitions.
-    These numbers are selected corresponding to available resources to the overall system.
+    These numbers are selected corresponding to the overall available resources.
     The process of selecting them correctly is out of the context of this thesis.
     The important factor however is to have a high enough replication factor to achieve availability (3 at least) and
     high enough number of partitions to avoid idle subscribers.
 
     \paragraph{}
-    After preparing the infrastructure, Nomad calculated the whole available resources to the applications that will
-    be deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memory.
+    In terms of bandwidth, between virtual machines hosting FenceX infrastructure during evaluation, in both
+    directions we observed numbers more than 3Gbps.
+    However, since the process of producing load was computationally expensive, we did not even get close to saturating
+    the available bandwidth.
+
+    \paragraph{}
+    After preparing the infrastructure, Nomad calculated available resources to the applications that will be
+    deployed into worker nodes as 16670 MHz of CPU cycles and 16 GB of memory.
 
     \subsection{Benchmarking app}
     Before diving into the test cases, it is worth the effort to explain how bench-marking application works and what
-    options it provides.
+    functionalities it provides.
 
     Generally speaking it is a microservice similar to other services in FenceX.
     It registers itself into Consul and has HTTP APIs.
@@ -1105,22 +1110,21 @@
     in terms of memory usage and CPU usage to some extent.
     Mostly during our evaluations the bottleneck to throughput was our input rate.
 
-
-    \section{Pure throughput}
+    \section{Evalution of pure throughput}
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
-    calculate the peak throughput based on overall available resources.
+    calculate the peak throughput based on available resources.
     Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.
-    In on demand style, the input rate is the number of HTTP requests per second that system receives.
-    For realtime operations, the input rate will be number of location reports arrived at system per second.
+    In on demand style, the input rate is the number of HTTP requests (query by fence) per second that system receives.
+    For realtime operations, the input rate is the number of location reports arrives at system per second.
     As mentioned previously, for each setup, exists a threshold for input rate above which throughput won't go any
     higher by increasing input.
 
     \paragraph{}
     In order to calculate the throughput in each experiment, we use a combination of tools, Prometheus and
     Grafana\cite{grafana}.
-    Prometheus is a time series database that polls different types of metrics out of each of our FenceX
-    microservices on a frequent basis.
-    Grafana is a visualization tool that reads metric data from Prometheus and illustrates it into a veriety of graphs.
+    Prometheus is a time series database that polls different types of metrics out of each of FenceX microservices on
+    a frequent basis.
+    Grafana is a visualization tool that reads metric data from Prometheus and illustrates it into a variety of graphs.
     The metrics can be general like CPU usage or number of JVM threads.
     They can also be custom to each application like number of fence-point intersection calculations.
     Using this setup, we created realtime graphs that shows pull and push throughput of FenceX in addition to other
@@ -1130,13 +1134,13 @@
     value of throughput and input rate.
 
     \subsection{Push leg}
-    Push throughput experiments process:
+    Push throughput evaluation scenario:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
-        \item[2-] send a shocking stream of location reports into the FenceX.
+        \item[2-] Send a shocking stream of location reports into the FenceX.
         \item[3-] Check the throughput.
         \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
-        more CPU) until finding peak throughput and/or a possible upper bound on throughput.
+        more CPU) until finding peak throughput and/or a possible upper bound for throughput.
     \end{itemize}
 
     \subsubsection{Experiment 1}
@@ -1147,7 +1151,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 500      & 500     \\
-            location-aggregate        & 3                   & 2000     & 2500    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 4                   & 700      & 800     \\
             \hline
         \end{tabular}
@@ -1198,7 +1202,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 5                   & 400      & 700     \\
-            location-aggregate        & 3                   & 2200     & 2600    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 5                   & 400      & 700     \\
             \hline
         \end{tabular}
@@ -1211,30 +1215,33 @@
         \label{fig:ex2}
         \includegraphics[scale=0.4]{images/evaluation/ex2-benchmarking(24,10).png}
     \end{figure}
+
     The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1 (figures \ref{fig:ex1-1} for
     example).
+    We have deployed one more instance of relevant microservice plus changing the input ate pattern.
+    The throughput again followed the input pattern.
 
+    \subsucsection{Conclusion of pure throughput evaluation}
     So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
     application.
-    We can clearly see in the graphs that regardless of setup, push throughput (intersections/sec) follows pretty
-    much the exact parent of changes in input rate (location updates/sec).
+    We can clearly see in the graphs that regardless of setup, push throughput (intersections/second) follows pretty
+    much the exact pattern of changes in input rate (location updates/second).
     So there is no point in continuing push throughput experiments with current available hardware power.
+    The highest throughput observed for push leg so far therefore is ~15k/s.
 
     \clearpage
 
     \subsection{Poll leg}
-    Poll throughput experiments process:
+    Poll throughput evaluation scenario:
     \begin{itemize}
-        \item[1-] Define fences for movers using all the trips in the bench-marking application database.
-        \item[2-] Send many location updates to FenceX.
-        \item[2-] Send a shocking load queries (query by fence) to FenceX.
+        \item[1-] Send many location updates to FenceX using all the trips in the bench-marking application database.
+        \item[2-] Send a shocking load of queries (query by fence) to FenceX.
         \item[3-] Check the throughput.
         \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
         more MEMORY) until finding peak throughput and/or a possible upper bound on throughput.
     \end{itemize}
 
     \subsubsection{Experiment 3}
-
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1243,7 +1250,7 @@
             \hline
             location-update-publisher & 4                   & 500      & 500     \\
             location-aggregate        & 2                   & 2500     & 3200    \\
-            realtime-fencing          & 4                   & 700      & 800     \\
+            realtime-fencing          & -                   &  -       &  -      \\
             \hline
         \end{tabular}
         \caption{Experiment 3 deployment view}
@@ -1258,6 +1265,8 @@
 
     Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and poll
     throughput (number of queries answered without error) with the yellow line.
+    In this experiment, the input rate was around 12k/s at highest which is handled well by 2 rather rich instances of
+    location-aggregate.
 
     \clearpage
 
@@ -1270,7 +1279,7 @@
             \hline
             location-update-publisher & 4                   & 500      & 500     \\
             location-aggregate        & 2                   & 2700     & 2700    \\
-            realtime-fencing          & 4                   & 700      & 800     \\
+            realtime-fencing          & -                   &  -       &  -      \\
             \hline
         \end{tabular}
         \caption{Experiment 4 deployment view}
@@ -1289,20 +1298,26 @@
         \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(22,10).png}
     \end{figure}
 
-    Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to experiment 3 graphs.
+    Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to the graphs from experiment 3.
+    Comparing to experiment 3, in experiment 4 we changed the available resources to poll leg plus changing the input
+    rate pattern.
+    The change in the input pattern is subtle however.
+    In this experiment, the input rate was around 12k/s at highest which is handled well by poll leg of FenceX.
 
-    Experiments 3 and 4 show that we failed to increase the input rate as we progressed.
-    So although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
+    \subsucsection{Conclusion of poll throughput evaluation}
+    Experiments 3 and 4 show that we have failed to increase the input rate as we progressed.
+    Although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
     again the bottleneck was input rate which is limited by our physical available resources.
     We can clearly see in the graphs that regardless of setup, poll throughput (queries/sec) follows pretty
     much the exact pattern of changes in input rate (queries sent/sec).
     So there is no point in continuing poll throughput experiments with current available hardware.
-    However, the highest input rate we managed to produce during these experiments was in the range of [12-13]K queries
+    However, the highest input rate we managed to produce during these experiments was in the range of [12-13]k queries
     per second which FenceX just managed to handle very well.
 
 
     \section{Availability}
     In this section we cover the experiments we have conducted in order to test availability of FenceX.
+    We evaluate availability by observing the throughput of system under non optimal conditions.
     In order to test FenceX for availability, roughly speaking, we start an ongoing load or stream of input.
     Once throughput becomes stable, we restart one of the instances of involved microservices.
     The overall expectation is that during the restart, until the service becomes up and running again, the throughput
@@ -1314,31 +1329,30 @@
     A topic can have multiple groups listening to it which essentially is foundation of task parallelism.
     Re-balancing happens when one of the group members becomes unhealthy and stops subscribing to its assigned
     partitions.
-    At this moment, other healthy group member should take over the dangling partitions.
+    At this moment, other healthy group members should take over the dangling partitions.
     The processes of reassigning the dangling partitions to healthy subscribers is called re-balancing.
     The time a possibly successful re-balancing takes depends on the number of partitions and available
     healthy subscribers.
     So the time takes until throughput goes back to previous value is also not fixed.
 
     Please note that after a restart, there will be two re-balancings.
-    One will be once the service under restart goes down and one once it come back up and running.
-    If the remaining services after first re-balancing, had enough resources availalbe, the throughput won't change
+    One once the service under restart goes down and another once it comes back up and running.
+    If the remaining services after first re-balancing, had enough resources available, the throughput won't change
     that much.
-    Specially for lower incoming loads.
+    Specially for lower input loads.
 
     \subsection{Push leg}
-    Push leg availability experiments process:
+    Push leg availability evaluation scenario:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing stream of location report toward FenceX.
         \item[3-] Wait until throughput becomes stable.
-        \item[4-] Restart on of the instances of realtime-fencing.
+        \item[4-] Restart one of the instances of realtime-fencing.
         \item[5-] Assert that throughput drops.
         \item[6-] Wait until successful re-balancing.
         \item[7-] Assert that throughput is back to previous value.
         \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
-
 
     \clearpage
 
@@ -1350,7 +1364,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 5                   & 400      & 700     \\
-            location-aggregate        & 2                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 6                   & 400      & 800     \\
             \hline
         \end{tabular}
@@ -1372,23 +1386,30 @@
 
     In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
     Green line illustrates the ongoing input stream of location updates and pink point shows
-    number of up and running realtime-fencing instances.
+    number of up and running instances of realtime-fencing.
+
     As you can see in \ref{fig:ex5-1} and \ref{fig:ex5-2}, there are points in the timeline at which number of
     realtime-fencing instances goes down (by 1 and/or 2) and later comes back to 6 again.
     During the time which takes for all 6 instances to be up and running again, throughput slightly drops and
     eventually recovers.
     Since we are using kafka topics as durable storage of location updates, the location updates which
-    didn't get a chance to get processed, get it after re-balancing.
+    didn't get a chance to be processed, get it after re-balancing.
     As a result, we have even a higher throughput than input rate temporarily after re-balancing finishes.
 
+    \subsucsection{Conclusion of push leg availability evaluation}
+    Push leg of FenceX can handle some of it's instances going down and coming back up.
+    Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system under
+    high enough input loads.
+    Also, thanks to durability and offset system of Kafka topics the probability of an event not getting processed
+    eventually is very low.
+
     \subsection{Poll leg}
-    Poll leg availability experiments process:
+     Poll leg availability evaluation scenario:
     \begin{itemize}
-        \item[1-] We defined fences and sent location updates for movers using all the trips in the bench-marking
-        application database.
+        \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) to FenceX.
         \item[3-] Wait until throughput becomes stable.
-        \item[4-] Restart on of the instances of location-aggregate.
+        \item[4-] Restart one of the instances of location-aggregate.
         \item[5-] Assert that throughput drops.
         \item[6-] Wait until successful re-balancing.
         \item[7-] Assert that throughput is back to previous value.
@@ -1404,9 +1425,9 @@
             \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
-            location-update-publisher & 0                   & 400      & 700     \\
+            location-update-publisher & 1                   & 400      & 700     \\
             location-aggregate        & 4                   & 2700     & 2700    \\
-            realtime-fencing          & 0                   & 400      & 800     \\
+            realtime-fencing          & -                   &  -      &   -      \\
             \hline
         \end{tabular}
         \caption{Experiment 7 deployment view}
@@ -1419,20 +1440,27 @@
         \includegraphics[scale=0.4]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
     \end{figure}
 
-    In figure \ref{fig:ex7} the purple line is essentially the input rate (number of queries received by FenceX per
+    In figure \ref{fig:ex7} the purple line is the input rate (number of queries received by FenceX per
     second) and the yellow line shows the rate of queries answered successfully.
-    Red line shows how many queries FenceX failed to respond.
-    A failure to respond in this incoming load range means the service that was supposed to answer the query was not
-    up and running (due to restart) at that moment.
-    As you can see once restart and re-balancing finishes successfully, the throughput increases back to the previous
+    Red line shows how many queries FenceX failed to be responded.
+    A failure to respond in this incoming load range means the service supposed to answer the query was not
+    up and running at that moment.
+    It is clear that once one of the instances of poll leg goes because of restart, the throughput drops and error
+    rate goes up accordingly.
+    Once restart and re-balancing finishes successfully, the throughput increases back to the previous
     value and error rate drop back to zero.
     Please note that re-balancing has no direct affect on queries by fence.
     However, health of each Kafka or Kafka Stream application is dependent on a successful re-balancing.
 
+    \subsucsection{Conclusion of poll leg availability evaluation}
+    Poll leg of FenceX can handle some of it's instances going down and coming back up.
+    Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
+    temporarily.
+
 
     \section{Strong scalability}
     If a software has strong scalability properties means providing same load, the more you scale it out, the better
-    it performances.
+    it performs.
     For a given circumstance, there might be a point after which scaling out more won't affect the performance anymore.
     The load can be data set size, table size or incoming HTTP query rate.
     Performance is also case and context dependent.
@@ -1442,15 +1470,14 @@
     In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
     fence.
     And, for push leg is the rate at which location reports arrive.
-
-    Performance in case of our experiments for FenceX specifically, is throughput of push leg and poll leg.
+    Performance in our experiments is throughput of push leg and poll leg.
 
     \subsection{Push leg}
-    Push leg strong scalability experiments process:
+    Push leg strong scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing stream of location report with fixed rate toward FenceX.
-        \item[3-] Deploy only one instance of realtime-fencing (should not to be rich in resources, we want it to
+        \item[3-] Deploy only one instance of realtime-fencing (should not to be rich in resources as we want it to
         be overwhelmed).
         \item[4-] Check the throughput. Hopefully it is much lower than the input rate.
         \item[5-] Deploy one more instances of realtime-fencing with exactly same resources as previous one.
@@ -1463,7 +1490,8 @@
     Those location updates get buffered in the topic and after re-balancing will get their chance to be processed.
     A direct consequence of such buffering is that at some points in the experiments, the throughput we observe is
     higher than the input rate.
-    This is because the input stream is ongoing and fixed rate.
+    This is because the input stream is ongoing and fixed rate, so process of buffered location updates only adds to
+    throughput in that specific moments.
 
     \clearpage
 
@@ -1475,7 +1503,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       & -       \\
             realtime-fencing          & 1                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1492,10 +1520,11 @@
     In figure \ref{fig:ex8} the green line is essentially the input rate (number of location updates per second),
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
     deployed instances of realtime-fencing.
-    Figures in following push leg strong scalability experiments can also be read in the same way as experiment 8.
+    Figures in following push leg strong scalability experiments can also be read in the same way.
 
     So \ref{fig:ex8} illustrates that one instance of realtime-fencing with the rather low given resources, can only
-    handle one 3rd (5K out of 15K) of input rate.
+    handle one 3rd of input rate.
+    Which is 5k intersections per second out of 15k location updates per second.
 
     \clearpage
 
@@ -1507,7 +1536,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & 0                   &  -       &  -      \\
             realtime-fencing          & 2                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1522,8 +1551,7 @@
     \end{figure}
 
     Looking at figure \ref{fig:ex9} we can easily observe that once the second instance is up and running, after
-    re-balancing, throughput goes proportionally up.
-    From 5k/s to 10k/s.
+    re-balancing, throughput goes proportionally up, from 5k/s to 10k/s.
     At this point we can guess that without changing anything, just adding one more instance of realtime-fencing
     should be enough to cover the whole 15k/s input rate.
     15K location updates per second is the highest input rate that we could produce in a stable manner.
@@ -1538,7 +1566,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 3                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1570,7 +1598,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 4                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1588,8 +1616,12 @@
     However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
     graph.
 
+    \subsucsection{Conclusion of push leg strong scalability evaluation}
+    Push leg of FenceX has strong scalability characteristics at least in the range of input rate managed to produce.
+    So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
+
     \subsection{Poll leg}
-    Poll leg strong scalability experiments process:
+    Poll leg strong scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Send location reports for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed rate.
@@ -1614,9 +1646,9 @@
             \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
-            location-update-publisher & 0                   & 200      & 700     \\
+            location-update-publisher & 1                   & 200      & 700     \\
             location-aggregate        & 1                   & 100      & 1500    \\
-            realtime-fencing          & 0                   & 30       & 500     \\
+            realtime-fencing          & -                   &  -       &  -      \\
             \hline
         \end{tabular}
         \caption{Experiment 17 deployment view}
@@ -1638,9 +1670,9 @@
             \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
-            location-update-publisher & 0                   & 200      & 700     \\
+            location-update-publisher & 0                   &  -       &  -      \\
             location-aggregate        & 2                   & 100      & 1500    \\
-            realtime-fencing          & 0                   & 30       & 500     \\
+            realtime-fencing          & -                   &  -       &  -      \\
             \hline
         \end{tabular}
         \caption{Experiment 18 deployment view}
@@ -1655,10 +1687,9 @@
 
     In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line represents input rate, number of incoming HTTP
     requests.
-    Orange line illustrates throughput which is number of queries responded successully.
-    Orange dots also, show how many instances of location-aggregate are up and running.
-    As figures show, FenceX has managed to handle 2k queries
-    per second with one not so much rich instance of location-aggregate.
+    Orange line illustrates throughput which is number of queries responded successfully.
+    Orange dots, show how many instances of location-aggregate are up and running.
+    As figures show, FenceX has managed to handle 2k queries per second with one not so rich instance of location-aggregate.
     Adding one more instance resulted in throughput becoming equal to input rate (~6K queries per second).
 
     One of the differences between push and poll leg is that, minimum resources required for poll leg to function
@@ -1668,15 +1699,21 @@
     There is usually way more location updates for each mover than fences.
     In fact currently, there will be at most one fence in push leg for each mover compared to many location updates
     in poll leg.
-    Please note that at each instance in time, there is only one location record for each mover in location-agreggate
+    Please note that at each instance in time, there is only one location record for each mover in location-aggregate
     database (not many).
     But it processes more than one location update for each mover over time.
 
     As an overall consequence, when we deploy even one instance of location-aggregate, it's already rich enough to be
     able to answer many HTTP requests (query by fence).
-    About half of the input rate we can produce at maximum in a stable ongoing manner.
+    Which is about half of the input rate we can produce at maximum in a stable ongoing manner.
+    So when we deploy two instances of location-aggregate with the mentioned resources, two available instances just 
+    handle our full capacity of input load production.
     So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
 
+
+    \subsucsection{Conclusion of poll leg strong scalability evaluation}
+    Poll leg of FenceX has strong scalability characteristics at least in the range of input rate managed to produce.
+    So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
 
     \section{Weak scalability}
     If a software has weak scalability properties, it means providing a load which is increasing step by step over
@@ -1691,15 +1728,14 @@
     In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
     fence.
     And, for push leg is the rate at which location reports arrive.
-
-    Performance in case of our experiments for FenceX specifically, is throughput of push leg and poll leg.
+    Performance in case of our experiments, is throughput of push leg and poll leg.
 
     \subsection{Push leg}
-    Push leg weak scalability experiments process:
+    Push leg weak scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing stream of location report with fixed low rate toward FenceX.
-        \item[3-] Deploy only one instance of realtime-fencing (should not be too rich in resources, we want it to
+        \item[3-] Deploy only one instance of realtime-fencing (should not be too rich in resources as we want it to
         be overwhelmed).
         \item[4-] Check the throughput. Hopefully it is equal to input rate.
         \item[5-] Deploy one more instances of realtime-fencing with exactly same resources as previous one. Also,
@@ -1726,7 +1762,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 1                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1758,7 +1794,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 2                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1784,7 +1820,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 4                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1809,7 +1845,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 5                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1822,7 +1858,7 @@
         \label{fig:ex22}
         \includegraphics[scale=0.4]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
     \end{figure}
-    Five such instances of realtime-fencing managed to handle around 15K location updates per second.
+    Five  instances of realtime-fencing managed to handle around 15K location updates per second.
 
     \clearpage
 
@@ -1834,7 +1870,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 10                  & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1851,10 +1887,14 @@
     However, in experiment 23 our intention was to increase input rate to above 15k/s which we did not manage due to
     limitations on the available resources to bench-marking application.
     So we will not continue weak scalability experiments for push log further.
-    We have concluded that push leg of FenceX managed to scale well in face of increasing load.
+
+    \subsucsection{Conclusion of push leg weak scalability evaluation}
+    We observed that as we increased input rate and deployed more instances of push leg of FenceX, push leg
+    throughput got higher.
+    So push leg of FenceX managed to scale well in face of increasing load and it has weak scalability characteristics.
 
     \subsection{Poll leg}
-    Poll leg weak scalability experiments process:
+    Poll leg weak scalability evalutaion scenario:
     \begin{itemize}
         \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed low rate.
@@ -1871,7 +1911,6 @@
     Relaying on the observations from previous experiments, two instances of location-aggregate (with minimum
     resources for working smoothly) can easily cover our maximum capacity for producing input load.
     So there is no point in carrying out weak scalability experiments for poll leg.
-
 
     \section{Free fall scalability}
     In order to stress test stream processing systems or when trying to find out how they can scale under high rates
@@ -1895,7 +1934,7 @@
     Basically HTTP based communication does not support back pressure.
 
     \subsection{Push leg}
-    Push leg free fall scalability experiment process:
+    Push leg free fall scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Play with different input rates and deployment configurations to get a feeling of how to tune the
         system for best performance
@@ -1917,7 +1956,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4 - 0               & 400      & 700     \\
-            location-aggregate        & 0                   & 2700     & 2700    \\
+            location-aggregate        & -                   &  -       &  -      \\
             realtime-fencing          & 0 - 12              & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1937,10 +1976,17 @@
     We can clearly observe that after re-balancing among 10 newly deployed instance of realtime-fencing is finished,
     throughput has picked very fast to about 65K fence-point intersections per second.
 
+    \subsucsection{Conclusion of push leg free fall scalability evaluation}
+    We can relay on buffering properties of stream processing systems for testing throughput of operators.
+    Specially when producing input and process it on realtime involves too much IO latency.
+    All in all, pull leg of FenceX has shown free fall scalability properties and ability to deliver throughput of
+    ~65k/s.
+
     \clearpage
 
     \section{Related work}
-    In this section we will go over a couple of papers which has introduced a geofencing systems.
+    In this section we will go over a couple of papers which has introduced a geofencing systems and we compare them
+    to FenceX.
 
     \subsection{Large Scale Indexing of Geofences}
     In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that supports large scales
@@ -2037,8 +2083,8 @@
     Currently, FenceX just detects enter/exit events on a one by one basis.
 
 
-    \part[Stateful FAAS]{FenceX: Stateful Function as a serivce platform}
 
+    \part[Stateful FAAS]{FenceX: Stateful Function as a serivce platform}
 
     \chapter{FenceX as FAAS provider}
     FenceX apart from being a geofencing system as described in the previous part of the report, can also be

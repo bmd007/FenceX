@@ -1221,7 +1221,7 @@
     We have deployed one more instance of relevant microservice plus changing the input ate pattern.
     The throughput again followed the input pattern.
 
-    \subsucsection{Conclusion of pure throughput evaluation}
+    \subsubsection{Conclusion of pure throughput evaluation}
     So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
     application.
     We can clearly see in the graphs that regardless of setup, push throughput (intersections/second) follows pretty
@@ -1304,7 +1304,7 @@
     The change in the input pattern is subtle however.
     In this experiment, the input rate was around 12k/s at highest which is handled well by poll leg of FenceX.
 
-    \subsucsection{Conclusion of poll throughput evaluation}
+    \subsubsection{Conclusion of poll throughput evaluation}
     Experiments 3 and 4 show that we have failed to increase the input rate as we progressed.
     Although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
     again the bottleneck was input rate which is limited by our physical available resources.
@@ -1396,7 +1396,7 @@
     didn't get a chance to be processed, get it after re-balancing.
     As a result, we have even a higher throughput than input rate temporarily after re-balancing finishes.
 
-    \subsucsection{Conclusion of push leg availability evaluation}
+    \subsubsection{Conclusion of push leg availability evaluation}
     Push leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system under
     high enough input loads.
@@ -1452,7 +1452,7 @@
     Please note that re-balancing has no direct affect on queries by fence.
     However, health of each Kafka or Kafka Stream application is dependent on a successful re-balancing.
 
-    \subsucsection{Conclusion of poll leg availability evaluation}
+    \subsubsection{Conclusion of poll leg availability evaluation}
     Poll leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
     temporarily.
@@ -1616,7 +1616,7 @@
     However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
     graph.
 
-    \subsucsection{Conclusion of push leg strong scalability evaluation}
+    \subsubsection{Conclusion of push leg strong scalability evaluation}
     Push leg of FenceX has strong scalability characteristics at least in the range of input rate managed to produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
 
@@ -1711,7 +1711,7 @@
     So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
 
 
-    \subsucsection{Conclusion of poll leg strong scalability evaluation}
+    \subsubsection{Conclusion of poll leg strong scalability evaluation}
     Poll leg of FenceX has strong scalability characteristics at least in the range of input rate managed to produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
 
@@ -1888,7 +1888,7 @@
     limitations on the available resources to bench-marking application.
     So we will not continue weak scalability experiments for push log further.
 
-    \subsucsection{Conclusion of push leg weak scalability evaluation}
+    \subsubsection{Conclusion of push leg weak scalability evaluation}
     We observed that as we increased input rate and deployed more instances of push leg of FenceX, push leg
     throughput got higher.
     So push leg of FenceX managed to scale well in face of increasing load and it has weak scalability characteristics.
@@ -1976,7 +1976,7 @@
     We can clearly observe that after re-balancing among 10 newly deployed instance of realtime-fencing is finished,
     throughput has picked very fast to about 65K fence-point intersections per second.
 
-    \subsucsection{Conclusion of push leg free fall scalability evaluation}
+    \subsubsection{Conclusion of push leg free fall scalability evaluation}
     We can relay on buffering properties of stream processing systems for testing throughput of operators.
     Specially when producing input and process it on realtime involves too much IO latency.
     All in all, pull leg of FenceX has shown free fall scalability properties and ability to deliver throughput of

@@ -123,7 +123,7 @@
 
 
     \section{Open source}
-    All of the work has been done during this thesis including reports, implementations and ... is available in
+    All of the work has been done during this thesis including reports and implementations is available in
     a Github repository (github.com/bmd007/statefull-geofencing-faas).
     The content of this repository is available to be used openly.
     Please feel free to contribute as well.
@@ -132,7 +132,6 @@
 
 
     \chapter{Introduction}
-
 
     \section{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
@@ -161,7 +160,12 @@
 
     \paragraph{}
     In order to represent geospatial data several standards (formats) are available, namely WKT, WKB, GeoJSON and GML.
-    GeoJson is JSON friendly, GML is of XML nature and WKB is in bytes.
+    GeoJson is JSON friendly, GML is of XML nature, WKB is in bytes and WKT is basically plain text.
+    So comparison of GeoJson and GML is similar to comparison of JSON and XML.
+    Also, Comparison of WKB and WKT is similar to comparison of plain text and representing that text as bytes.
+    All other members of comparison space here can be dealt with in the same way.
+    Libraries and database engines supporting geospatial data and operations, usually support only one or some of these
+    representations though.
 
     \subsection{WKT}
     WKT (well known text)  \cite{WKT} is a text mark up language which is a format for geometric information.
@@ -405,9 +409,10 @@
         \item They are implemented using Java 15.
         \item They are implemented with extensive help from Spring family frameworks and libraries like Spring boot, Spring data, Spring webflux, Spring cloud and many more.
         \item They are packaged as layered docker images, so the deployment artifacts of FenceX are docker images.
-        \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor. As
-        a result they are reactive applications which means they process HTTP requests in an asynchronous and non blocking manner.
-        \item All of them expose a HTTP API for fetching metrics about their resource usage, JVM status, geofencing operations and ... .
+        \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor.
+        As a result they are reactive applications which means they process HTTP requests in an asynchronous and non blocking manner.
+        \item All of them expose a HTTP API for fetching metrics about their resource usage, JVM status, geofencing
+        operations and some other metrics.
         \item After successful deployment, they will be registered into a service discovery tool called Consul\cite{Consul}.
     \end{itemize}
 
@@ -708,8 +713,7 @@
     These microservices ideally share nothing and communicate ONLY using messages (reactive).
     Such de coupled microservices can be introduced over time to the whole system when ever new requirements requires so.
     This way development and design of new features is independent of others;
-    so the best fitting internal architecture, language, database, code style and ... can be selected for that specific
-    service.
+    so the best fitting internal architecture, language, database and code style can be selected for that specific service.
 
     Such an independence also allows multiple people, multiple teams for that matter, to work at the same on the same
     overall system.
@@ -795,7 +799,7 @@
         \item \textbf{Commutative:} The order at which messages arrive to components does not affect the desired
         outcome.
         \item \textbf{Idempotent:} Components of system should receive a message more than once, they act as if message arrived only once.
-        \item \textbf{Distributed:} Has multiple components.
+        \item \textbf{Distributed:} .
     \end{itemize}
 
     A reactive system, specially when conforming to ACID2, has potential to scale out very easy to a very a high extent.
@@ -858,11 +862,11 @@
     team responsible for maintaining it, deployed separately after a short build and test process.
     A bug in one of the services can not bring the whole system down as well.
     When load on one of the microservices increases, more instances of it can be easily deployed (scale out).
-    And hopefully instead of deploying executable artifact into a physically avaialbe machine in the corner of
+    And hopefully instead of deploying executable artifact into a physically available machine in the corner of
     office, microservices are packaged as docker images and deployed into a container orchestration tool provided as
     a managed cloud service.
 
-    Of course turning a monolith into a distributed system brings all the challenges of dirstributed systems with it.
+    Of course turning a monolith into a distributed system brings all the challenges of distributed systems with it.
     Having data spread around different services makes strong consistency very hard to achieve.
     Load balancing between available instances of each service is something new to deal with.
     Monitoring of and communication between services requires special attention.
@@ -1040,9 +1044,9 @@
     \end{table}
 
     Figure \ref{fig:infrastructure} illustrates how FenceX deployment looks from infrastructure point of view in a
-    possible evaluation scenario.
-    The only difference compared to other evaluation scenarios is the number of deployed instances of FenceX
-    microservices like realtime-fencing.
+    evaluation scenario.
+    The only difference compared to other possible evaluation scenarios is the number of deployed instances of FenceX
+    microservices, realtime-fencing for example.
 
     \begin{figure}[h!]
         \caption{FenceX infrastructure setup for evaluation}
@@ -1054,6 +1058,11 @@
     application which is not part of the FenceX solution package.
     Nevertheless, we have deployed another instance of bench-marking into server1 as well;
     since getting high throughput out of bench-marking applications is very expensive in terms of resources.
+
+    Tools like Kafka and Zookeeper are deployed as docker containers to keep the setup phase of evalution easier.
+    In production, they are usually deployed directly on separate hosts.
+    However, for FenceX evaluation we have used docker-compose on top of docker to manage the life cycle of docker
+    containers in an easy and convenient way.
 
     It is also important to note that FenceX had 4 major Kafka topics.
     \textit{fence\_event\_log, location-aggregate-mover-in-memory-state-store-changelog, mover-position-updates,
@@ -2160,7 +2169,7 @@
     \paragraph{Decoupled context:} Since all the running instances of the function are totally decoupled, there is
     no way for them to share something, a connection to database for example.
     So each time a function requires database or storage connection, a brand-new connection should be created.
-    Which results in unnecessary latency, too many connections, loss of execution time budget and ... .
+    Which results in unnecessary latency, too many connections and loss of execution time budget.
 
     As a result, FAAS model is better to be used for stateless operations.
     Creating a thumbnail for an image, compressing an image or piece of audio and etc.

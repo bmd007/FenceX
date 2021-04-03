@@ -160,12 +160,26 @@
 
     \paragraph{}
     In order to represent geospatial data several standards (formats) are available, namely WKT, WKB, GeoJSON and GML.
-    GeoJson is JSON friendly, GML is of XML nature, WKB is in bytes and WKT is basically plain text.
-    So comparison of GeoJson and GML is similar to comparison of JSON and XML.
-    Also, Comparison of WKB and WKT is similar to comparison of plain text and representing that text as bytes.
-    All other members of comparison space here can be dealt with in the same way.
-    Libraries and database engines supporting geospatial data and operations, usually support only one or some of these
-    representations though.
+    Please check the data presentation standard upon which they are based in the table \ref{table:geofencing-formats}.
+
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|}
+            \hline
+            Geofencing format  & Parent data format \\
+            \hline
+            GeoJSON & JSON          \\
+            GML & XML               \\
+            WKB & Byte              \\
+            WKT & Plain text        \\
+            \hline
+        \end{tabular}
+        \caption{Base standard of Geofencing formats}
+        \label{table:geofencing-formats}
+    \end{table}
+
+    We can compare the geofencing representations mentioned in the table \ref{table:geofencing-formats} fundamentally
+    in the same way in which we compare their corresponding base standards.
 
     \subsection{WKT}
     WKT (well known text)  \cite{WKT} is a text mark up language which is a format for geometric information.
@@ -197,6 +211,9 @@
 
     In this thesis we used WKT to represent all the involved geospatial data.
     We mainly used POINT() to model locations and MULTIPOLYGON() for fences.
+
+    We have chosen WKT since our geospatial database (index) of choice, H2, supports it well.
+    Also, we couldn't find any information about H2 supporting other geospatial representations out of the box.
 
 
     \section{Setting the scene}
@@ -660,7 +677,7 @@
 
     \subsubsection{Data scalability}
     In FenceX, data scalability is limited by the number of rows that an H2\cite{h2} in memory table can keep.
-    Which is \( 2^64 \).
+    Which is 2\textsuperscript{64}.
     This is big enough to not being a limit even for the global KTable in location-aggregate.
     The other stateful operation is fence-aggregation which is highly scalable in terms of data due to the
     fact that corresponding data store, is partitioned over available instances of realtime-fencing.
@@ -755,7 +772,6 @@
 
     We calculate the push leg throughput by increasing a counter everytime FenceX calculates a fence-point intersection.
     This counter is a metric gathered every now and again by a time series database called Prometheus.
-
 
     \section{Underlying Ideas and sciense}
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
@@ -1138,8 +1154,8 @@
     They can also be custom to each application like number of fence-point intersection calculations.
     Using this setup, we created realtime graphs that shows pull and push throughput of FenceX in addition to other
     information like push and poll input rate.
-    As a result we do not need to calculate the throughput after each experiment.
-    We can just have a look at corresponding graphs during execution of test scenario in order to see the realtime
+    Thanks to that, we do not need to calculate the throughput after each experiment.
+    We can just have a look at the corresponding graphs during execution of test scenarios in order to see the realtime
     value of throughput and input rate.
 
     \subsection{Push leg}
@@ -1167,6 +1183,14 @@
         \caption{Experiment 1 deployment view}
         \label{table:ex1-dv}
     \end{table}
+
+    Table \ref{table:ex1-dv} shows, for experiment 1, how many instances of each FenceX microservices we have initially
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex1-dv} with no values corresponds to a microservice which does not relate to the 
+    experiment 1. 
+    After successful deployment, we followed the previously mentioned scenario.
+    The following figures illustrate how input rate and throughput have changed during each repetition of experiment 1
+    with different input rate patterns.
 
     \begin{figure}[h!]
         \caption{FenceX push throughput ex1-1}
@@ -1218,7 +1242,16 @@
         \caption{Experiment 2 deployment view}
         \label{table:ex2-dv}
     \end{table}
-
+    
+    Table \ref{table:ex2-dv} shows, for experiment 2, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 1, 1 more instance of each related microservice is deployed but with slightly lower 
+    computation power available to each.
+    The row in \ref{table:ex2-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 2.
+    After successful deployment, we followed the previously mentioned scenario.
+    The following figure illustrates how input rate and throughput have changed during experiment 2.
+    
     \begin{figure}[h!]
         \caption{FenceX push throughput ex2}
         \label{fig:ex2}
@@ -1266,6 +1299,12 @@
         \label{table:ex3-dv}
     \end{table}
 
+    Table \ref{table:ex3-dv} shows, for experiment 3, how many instances of each FenceX microservices we have initially
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex3-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 3.
+    The following figure illustrates how input rate and throughput have changed during experiment 3.
+
     \begin{figure}[h!]
         \caption{FenceX poll throughput ex3}
         \label{fig:ex3}
@@ -1294,6 +1333,14 @@
         \caption{Experiment 4 deployment view}
         \label{table:ex4-dv}
     \end{table}
+
+    Table \ref{table:ex4-dv} shows, for experiment 4, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 3, we have only changed the available resources to location-aggregate.
+    The row in \ref{table:ex4-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 4.
+    The following figures illustrate how input rate and throughput have changed during experiment 4 while applying 
+    different patterns of input.
 
     \begin{figure}[h!]
         \caption{FenceX poll throughput ex4-1}
@@ -1362,7 +1409,7 @@
         \item[7-] Assert that throughput is back to previous value.
         \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
-
+    
     \clearpage
 
     \subsubsection{Experiment 5}
@@ -1380,6 +1427,15 @@
         \caption{Experiment 5 deployment view}
         \label{table:ex5-dv}
     \end{table}
+    
+    Table \ref{table:ex5-dv} shows, for experiment 5, how many instances of each FenceX microservices we have initially
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex5-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 5.
+    The following figures illustrate how input rate and throughput have changed during repetitions of experiment 5.
+    Each repetition was with different input load pattern.
+    They also show how (and when) number of deployed instances of related microservices has changed during this
+    experiment.
 
     \begin{figure}[h!]
         \caption{FenceX push leg availability ex5-1}
@@ -1443,6 +1499,14 @@
         \label{table:ex7-dv}
     \end{table}
 
+    Table \ref{table:ex7-dv} shows, for experiment 7, how many instances of each FenceX microservices we have initially
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex7-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 7.
+    The following figure illustrates how input rate and throughput have changed during experiment 7.
+    It also shows how (and when) number of deployed instances of related microservices has changed during this
+    experiment.
+
     \begin{figure}[h!]
         \caption{FenceX poll leg availability ex7}
         \label{fig:ex7}
@@ -1465,7 +1529,6 @@
     Poll leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
     temporarily.
-
 
     \section{Strong scalability}
     If a software has strong scalability properties means providing same load, the more you scale it out, the better
@@ -1520,6 +1583,13 @@
         \label{table:ex8-dv}
     \end{table}
 
+    Table \ref{table:ex8-dv} shows, for experiment 8, how many instances of each FenceX microservices we have initially
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex8-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 8.
+    The following figure illustrates how input rate and throughput have changed during experiment 8.
+    It also shows number of deployed instances of related microservices during this experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex8}
         \label{fig:ex8}
@@ -1553,6 +1623,15 @@
         \label{table:ex9-dv}
     \end{table}
 
+    Table \ref{table:ex9-dv} shows, for experiment 9, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 8, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex9-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 9.
+    The following figure illustrates how input rate and throughput have changed during experiment 9.
+    It also shows how (and when) number of deployed instances of related microservices has changed during this
+    experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex9}
         \label{fig:ex9}
@@ -1582,6 +1661,15 @@
         \caption{Experiment 10 deployment view}
         \label{table:ex10-dv}
     \end{table}
+
+    Table \ref{table:ex10-dv} shows, for experiment 10, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 9, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex10-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 10.
+    The following figure illustrates how input rate and throughput have changed during experiment 10.
+    It also shows how (and when) number of deployed instances of related microservices has changed during this
+    experiment.
 
     \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex10}
@@ -1615,11 +1703,21 @@
         \label{table:ex11-dv}
     \end{table}
 
+    Table \ref{table:ex11-dv} shows, for experiment 11, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 10, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex11-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 11.
+    The following figure illustrates how input rate and throughput have changed during experiment 11.
+    It also shows how (and when) number of deployed instances of related microservices has changed during this
+    experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg strong scalability ex11}
         \label{fig:ex11}
         \includegraphics[scale=0.4]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
     \end{figure}
+
     The clear observation is that adding one more instance didn't have any special effect on the throughput.
     This is expected since throughput can not exceed input rate regardless of processing power.
     However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
@@ -1664,6 +1762,13 @@
         \label{table:ex17-dv}
     \end{table}
 
+    Table \ref{table:ex17-dv} shows, for experiment 17, how many instances of each FenceX microservices we have
+    initially deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex17-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 17.
+    The following figure illustrates how input rate and throughput have changed during experiment 17.
+    It also shows how many instances of related microservices were up and running during this experiment.
+
     \begin{figure}[h!]
         \caption{FenceX poll leg strong scalability ex17}
         \label{fig:ex17}
@@ -1687,6 +1792,14 @@
         \caption{Experiment 18 deployment view}
         \label{table:ex18-dv}
     \end{table}
+
+    Table \ref{table:ex18-dv} shows, for experiment 18, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 17, we have deployed one more instance of location-aggregate.
+    The row in \ref{table:ex18-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 18.
+    The following figure illustrates how input rate and throughput have changed during experiment 18.
+    It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
         \caption{FenceX poll leg strong scalability ex18}
@@ -1715,7 +1828,6 @@
     So when we deploy two instances of location-aggregate with the mentioned resources, two available instances just 
     handle our full capacity of input load production.
     So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
-
 
     \subsubsection{Conclusion of poll leg strong scalability evaluation}
     Poll leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to
@@ -1777,6 +1889,13 @@
         \label{table:ex19-dv}
     \end{table}
 
+    Table \ref{table:ex19-dv} shows, for experiment 19, how many instances of each FenceX microservices we have
+    initially deployed in addition to the amount of resources we have assigned to each microservice instance.
+    The row in \ref{table:ex19-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 19.
+    The following figure illustrates how input rate and throughput have changed during experiment 19.
+    It also shows how many instances of related microservices were up and running during this experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex19}
         \label{fig:ex19}
@@ -1809,6 +1928,14 @@
         \label{table:ex20-dv}
     \end{table}
 
+    Table \ref{table:ex20-dv} shows, for experiment 20, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 19, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex20-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 20.
+    The following figure illustrates how input rate and throughput have changed during experiment 20.
+    It also shows how many instances of related microservices were up and running during this experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex20}
         \label{fig:ex20}
@@ -1835,6 +1962,14 @@
         \label{table:ex21-dv}
     \end{table}
 
+    Table \ref{table:ex21-dv} shows, for experiment 21, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 20, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex21-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 21.
+    The following figure illustrates how input rate and throughput have changed during experiment 21.
+    It also shows how many instances of related microservices were up and running during this experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex21}
         \label{fig:ex21}
@@ -1859,6 +1994,14 @@
         \caption{Experiment 22 deployment view}
         \label{table:ex22-dv}
     \end{table}
+
+    Table \ref{table:ex22-dv} shows, for experiment 22, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 21, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex22-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 22.
+    The following figure illustrates how input rate and throughput have changed during experiment 22.
+    It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex22}
@@ -1885,11 +2028,20 @@
         \label{table:ex23-dv}
     \end{table}
 
+    Table \ref{table:ex23-dv} shows, for experiment 23, how many instances of each FenceX microservices we have
+    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    Compared to experiment 22, we have deployed one more instance of realtime-fencing.
+    The row in \ref{table:ex23-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 23.
+    The following figure illustrates how input rate and throughput have changed during experiment 23.
+    It also shows how many instances of related microservices were up and running during this experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg weak scalability ex23}
         \label{fig:ex23}
         \includegraphics[scale=0.4]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
     \end{figure}
+
     Ten such instances of realtime-fencing managed to handle around 15K location updates per second.
     However, in experiment 23 our intention was to increase input rate to above 15k/s which we did not manage due to
     limitations on the available resources to bench-marking application.
@@ -1901,7 +2053,7 @@
     So push leg of FenceX managed to scale well in face of increasing load and it has weak scalability characteristics.
 
     \subsection{Poll leg}
-    Poll leg weak scalability evalutaion scenario:
+    Poll leg weak scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed low rate.
@@ -1963,7 +2115,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4 - 0               & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        &   -                 &  -       &  -      \\
             realtime-fencing          & 0 - 12              & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1971,11 +2123,24 @@
         \label{table:ex24-dv}
     \end{table}
 
+    Table \ref{table:ex24-dv} shows, for experiment 24, how many instances of each FenceX microservices we have
+    initially (and eventually) deployed in addition to the amount of resources we have assigned to each microservice
+    instance.
+    The "number of instances" row in this table has basically two values.
+    First value (from left) refers to the number of deployed instances of each microservices during input production
+    (buffering phase) and the other value refers to the same number during processing phase.
+    The row in \ref{table:ex24-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 24.
+    The following figure illustrates how input rate and throughput have changed during experiment 24.
+    It also shows how (and when) number of deployed instances of related microservices has changed during this
+    experiment.
+
     \begin{figure}[h!]
         \caption{FenceX push leg free fall scalability ex24}
         \label{fig:ex24}
         \includegraphics[scale=0.4]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
     \end{figure}
+
     In figure \ref{fig:ex24} the green line is input rate (number of location updates per second),
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
     deployed instances of realtime-fencing.
@@ -2056,7 +2221,6 @@
     scalability and availability.
     Also, when it comes to throughput, push leg of FenceX has achieved 65k/s which is much higher than 20k/s.
 
-
     \chapter{Conclusion}
     During this thesis we have combined microservices and stream processing concepts in order to design, implement
     and evaluate a highly scalable resilient geofencing system called FenceX.
@@ -2074,7 +2238,6 @@
 
     When it comes to resiliency thanks to replication, scaling out (instead of up), re-balancing features of kafka
     consumers and highly decoupled components, FenceX has demonstrated being reliable under non-ideal conditions.
-
 
     \section{Future work}
     During our evaluations, we have used only one type of data collected from real taxi trip.
@@ -2101,7 +2264,6 @@
     So other types of computation can also be implemented in the same way without changing the architecture in any
     significant manner.
     In the following sections we will explain what is FAAS and how FenceX is a FAAS provider.
-
 
     \section{FAAS}
     Imagine a start up company is shaping around a brilliant brand-new audio compression algorithm.
@@ -2148,7 +2310,6 @@
     Which is provided nowadays by most cloud providers.
     AWS lambda\cite{lambda} is the most famous one.
 
-
     \section{Stateless FAAS}
     In FAAS model, apart from separating business logic and execution platform, storage is also separated from
     execution platform.
@@ -2178,7 +2339,6 @@
     So what about stateful operations?
     Can't we enjoy the high level abstraction of FAAS model with stateful operations?
 
-
     \section{Stream processing and Stateful FAAS}
     For developers (users of FAAS platform), the function they implement has only some inputs parameters and an output.
     The input parameters can be driven from the triggering event/request/message.
@@ -2198,7 +2358,6 @@
     a FAAS platform implemented by stream processing pipeline allows for definition of stateful functions as well.
 
     The only thing that users of system (developers) should do is to implement body of stream processing operations.
-
 
     \section{FenceX and FAAS}
     FenceX, as described previously, is a stream processing pipeline among many other things.

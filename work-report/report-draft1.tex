@@ -170,7 +170,7 @@
             \hline
             GeoJSON & JSON          \\
             GML & XML               \\
-            WKB & Byte              \\
+            WKB & Binary            \\
             WKT & Plain text        \\
             \hline
         \end{tabular}
@@ -611,7 +611,7 @@
     \subsection{Availability}
     Availability has many aspects in software development specifically when it comes to distributed systems.
     The main practice to achieve high availability is to scale out meaning deploying more than one instance of the
-    application, application subcomponents for that matter.
+    application, application sub-components for that matter.
     In case of microservices, more than one instance of each microservice should be deployed.
     In the same way deploying more than one task of each operation makes sense in stream processing realm.
     The benefits of scaling out in terms of availability are as following:
@@ -1185,8 +1185,8 @@
     \end{table}
 
     Table \ref{table:ex1-dv} shows, for experiment 1, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex1-dv} with no values corresponds to a microservice which does not relate to the 
+    deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex1-dv} with no values corresponds to a microservice which does not relate to the 
     experiment 1. 
     After successful deployment, we followed the previously mentioned scenario.
     The following figures illustrate how input rate and throughput have changed during each repetition of experiment 1
@@ -1244,12 +1244,11 @@
     \end{table}
     
     Table \ref{table:ex2-dv} shows, for experiment 2, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 1, 1 more instance of each related microservice is deployed but with slightly lower 
     computation power available to each.
-    The row in \ref{table:ex2-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex2-dv} with no values corresponds to a microservice which does not relate to the
     experiment 2.
-    After successful deployment, we followed the previously mentioned scenario.
     The following figure illustrates how input rate and throughput have changed during experiment 2.
     
     \begin{figure}[h!]
@@ -1300,8 +1299,8 @@
     \end{table}
 
     Table \ref{table:ex3-dv} shows, for experiment 3, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex3-dv} with no values corresponds to a microservice which does not relate to the
+    deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex3-dv} with no values corresponds to a microservice which does not relate to the
     experiment 3.
     The following figure illustrates how input rate and throughput have changed during experiment 3.
 
@@ -1335,9 +1334,9 @@
     \end{table}
 
     Table \ref{table:ex4-dv} shows, for experiment 4, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 3, we have only changed the available resources to location-aggregate.
-    The row in \ref{table:ex4-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex4-dv} with no values corresponds to a microservice which does not relate to the
     experiment 4.
     The following figures illustrate how input rate and throughput have changed during experiment 4 while applying 
     different patterns of input.
@@ -1429,8 +1428,8 @@
     \end{table}
     
     Table \ref{table:ex5-dv} shows, for experiment 5, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex5-dv} with no values corresponds to a microservice which does not relate to the
+    deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex5-dv} with no values corresponds to a microservice which does not relate to the
     experiment 5.
     The following figures illustrate how input rate and throughput have changed during repetitions of experiment 5.
     Each repetition was with different input load pattern.
@@ -1448,6 +1447,8 @@
         \label{fig:ex5-2}
         \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
     \end{figure}
+
+    \clearpage
 
     In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
     Green line illustrates the ongoing input stream of location updates and pink point shows
@@ -1500,8 +1501,8 @@
     \end{table}
 
     Table \ref{table:ex7-dv} shows, for experiment 7, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex7-dv} with no values corresponds to a microservice which does not relate to the
+    deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex7-dv} with no values corresponds to a microservice which does not relate to the
     experiment 7.
     The following figure illustrates how input rate and throughput have changed during experiment 7.
     It also shows how (and when) number of deployed instances of related microservices has changed during this
@@ -1584,8 +1585,8 @@
     \end{table}
 
     Table \ref{table:ex8-dv} shows, for experiment 8, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex8-dv} with no values corresponds to a microservice which does not relate to the
+    deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex8-dv} with no values corresponds to a microservice which does not relate to the
     experiment 8.
     The following figure illustrates how input rate and throughput have changed during experiment 8.
     It also shows number of deployed instances of related microservices during this experiment.
@@ -1624,9 +1625,9 @@
     \end{table}
 
     Table \ref{table:ex9-dv} shows, for experiment 9, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 8, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex9-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex9-dv} with no values corresponds to a microservice which does not relate to the
     experiment 9.
     The following figure illustrates how input rate and throughput have changed during experiment 9.
     It also shows how (and when) number of deployed instances of related microservices has changed during this
@@ -1663,9 +1664,9 @@
     \end{table}
 
     Table \ref{table:ex10-dv} shows, for experiment 10, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 9, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex10-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex10-dv} with no values corresponds to a microservice which does not relate to the
     experiment 10.
     The following figure illustrates how input rate and throughput have changed during experiment 10.
     It also shows how (and when) number of deployed instances of related microservices has changed during this
@@ -1704,9 +1705,9 @@
     \end{table}
 
     Table \ref{table:ex11-dv} shows, for experiment 11, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 10, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex11-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex11-dv} with no values corresponds to a microservice which does not relate to the
     experiment 11.
     The following figure illustrates how input rate and throughput have changed during experiment 11.
     It also shows how (and when) number of deployed instances of related microservices has changed during this
@@ -1763,8 +1764,8 @@
     \end{table}
 
     Table \ref{table:ex17-dv} shows, for experiment 17, how many instances of each FenceX microservices we have
-    initially deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex17-dv} with no values corresponds to a microservice which does not relate to the
+    initially deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex17-dv} with no values corresponds to a microservice which does not relate to the
     experiment 17.
     The following figure illustrates how input rate and throughput have changed during experiment 17.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -1794,9 +1795,9 @@
     \end{table}
 
     Table \ref{table:ex18-dv} shows, for experiment 18, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 17, we have deployed one more instance of location-aggregate.
-    The row in \ref{table:ex18-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex18-dv} with no values corresponds to a microservice which does not relate to the
     experiment 18.
     The following figure illustrates how input rate and throughput have changed during experiment 18.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -1890,8 +1891,8 @@
     \end{table}
 
     Table \ref{table:ex19-dv} shows, for experiment 19, how many instances of each FenceX microservices we have
-    initially deployed in addition to the amount of resources we have assigned to each microservice instance.
-    The row in \ref{table:ex19-dv} with no values corresponds to a microservice which does not relate to the
+    initially deployed in addition to the amount of resources we have assigned to each.
+    The row in table \ref{table:ex19-dv} with no values corresponds to a microservice which does not relate to the
     experiment 19.
     The following figure illustrates how input rate and throughput have changed during experiment 19.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -1929,9 +1930,9 @@
     \end{table}
 
     Table \ref{table:ex20-dv} shows, for experiment 20, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 19, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex20-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex20-dv} with no values corresponds to a microservice which does not relate to the
     experiment 20.
     The following figure illustrates how input rate and throughput have changed during experiment 20.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -1963,9 +1964,9 @@
     \end{table}
 
     Table \ref{table:ex21-dv} shows, for experiment 21, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 20, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex21-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex21-dv} with no values corresponds to a microservice which does not relate to the
     experiment 21.
     The following figure illustrates how input rate and throughput have changed during experiment 21.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -1996,9 +1997,9 @@
     \end{table}
 
     Table \ref{table:ex22-dv} shows, for experiment 22, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 21, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex22-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex22-dv} with no values corresponds to a microservice which does not relate to the
     experiment 22.
     The following figure illustrates how input rate and throughput have changed during experiment 22.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -2029,9 +2030,9 @@
     \end{table}
 
     Table \ref{table:ex23-dv} shows, for experiment 23, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each microservice instance.
+    deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 22, we have deployed one more instance of realtime-fencing.
-    The row in \ref{table:ex23-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex23-dv} with no values corresponds to a microservice which does not relate to the
     experiment 23.
     The following figure illustrates how input rate and throughput have changed during experiment 23.
     It also shows how many instances of related microservices were up and running during this experiment.
@@ -2129,11 +2130,13 @@
     The "number of instances" row in this table has basically two values.
     First value (from left) refers to the number of deployed instances of each microservices during input production
     (buffering phase) and the other value refers to the same number during processing phase.
-    The row in \ref{table:ex24-dv} with no values corresponds to a microservice which does not relate to the
+    The row in table \ref{table:ex24-dv} with no values corresponds to a microservice which does not relate to the
     experiment 24.
     The following figure illustrates how input rate and throughput have changed during experiment 24.
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
+
+    \clearpage
 
     \begin{figure}[h!]
         \caption{FenceX push leg free fall scalability ex24}
@@ -2206,7 +2209,7 @@
     So all in all, FenceX has achieved a higher throughout.
 
     \subsection{Using Complex Event Processing for implementing a geofencing service}
-    A push style realtime geofencing system has been intoduced in \cite{Nechifor_Comnac_2013}.
+    A push style realtime geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
     It relies on a CEP (complex event processing) for fence entrance/exit detection.
     Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
     System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
@@ -2384,8 +2387,8 @@
     In this section we compare how FenceX has achieved stataful FAAS compared to another available work.
 
     \subsection{Cloudburst: stateful functions-as-a-service}
-    \cite{Functions-as-a-Service-2020} in order to make stateful FAAS possible, relies on co-locating cache and
-    functions.
+    In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
+    taken into action.
     Each function accesses the cache as storage of state.
     Functions are executed by function executors which are deployed in virtual machines.
     For each virtual machine, one cache instance exists.
@@ -2394,6 +2397,8 @@
 
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
+
+    Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
 
     \begin{table}[h!]
         \begin{tabular}{ |l|l|l| }

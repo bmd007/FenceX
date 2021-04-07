@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
+\usepackage[export]{adjustbox}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -133,6 +134,7 @@
 
     \chapter{Introduction}
 
+
     \section{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
     This can be done in two styles: push and poll.
@@ -166,12 +168,12 @@
         \centering
         \begin{tabular}{|c|c|}
             \hline
-            Geofencing format  & Parent data format \\
+            Geofencing format & Parent data format \\
             \hline
-            GeoJSON & JSON          \\
-            GML & XML               \\
-            WKB & Binary            \\
-            WKT & Plain text        \\
+            GeoJSON           & JSON               \\
+            GML               & XML                \\
+            WKB               & Binary             \\
+            WKT               & Plain text         \\
             \hline
         \end{tabular}
         \caption{Base standard of Geofencing formats}
@@ -202,9 +204,10 @@
     represent geospatial data.
 
     \begin{figure}[ht]
+        \centering
         \caption{Texas WKT illustration}
         \label{fig:texas}
-        \includegraphics[scale=0.4]{images/texas.png}
+        \includegraphics[width=\linewidth, scale=0.5]{images/texas.png}
     \end{figure}
     Figure \ref{fig:texas} illustrates usage of an online tool \cite{WKTtool} to show a geospatial WKT on a map.
     The WKT refers to borders of state Texas in US which is taken from \cite{WKTs}.
@@ -323,7 +326,6 @@
         \item \textbf{Instance:} instance, task.
     \end{itemize}
 
-
     \section{Overall system look}
     As you can see in the figure \ref{fig:logical-dfg}, FenceX has 6 operators.
     Some of them are stateful and backed by a state store and some of them are stateless.
@@ -335,9 +337,10 @@
     \end{itemize}
 
     \begin{figure}[ht]
+        \centering
         \caption{Logical data flow graph of FenceX}
         \label{fig:logical-dfg}
-        \includegraphics[scale=0.2]{images/logical-data-flow-diagram.png}
+        \includegraphics[width=\linewidth ,scale=0.2]{images/logical-data-flow-diagram.png}
     \end{figure}
 
     \paragraph{location-update-publisher} plays the role of source in the FenceX stream processing pipeline.
@@ -398,12 +401,12 @@
     From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of
     these legs have their own characteristics and require individual attention.
 
-
     \section{Physical data flow graph}
     \begin{figure}[ht]
+        \centering
         \caption{Physical data flow graph of FenceX}
         \label{fig:physical-dfg}
-        \includegraphics[scale=0.2]{images/physical-data-flow-diagram.png}
+        \includegraphics[width=\linewidth ,scale=0.2]{images/physical-data-flow-diagram.png}
     \end{figure}
 
     Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be
@@ -798,9 +801,8 @@
     \begin{figure}[ht]
         \caption{Reactive systems' value chain \cite{reactive-manifesto}}
         \label{fig:reactive-value}
-        \includegraphics[scale=0.4]{images/reactive-traits.png}
+        \includegraphics[width=\linewidth, scale=0.4]{images/reactive-traits.png}
     \end{figure}
-
 
     As figure \ref{fig:reactive-value} suggests, designing and implementing a distributed system in reactive style
     has the following benefits: easier to maintain, easier to change and higher responsiveness.
@@ -920,7 +922,7 @@
     \begin{figure}[ht]
         \caption{Example of physical data flow graph. Taken from \cite{flink}}
         \label{physical-data-flow-graph-example}
-        \includegraphics[scale=0.4]{images/physical-data-flow-graph.png}
+        \includegraphics[width=\linewidth, scale=0.6]{images/physical-data-flow-graph.png}
     \end{figure}
 
     Graph \ref{physical-data-flow-graph-example} shows an example of a physical data flow graph with 6 tasks (3
@@ -1037,6 +1039,7 @@
     This process consists of many experiments with different setup and goals.
     Each experiment had a preparation phase, execution, observation and finally conclusion.
 
+
     \section{Deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.
     It is also always limited to the hardware resources available, like any other software.
@@ -1065,6 +1068,7 @@
     microservices, realtime-fencing for example.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX infrastructure setup for evaluation}
         \label{fig:infrastructure}
         \includegraphics[scale=0.6]{images/Infrsutracture.png}
@@ -1135,6 +1139,7 @@
     in terms of memory and CPU usage.
     Mostly during our evaluations the bottleneck to throughput was our input rate.
 
+
     \section{Evalution of pure throughput}
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
     calculate the peak throughput based on available resources.
@@ -1176,7 +1181,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 500      & 500     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 4                   & 700      & 800     \\
             \hline
         \end{tabular}
@@ -1186,34 +1191,38 @@
 
     Table \ref{table:ex1-dv} shows, for experiment 1, how many instances of each FenceX microservices we have initially
     deployed in addition to the amount of resources we have assigned to each.
-    The row in table \ref{table:ex1-dv} with no values corresponds to a microservice which does not relate to the 
-    experiment 1. 
+    The row in table \ref{table:ex1-dv} with no values corresponds to a microservice which does not relate to the
+    experiment 1.
     After successful deployment, we followed the previously mentioned scenario.
     The following figures illustrate how input rate and throughput have changed during each repetition of experiment 1
     with different input rate patterns.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push throughput ex1-1}
         \label{fig:ex1-1}
-        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(15,6).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(15,6).png}
     \end{figure}
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push throughput ex1-2}
         \label{fig:ex1-2}
-        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(19,7).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(19,7).png}
     \end{figure}
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push throughput ex1-3}
         \label{fig:ex1-3}
-        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(22,9).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(22,9).png}
     \end{figure}
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push throughput ex1-4}
         \label{fig:ex1-4}
-        \includegraphics[scale=0.4]{images/evaluation/ex1-benchmarking(23,10).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(23,10).png}
     \end{figure}
 
     The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3} and \ref{fig:ex1-4} illustrate input rate
@@ -1235,26 +1244,27 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 5                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 5                   & 400      & 700     \\
             \hline
         \end{tabular}
         \caption{Experiment 2 deployment view}
         \label{table:ex2-dv}
     \end{table}
-    
+
     Table \ref{table:ex2-dv} shows, for experiment 2, how many instances of each FenceX microservices we have
     deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 1, 1 more instance of each related microservice is deployed but with slightly lower 
+    Compared to experiment 1, 1 more instance of each related microservice is deployed but with slightly lower
     computation power available to each.
     The row in table \ref{table:ex2-dv} with no values corresponds to a microservice which does not relate to the
     experiment 2.
     The following figure illustrates how input rate and throughput have changed during experiment 2.
-    
+
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push throughput ex2}
         \label{fig:ex2}
-        \includegraphics[scale=0.4]{images/evaluation/ex2-benchmarking(24,10).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex2-benchmarking(24,10).png}
     \end{figure}
 
     The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1 (figures \ref{fig:ex1-1} for
@@ -1291,7 +1301,7 @@
             \hline
             location-update-publisher & 4                   & 500      & 500     \\
             location-aggregate        & 2                   & 2500     & 3200    \\
-            realtime-fencing          & -                   &  -       &  -      \\
+            realtime-fencing          & -                   & -        & -       \\
             \hline
         \end{tabular}
         \caption{Experiment 3 deployment view}
@@ -1305,9 +1315,10 @@
     The following figure illustrates how input rate and throughput have changed during experiment 3.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX poll throughput ex3}
         \label{fig:ex3}
-        \includegraphics[scale=0.4]{images/evaluation/ex3-benchmarking(16,9).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex3-benchmarking(16,9).png}
     \end{figure}
 
     Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and poll
@@ -1326,7 +1337,7 @@
             \hline
             location-update-publisher & 4                   & 500      & 500     \\
             location-aggregate        & 2                   & 2700     & 2700    \\
-            realtime-fencing          & -                   &  -       &  -      \\
+            realtime-fencing          & -                   & -        & -       \\
             \hline
         \end{tabular}
         \caption{Experiment 4 deployment view}
@@ -1338,19 +1349,21 @@
     Compared to experiment 3, we have only changed the available resources to location-aggregate.
     The row in table \ref{table:ex4-dv} with no values corresponds to a microservice which does not relate to the
     experiment 4.
-    The following figures illustrate how input rate and throughput have changed during experiment 4 while applying 
+    The following figures illustrate how input rate and throughput have changed during experiment 4 while applying
     different patterns of input.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX poll throughput ex4-1}
         \label{fig:ex4-1}
-        \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(19,10).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex4-benchmarking(19,10).png}
     \end{figure}
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX poll throughput ex4-2}
         \label{fig:ex4-2}
-        \includegraphics[scale=0.4]{images/evaluation/ex4-benchmarking(22,10).png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex4-benchmarking(22,10).png}
     \end{figure}
 
     Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to the graphs from experiment 3.
@@ -1408,7 +1421,7 @@
         \item[7-] Assert that throughput is back to previous value.
         \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
-    
+
     \clearpage
 
     \subsubsection{Experiment 5}
@@ -1419,14 +1432,14 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 5                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 6                   & 400      & 800     \\
             \hline
         \end{tabular}
         \caption{Experiment 5 deployment view}
         \label{table:ex5-dv}
     \end{table}
-    
+
     Table \ref{table:ex5-dv} shows, for experiment 5, how many instances of each FenceX microservices we have initially
     deployed in addition to the amount of resources we have assigned to each.
     The row in table \ref{table:ex5-dv} with no values corresponds to a microservice which does not relate to the
@@ -1437,18 +1450,18 @@
     experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg availability ex5-1}
         \label{fig:ex5-1}
-        \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
+        \includegraphics[width=\linewidth, scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
     \end{figure}
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg availability ex5-2}
         \label{fig:ex5-2}
-        \includegraphics[scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
     \end{figure}
-
-    \clearpage
 
     In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
     Green line illustrates the ongoing input stream of location updates and pink point shows
@@ -1470,7 +1483,7 @@
     eventually is very low.
 
     \subsection{Poll leg}
-     Poll leg availability evaluation scenario:
+    Poll leg availability evaluation scenario:
     \begin{itemize}
         \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) to FenceX.
@@ -1493,7 +1506,7 @@
             \hline
             location-update-publisher & 1                   & 400      & 700     \\
             location-aggregate        & 4                   & 2700     & 2700    \\
-            realtime-fencing          & -                   &  -      &   -      \\
+            realtime-fencing          & -                   & -        & -       \\
             \hline
         \end{tabular}
         \caption{Experiment 7 deployment view}
@@ -1509,9 +1522,10 @@
     experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX poll leg availability ex7}
         \label{fig:ex7}
-        \includegraphics[scale=0.4]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
     \end{figure}
 
     In figure \ref{fig:ex7} the purple line is the input rate (number of queries received by FenceX per
@@ -1530,6 +1544,7 @@
     Poll leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
     temporarily.
+
 
     \section{Strong scalability}
     If a software has strong scalability properties means providing same load, the more you scale it out, the better
@@ -1576,7 +1591,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & -                   &  -       & -       \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 1                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1592,9 +1607,10 @@
     It also shows number of deployed instances of related microservices during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg strong scalability ex8}
         \label{fig:ex8}
-        \includegraphics[scale=0.4]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
     In figure \ref{fig:ex8} the green line is essentially the input rate (number of location updates per second),
@@ -1616,7 +1632,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 2                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1634,9 +1650,10 @@
     experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg strong scalability ex9}
         \label{fig:ex9}
-        \includegraphics[scale=0.4]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
     Looking at figure \ref{fig:ex9} we can easily observe that once the second instance is up and running, after
@@ -1655,7 +1672,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 3                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1673,9 +1690,10 @@
     experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg strong scalability ex10}
         \label{fig:ex10}
-        \includegraphics[scale=0.4]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
     As we expected, deploying three instances of realtime-fencing with the given resources, was enough to process 15K
@@ -1696,7 +1714,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 200      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 4                   & 30       & 500     \\
             \hline
         \end{tabular}
@@ -1714,9 +1732,10 @@
     experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg strong scalability ex11}
         \label{fig:ex11}
-        \includegraphics[scale=0.4]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
     The clear observation is that adding one more instance didn't have any special effect on the throughput.
@@ -1756,7 +1775,7 @@
             \hline
             location-update-publisher & 1                   & 200      & 700     \\
             location-aggregate        & 1                   & 100      & 1500    \\
-            realtime-fencing          & -                   &  -       &  -      \\
+            realtime-fencing          & -                   & -        & -       \\
             \hline
         \end{tabular}
         \caption{Experiment 17 deployment view}
@@ -1771,9 +1790,10 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX poll leg strong scalability ex17}
         \label{fig:ex17}
-        \includegraphics[scale=0.4]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
     \clearpage
@@ -1785,9 +1805,9 @@
             \hline
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
-            location-update-publisher & 0                   &  -       &  -      \\
+            location-update-publisher & 0                   & -        & -       \\
             location-aggregate        & 2                   & 100      & 1500    \\
-            realtime-fencing          & -                   &  -       &  -      \\
+            realtime-fencing          & -                   & -        & -       \\
             \hline
         \end{tabular}
         \caption{Experiment 18 deployment view}
@@ -1803,9 +1823,10 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX poll leg strong scalability ex18}
         \label{fig:ex18}
-        \includegraphics[scale=0.4]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
     \end{figure}
 
     In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line represents input rate, number of incoming HTTP
@@ -1826,7 +1847,7 @@
     As an overall consequence, when we deploy even one instance of location-aggregate, it's already rich enough to be
     able to answer many HTTP requests (query by fence).
     Which is about half of the input rate we can produce at maximum in a stable ongoing manner.
-    So when we deploy two instances of location-aggregate with the mentioned resources, two available instances just 
+    So when we deploy two instances of location-aggregate with the mentioned resources, two available instances just
     handle our full capacity of input load production.
     So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
 
@@ -1834,6 +1855,7 @@
     Poll leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to
     produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
+
 
     \section{Weak scalability}
     If a software has weak scalability properties, it means providing a load which is increasing step by step over
@@ -1882,7 +1904,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 1                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1898,9 +1920,10 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg weak scalability ex19}
         \label{fig:ex19}
-        \includegraphics[scale=0.4]{images/evaluation/ex19-benchmarking-ongoing-1per16sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex19-benchmarking-ongoing-1per16sec.png}
     \end{figure}
 
     In figure \ref{fig:ex19} the green line is input rate (number of location updates per second),
@@ -1921,7 +1944,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 2                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1938,9 +1961,10 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg weak scalability ex20}
         \label{fig:ex20}
-        \includegraphics[scale=0.4]{images/evaluation/ex20-benchmarking-ongoing-1per10sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex20-benchmarking-ongoing-1per10sec.png}
     \end{figure}
 
     Two such instances of realtime-fencing managed to handle around 3K location updates per second.
@@ -1955,7 +1979,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 4                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -1972,9 +1996,10 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg weak scalability ex21}
         \label{fig:ex21}
-        \includegraphics[scale=0.4]{images/evaluation/ex21-benchmarking-ongoing-1per6sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex21-benchmarking-ongoing-1per6sec.png}
     \end{figure}
     Four such instances of realtime-fencing managed to handle around 5K location updates per second.
 
@@ -1988,7 +2013,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 5                   & 60       & 500     \\
             \hline
         \end{tabular}
@@ -2005,11 +2030,12 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg weak scalability ex22}
         \label{fig:ex22}
-        \includegraphics[scale=0.4]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
     \end{figure}
-    Five  instances of realtime-fencing managed to handle around 15K location updates per second.
+    Five instances of realtime-fencing managed to handle around 15K location updates per second.
 
     \clearpage
 
@@ -2021,7 +2047,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4                   & 400      & 700     \\
-            location-aggregate        & -                   &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 10                  & 60       & 500     \\
             \hline
         \end{tabular}
@@ -2038,9 +2064,10 @@
     It also shows how many instances of related microservices were up and running during this experiment.
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg weak scalability ex23}
         \label{fig:ex23}
-        \includegraphics[scale=0.4]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
     \end{figure}
 
     Ten such instances of realtime-fencing managed to handle around 15K location updates per second.
@@ -2071,6 +2098,7 @@
     Relaying on the observations from previous experiments, two instances of location-aggregate (with minimum
     resources for working smoothly) can easily cover our maximum capacity for producing input load.
     So there is no point in carrying out weak scalability experiments for poll leg.
+
 
     \section{Free fall scalability}
     In order to stress test stream processing systems or when trying to find out how they can scale under high rates
@@ -2116,7 +2144,7 @@
             Application               & number of instances & CPU(MHz) & RAM(MB) \\
             \hline
             location-update-publisher & 4 - 0               & 400      & 700     \\
-            location-aggregate        &   -                 &  -       &  -      \\
+            location-aggregate        & -                   & -        & -       \\
             realtime-fencing          & 0 - 12              & 60       & 500     \\
             \hline
         \end{tabular}
@@ -2139,9 +2167,10 @@
     \clearpage
 
     \begin{figure}[h!]
+        \centering
         \caption{FenceX push leg free fall scalability ex24}
         \label{fig:ex24}
-        \includegraphics[scale=0.4]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
+        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
     \end{figure}
 
     In figure \ref{fig:ex24} the green line is input rate (number of location updates per second),
@@ -2158,6 +2187,7 @@
     ~65k/s.
 
     \clearpage
+
 
     \section{Related work}
     In this section we will go over a couple of papers which has introduced a geofencing systems and we compare them
@@ -2224,6 +2254,7 @@
     scalability and availability.
     Also, when it comes to throughput, push leg of FenceX has achieved 65k/s which is much higher than 20k/s.
 
+
     \chapter{Conclusion}
     During this thesis we have combined microservices and stream processing concepts in order to design, implement
     and evaluate a highly scalable resilient geofencing system called FenceX.
@@ -2242,6 +2273,7 @@
     When it comes to resiliency thanks to replication, scaling out (instead of up), re-balancing features of kafka
     consumers and highly decoupled components, FenceX has demonstrated being reliable under non-ideal conditions.
 
+
     \section{Future work}
     During our evaluations, we have used only one type of data collected from real taxi trip.
     Evaluating FenceX using data collected from people walking in an area can be also very insightful.
@@ -2259,6 +2291,7 @@
 
     \part[Stateful FAAS]{FenceX: Stateful Function as a serivce platform}
 
+
     \chapter{FenceX as FAAS provider}
     FenceX apart from being a geofencing system as described in the previous part of the report, can also be
     considered as an implementation for idea of function as a service.
@@ -2267,6 +2300,7 @@
     So other types of computation can also be implemented in the same way without changing the architecture in any
     significant manner.
     In the following sections we will explain what is FAAS and how FenceX is a FAAS provider.
+
 
     \section{FAAS}
     Imagine a start up company is shaping around a brilliant brand-new audio compression algorithm.
@@ -2313,6 +2347,7 @@
     Which is provided nowadays by most cloud providers.
     AWS lambda\cite{lambda} is the most famous one.
 
+
     \section{Stateless FAAS}
     In FAAS model, apart from separating business logic and execution platform, storage is also separated from
     execution platform.
@@ -2342,6 +2377,7 @@
     So what about stateful operations?
     Can't we enjoy the high level abstraction of FAAS model with stateful operations?
 
+
     \section{Stream processing and Stateful FAAS}
     For developers (users of FAAS platform), the function they implement has only some inputs parameters and an output.
     The input parameters can be driven from the triggering event/request/message.
@@ -2361,6 +2397,7 @@
     a FAAS platform implemented by stream processing pipeline allows for definition of stateful functions as well.
 
     The only thing that users of system (developers) should do is to implement body of stream processing operations.
+
 
     \section{FenceX and FAAS}
     FenceX, as described previously, is a stream processing pipeline among many other things.
@@ -2412,12 +2449,13 @@
             Function execution retry & yes                       & yes                                \\
             State as KEY:VALUE data  & yes                       & yes                                \\
             Custom functions         & practically yes           & yes                                \\
-            Underlying system       & Kafka/Spring/KafkaStreams & Anna                               \\
+            Underlying system        & Kafka/Spring/KafkaStreams & Anna                               \\
             \hline
         \end{tabular}
         \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
         \label{table:fencex-comp}
     \end{table}
+
 
     \section{Future work}
     FenceX is only the core/kernel part of a FAAS platform.

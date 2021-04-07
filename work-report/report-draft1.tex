@@ -72,7 +72,6 @@
     \null\newpage
     \setcounter{page}{2}
 
-
     \section{abstract}
     Since emergence of smartphones, smart cars and other mobile objects with GPS sensor attached to them, (non-)
     functional requirement of geofencing systems has significantly changed.
@@ -103,7 +102,6 @@
 
     \newpage
 
-
     \section{Acknowledgment}
     Huge thanks and appreciations to all people who had a hand in the actualization of FenceX.
     First and foremost, my supervisor, Salman Toor, who trusted in me and my idea.
@@ -121,13 +119,13 @@
     The content of this repository is available to be used openly.
     Please feel free to contribute as well.
 
-    \part[FenceX]{FenceX: High throughput scalable geofencing}
-
-
     \chapter{Introduction}
+    ?
 
+    \chapter{Related work}
+    ?
 
-    \section{Geofencing}
+    \chapter{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
     This can be done in two styles: push and poll.
     In poll style, a fence (geospatial shape) is queried against a database of coordinates (mover-id:geospatial point).
@@ -138,7 +136,7 @@
     On the other hand in push style, fences are pretty much predefined.
     Whenever coordinates of a mover changes (a location update report arrives), an intersection check between a
     predefined fence and the newly reported coordinate will happen.
-    Although no geosptial indexing is necessarily involved, the intersection checking operation is still CPU
+    Although no geospatial indexing is necessarily involved, the intersection checking operation is still CPU
     intensive due to the required mathematical calculations.
 
     We can compare these two styles as following:
@@ -175,6 +173,10 @@
     We can compare the geofencing representations mentioned in the table \ref{table:geofencing-formats} fundamentally
     in the same way in which we compare their corresponding base standards.
 
+    In this thesis we used WKT to represent all the involved geospatial data.
+    We have chosen WKT since our geospatial database (index) of choice, H2, supports it well.
+    Also, we couldn't find any information about H2 supporting other geospatial representations out of the box.
+
     \subsection{WKT}
     WKT (well known text)  \cite{WKT} is a text mark up language which is a format for geometric information.
     Items below are examples of WKT strings representing raw geometry data.
@@ -194,6 +196,7 @@
 
     Instead of relative values for X,Y and Z, geographic coordinates (latitude, longitude) can be used in order to
     represent geospatial data.
+    We mainly used POINT() to model locations and MULTIPOLYGON() for fences.
 
     \begin{figure}[ht]
         \centering
@@ -204,14 +207,7 @@
     Figure \ref{fig:texas} illustrates usage of an online tool \cite{WKTtool} to show a geospatial WKT on a map.
     The WKT refers to borders of state Texas in US which is taken from \cite{WKTs}.
 
-    In this thesis we used WKT to represent all the involved geospatial data.
-    We mainly used POINT() to model locations and MULTIPOLYGON() for fences.
-
-    We have chosen WKT since our geospatial database (index) of choice, H2, supports it well.
-    Also, we couldn't find any information about H2 supporting other geospatial representations out of the box.
-
-
-    \section{Setting the scene}
+    \section{Requirements}
     Both styles of geofencing are CPU intensive.
     Also, geofencing is usually implemented using databases interacting with disk and accessed over network.
     So a combination of natural computational latency and IO latency limits the overall throughput of geofencing systems.
@@ -301,7 +297,6 @@
     So no need for distributed transactions or implementation of Saga as there is not much of intertwined
     interactions that can go wrong.
 
-
     \chapter{FenceX}
     FenceX is a stream processing system designed and implemented into microservices.
     It can also be identified as a reactive distributed system that is applying event driven architecture for
@@ -318,7 +313,7 @@
         \item \textbf{Instance:} instance, task.
     \end{itemize}
 
-    \section{Overall system look}
+    \section{System overview}
     As you can see in the figure \ref{fig:logical-dfg}, FenceX has 6 operators.
     Some of them are stateful and backed by a state store and some of them are stateless.
     The exact details are as below in relation to state:
@@ -597,7 +592,6 @@
     So after the join we end up with a stream of moverId:intersection-status updates.
     At the moment we have not continued the stream but ideally the status should be published into another kafka
     topic so that other operation down the stream processing pipeline can use it, like alarming.
-
 
     \section{Non-functional characteristics}
     In this section we describe how different non-functional requirements of system has been achieved based on the
@@ -975,7 +969,6 @@
     It brings challenges like the best partitioning policy and correct key selection.
     For example when partitioning geospatial data partitioning policy may differ based on the use case.
 
-
     \section{Underlying tools}
     In this section we describe some of many technologies which taken into action in order to make FenceX possible.
     The explanation won't exceed a simple introduction since detailed information goes beyod context of this thesis.
@@ -1025,12 +1018,14 @@
     A use case could be counting number of clicks on a link during each 5 minutes window when each click results in
     an event.
 
+    \subsection{Docker}
+
+    \subsection{Nomad}
 
     \chapter{Experiments and validation}
     In this chapter we explain the process and results of evaluating FenceX.
     This process consists of many experiments with different setup and goals.
     Each experiment had a preparation phase, execution, observation and finally conclusion.
-
 
     \section{Deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.

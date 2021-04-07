@@ -132,12 +132,11 @@
     ?
 
 
-    \chapter{Related work}
-    ?
+    \chapter{Related works}
 
     \subsection{Large Scale Indexing of Geofences}
-    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that supports large scales
-    of data and load.
+    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that
+    supports large scales of data and load.
     This system has a concept of worker which refers to instances of application that answer to queries.
     As apposed to clients which send queries to the worker nodes.
     Dynamic caching and work load distribution over multiple instances of workers are the bases of achieved
@@ -150,35 +149,9 @@
 
     It is notable that software in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} uses a custom geospatial index,
     custom design and implementation.
-    Using a custom index most probably means that the whole data is stored and processed in memory which allows for higher throughput.
-    We will not, however, describe further the indexing strategy since it is outside context of this thesis.
-
-    Throughput in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} is defined as number of location updates processed per second.
-    Such processing involves updating an index plus a query to find a crossing geofence.
-
-    When they are using benefit of localhost communication without any data replication involved (no availability), a
-    throughput of 250k/s has been achieved on average.
-    However, once they introduce data replication and inter server communication, the throughout drops to sub 10k/s
-    range at best.
-
-    \subsubsection{Comparison}
-    The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
-    functionalities, is comparable to poll leg of FenceX.
-    Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
-    scalability.
-
-    FenceX, however, does not apply partitioning data among worker instances in poll leg, which makes it much easier to
-    scale out.
-    Also, the load balancing strategy when forwarding client queries to worker instances can be as simple as
-    round-robin in FenceX.
-    As a result, no throughput would be lost during load balancing.
-
-    When it comes to numbers, FenceX has achieved a throughput in range of 15k/s compared to sub 10k/s for
-    \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}.
-    Although \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} has done wonderful when no availability was in action
-    (no replication), we do not consider it a win over FenceX.
-    FenceX has always been tested with full replication in action.
-    So all in all, FenceX has achieved a higher throughout.
+    Using a custom index most probably means that the whole data is stored and processed in memory which allows for
+    higher throughput.
+    We will not, however, describe the indexing strategy further since it is outside context of this thesis.
 
     \subsection{Using Complex Event Processing for implementing a geofencing service}
     A push style realtime geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
@@ -187,14 +160,8 @@
     System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
     Unit of concurrency in \cite{Nechifor_Comnac_2013} is not clear.
     So it is not clear what are the bounds for scalability of the introduced system.
-
     Throughput in this system is defined as number of location updates processed per second.
-    Evaluations have shown that it can has achieved throughput of around 20k/s.
-
-    \subsubsection{Comparison}
-    Unlike FenceX, \cite{Nechifor_Comnac_2013} does not seem to have any considerations for
-    scalability and availability.
-    Also, when it comes to throughput, push leg of FenceX has achieved 65k/s which is much higher than 20k/s.
+    Evaluations have shown that it has achieved throughput of around 20k/s.
 
     \subsection{Cloudburst: stateful functions-as-a-service}
     In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
@@ -204,30 +171,8 @@
     For each virtual machine, one cache instance exists.
     In order to keep the caches consistent, they are backed by an auto-scaling key:value store called Anna.
     And Anna uses lattice composition to fight inconsistency.
-
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
-
-    Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
-
-    \begin{table}[h!]
-        \begin{tabular}{ |l|l|l| }
-            \hline
-            Property/System          & FenceX                    & \cite{Functions-as-a-Service-2020} \\
-            \hline
-            Consistency              & Eventual                  & Strong                             \\
-            Statefulness strategy    & Stream processing         & Co-located caches                  \\
-            ACID2 conforming         & yes                       & yes                                \\
-            Data replication         & yes                       & yes                                \\
-            Function execution retry & yes                       & yes                                \\
-            State as KEY:VALUE data  & yes                       & yes                                \\
-            Custom functions         & practically yes           & yes                                \\
-            Underlying system        & Kafka/Spring/KafkaStreams & Anna                               \\
-            \hline
-        \end{tabular}
-        \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
-        \label{table:fencex-comp}
-    \end{table}
 
 
     \chapter{Geofencing}
@@ -530,6 +475,28 @@
     Since FenceX needs that complied version of Functions, they can be implemented in pretty much any JVM language as
     far as they can be compiled into a Java class (Java byte code).
     Being language agnostic is another promise of FAAS idea which FenceX delivers to some extent.
+
+
+    Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
+
+    \begin{table}[h!]
+        \begin{tabular}{ |l|l|l| }
+            \hline
+            Property/System          & FenceX                    & \cite{Functions-as-a-Service-2020} \\
+            \hline
+            Consistency              & Eventual                  & Strong                             \\
+            Statefulness strategy    & Stream processing         & Co-located caches                  \\
+            ACID2 conforming         & yes                       & yes                                \\
+            Data replication         & yes                       & yes                                \\
+            Function execution retry & yes                       & yes                                \\
+            State as KEY:VALUE data  & yes                       & yes                                \\
+            Custom functions         & practically yes           & yes                                \\
+            Underlying system        & Kafka/Spring/KafkaStreams & Anna                               \\
+            \hline
+        \end{tabular}
+        \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
+        \label{table:fencex-comp}
+    \end{table}
 
 
     \chapter{FenceX}
@@ -1511,13 +1478,22 @@
     We have deployed one more instance of relevant microservice plus changing the input rate pattern.
     The throughput again followed the input pattern.
 
-    \subsubsection{Conclusion of system throughput evaluation}
+    \subsubsection{Conclusion of push throughput experiments}
     So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
     application.
     We can clearly see in the graphs that regardless of setup, push throughput (intersections/second) follows pretty
     much the exact pattern of changes in input rate (location updates/second).
     So there is no point in continuing push throughput experiments with current available hardware power.
     The highest throughput observed for push leg so far therefore is ~15k/s.
+
+    \subsubsubsection{Comparison}
+    The work done in \cite{Nechifor_Comnac_2013} is comparable to push leg of FenceX.
+    It has achieved throughput of 20K/s which is higher than the highest throughput we so far managed to observe in
+    FenceX evaluations of push leg.
+    However, since \cite{Nechifor_Comnac_2013} has no considerations for scalability and availability, the lower
+    throughput of FenceX so far doesn't mean \cite{Nechifor_Comnac_2013} out performs FenceX.
+    It is also important to mention that so far 15k/s is the highest input rate we could produce.
+    So we are not sure currently if 15k/s is bound on throughput of FenceX.
 
     \clearpage
 
@@ -1611,7 +1587,7 @@
     The change in the input pattern is subtle however.
     In this experiment, the input rate was around 12k/s at highest which is handled well by poll leg of FenceX.
 
-    \subsubsection{Conclusion of poll throughput evaluation}
+    \subsubsection{Conclusion of poll throughput experiments}
     Experiments 3 and 4 show that we have failed to increase the input rate as we progressed.
     Although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
     again the bottleneck was input rate which is limited by our physical available resources.
@@ -1620,6 +1596,29 @@
     So there is no point in continuing poll throughput experiments with current available hardware.
     However, the highest input rate we managed to produce during these experiments was in the range of [12-13]k queries
     per second which FenceX just managed to handle very well.
+
+    \subsubsubsection{Comparison}
+    The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
+    functionalities, is comparable to poll leg of FenceX.
+    Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
+    scalability.
+
+    FenceX, however, does not apply partitioning data among worker instances in poll leg, which makes it much easier to
+    scale out.
+    Also, the load balancing strategy when forwarding client queries to worker instances can be as simple as
+    round-robin in FenceX.
+    As a result, no throughput would be lost during load balancing.
+
+    Throughput in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} is defined as number of location updates processed per second.
+    Such processing involves updating an index plus a query to find a crossing geofence.
+    When they are using benefit of localhost communication without any data replication involved (no availability), a
+    throughput of 250k/s has been achieved on average.
+    However, once they introduce data replication and inter server communication, the throughout drops to sub 10k/s
+    range at best.
+    Although \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} has done wonderful when no availability was in action (no
+    replication), we do not consider it a win over FenceX.
+    FenceX has always been tested with full replication in action.
+    So FenceX is the winner by achieving throughput in range of 15k/s compared to sub 10k/s.
 
 
     \section{Availability}
@@ -1712,7 +1711,7 @@
     didn't get a chance to be processed, get it after re-balancing.
     As a result, we had even a higher throughput than input rate temporarily after re-balancing finishes.
 
-    \subsubsection{Conclusion of push leg availability evaluation}
+    \subsubsection{Conclusion of push leg availability experiments}
     Push leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system under
     high enough input loads.
@@ -1777,7 +1776,7 @@
     Please note that re-balancing has no direct affect on queries by fence.
     However, health of each Kafka or Kafka Stream application is dependent on a successful re-balancing.
 
-    \subsubsection{Conclusion of poll leg availability evaluation}
+    \subsubsection{Conclusion of poll leg availability experiments}
     Poll leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
     temporarily.
@@ -1980,7 +1979,7 @@
     However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
     graph.
 
-    \subsubsection{Conclusion of push leg strong scalability evaluation}
+    \subsubsection{Conclusion of push leg strong scalability experiments}
     Push leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
 
@@ -2088,7 +2087,7 @@
     handle our full capacity of input load production.
     So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
 
-    \subsubsection{Conclusion of poll leg strong scalability evaluation}
+    \subsubsection{Conclusion of poll leg strong scalability experiments}
     Poll leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to
     produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
@@ -2313,7 +2312,7 @@
     limitations on the available resources to bench-marking application.
     So we will not continue weak scalability experiments for push log further.
 
-    \subsubsection{Conclusion of push leg weak scalability evaluation}
+    \subsubsection{Conclusion of push leg weak scalability experiments}
     We observed that as we increased input rate and deployed more instances of push leg of FenceX, push leg
     throughput got higher.
     So push leg of FenceX managed to scale well in face of increasing load and it has weak scalability characteristics.
@@ -2418,7 +2417,7 @@
     We can clearly observe that after re-balancing among 10 newly deployed instance of realtime-fencing is finished,
     throughput has peaked very fast to about 65K fence-point intersections per second.
 
-    \subsubsection{Conclusion of push leg free fall scalability evaluation}
+    \subsubsection{Conclusion of push leg free fall scalability experiment}
     We can relay on buffering properties of stream processing systems for testing throughput of operators.
     Specially when producing input and process it on realtime involves too much IO latency.
     All in all, pull leg of FenceX has shown free fall scalability properties and ability to deliver throughput of

@@ -131,7 +131,7 @@
     \chapter{Introduction}
     Geofencing plays an important role in our day to day life nowadays in different styles and scales.
     The most famous use case of geofencing is to take a taxi from an online taxi provider like Uber or Cabonline
-    (Swedish).
+    (Swedish company).
     A traveler selects a pick up point and system should send the offer (order) to the available taxies.
     It is clear that the system can't send the offer to all the taxies available around the world.
     It might take forever until one of them accepts the offer;
@@ -207,8 +207,8 @@
     application.
     This are some of common issues with monolith applications.
 
-    Our contribution is design, implementation and evaluation of a geofencing system which relies on stream
-    processing and microservice in order to achieve high throughput, high scalability and high availabilty.
+    Our contribution is design, implementation and evaluation of a geofencing system called FenceX which relies on
+    stream processing and microservice in order to achieve high throughput, high scalability and high availability.
     FenceX supports both styles of geofencing (on-demand and realtime).
     We have achieved these characteristics by using microservices as the major architecture of the system.
     Which means we a system consists of small de-coupled components trying to share nothing as much as possible.
@@ -279,6 +279,7 @@
     \subsection{Overall comparison}
     The work that has been done during this thesis is distinguishable from other reviewed works in terms of
     of the achieved level of availability, scalability and peak throughput.
+
 
     \chapter{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
@@ -455,7 +456,7 @@
     interactions that can go wrong.
 
 
-    \chapter{FenceX as FAAS provider}
+    \chapter{FAAS}
     FenceX apart from being a geofencing system, can also be considered as an implementation for idea of function as a service.
     Stateful function as a service actually.
     In a sense, geofencing is just one special usage our system.
@@ -580,8 +581,6 @@
     Since FenceX needs that complied version of Functions, they can be implemented in pretty much any JVM language as
     far as they can be compiled into a Java class (Java byte code).
     Being language agnostic is another promise of FAAS idea which FenceX delivers to some extent.
-
-
     Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
 
     \begin{table}[h!]
@@ -602,6 +601,270 @@
         \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
         \label{table:fencex-comp}
     \end{table}
+
+
+    \chapter{Underlying Ideas and sciense}
+    In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
+    We cover them only to the extent that context of this thesis allows.
+
+    \subsection{Reactive systems}
+    A distributed system, in simple terms, is a software having more than one deployable component.
+    These components are sometimes equal and/or sometimes different.
+    However, from point of view of an outside observer, there is only one working system.
+    From within, there are many processes, actors, services or etc working together to serve an overall purpose.
+
+    Among distributed systems architectural styles, reactive is of special interest in this thesis.
+    A reactive system, as defined in reactive manifesto \cite{reactive-manifesto} has the following properties:
+    \begin{itemize}
+        \item \textbf{Responsive:} a responsive system provides fast response in a consistent manner.
+        \item \textbf{Resilient:} A resilient system keeps responding to the possible degree in face of failure.
+        \textbf{replication and isolation} are corner stones of resiliency.
+        \item \textbf{Elastic:} An elastic system keeps responding under varying work load. Avoiding bottlenecks and cost
+        effective resource allocation play an important role in achieving elasticity.
+        \item \textbf{Message Driven:} Non-blocking asynchronous message passing brings about isolation, location
+        transparency and back pressure for distributed system components.
+    \end{itemize}
+
+    \begin{figure}[ht]
+        \caption{Reactive systems' value chain \cite{reactive-manifesto}}
+        \label{fig:reactive-value}
+        \includegraphics[width=\linewidth, scale=0.4]{images/reactive-traits.png}
+    \end{figure}
+
+    As figure \ref{fig:reactive-value} suggests, designing and implementing a distributed system in reactive style
+    has the following benefits: easier to maintain, easier to change and higher responsiveness.
+
+    So in summary, a reactive system consists of isolated components communicating using asynchronous non-blocking message passing.
+
+    An ideal reactive system conforms to ACID2\cite{reactive-microsystems}.
+    ACID2 is the counterpart of ACID in transactional databases.
+    So instead of atomicity, consistency, isolation, durability, ACID2 is:
+    \begin{itemize}
+        \item \textbf{Associative:} Messages can be grouped together, using a key for example.
+        \item \textbf{Commutative:} The order at which messages arrive to components does not affect the desired
+        outcome.
+        \item \textbf{Idempotent:} Components of system should receive a message more than once, they act as if message arrived only once.
+        \item \textbf{Distributed:} The system has more than one component.
+    \end{itemize}
+
+    A reactive system, specially when conforming to ACID2, has potential to scale out very easy to a very a high extent.
+
+    When it comes to replication of data over components in a reactive system, in case consistency matters, order of
+    messages becomes important.
+    Order at which messages arrive has a logical time aspect which is important for achieving occasional consistency.
+    It is very challenging for a distributed system to be strongly consistent.
+    So if it is acceptable to relax the requirements to occasional/eventual consistency, a reactive system in which
+    order of messages are reserved works well.
+
+    The style with which messages are produced has a direct effect on system design and implementation.
+    A message can be a query (what is X), an event (X has happened), a command (do X) and an update (X is 232 now).
+    The preferred message semantic in reactive systems is \textbf{event}s.
+    An event represent something that has happened in the past, an immutable truth.
+    Such events can be published into a queue reserving their order.
+    System components can subscribe to the queue and update their own image of the world (state) according to the
+    events that has happened.
+
+    In order to achieve such a system design, events should be considered first in the design rather than the domain.
+    Verbs first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
+
+    \subsection{Microservices}
+    Once upon a time the whole software, an information system for example, was one process deployed manually on a big
+    physically available machine.
+    This software was maintained by a big team in one code base.
+    To change any part of it, was a headache to make sure even the smallest change will not break the whole software.
+    Everything was tightly coupled after all.
+    It was all about code re-use.
+    If developers managed to change it properly, building the code took hours and forget about how long it took to
+    run the tests (if there was any of course).
+    After manually deploying the executable artifact into a physically available server in the corner of office, an
+    equal sign forgotten in a loop condition, brought the whole service down 11 pm same day.
+    Manager panics, wakes every developer who can, with hope of a hot fix.
+
+    Hot fix applied, everyone back to sleep, customers are happy.
+    If fact so happy that they invite their friends to use the service.
+    More clients, more money, great.
+    Too good to be true though.
+    14 pm next day, number of users using the service simultaneously rockets to outside range of available resources.
+    CPU usage is 100 percent, no free memory left on the machine and only one out of 10 user is actually getting
+    service instead of just looking at loading bar.
+
+    Developers run around city to find RAMs with bigger capacity as a temporal solution.
+    IT people start to think about assembling a more powerful server with all brand-new more powerful hardware.
+
+    Those days are gone due to adoption of cloud technologies combined with microservices.
+
+    \paragraph{Microservices} is an architectural style in which software is divided into some small components
+    called services.
+    Those (micro)services communicate with each other and serve the overall purpose of software.
+    Each service is maintained by a special team, has its own code base, has its own database, exposes its own APIs, is
+    tested independently, is packaged separately and is deployed as a separate process.
+
+    The less these services share, the better.
+    Decoupling services as much as possible is an important aspect of microservices.
+    Because for example, the less services are dependent on each other, the easier they can be changed.
+
+    So now that software is developed into microservices, each microservice can be changed independently by the
+    team responsible for maintaining it, deployed separately after a short build and test process.
+    A bug in one of the services can not bring the whole system down as well.
+    When load on one of the microservices increases, more instances of it can be easily deployed (scale out).
+    And hopefully instead of deploying executable artifact into a physically available machine in the corner of
+    office, microservices are packaged as docker images and deployed into a container orchestration tool provided as
+    a managed cloud service.
+
+    Of course turning a monolith into a distributed system brings all the challenges of distributed systems with it.
+    Having data spread around different services makes strong consistency very hard to achieve.
+    Load balancing between available instances of each service is something new to deal with.
+    Monitoring of and communication between services requires special attention.
+    And so on.
+    In order to solve the mentioned challenges and much more, best practices, design patterns, architectural patterns
+    and tools become handy.
+    System designers and developers select a sub set of these helps based on the functional and non-functional
+    requirements of their system, size of their organization and other relevant factors.
+    API gateway, Service registry, Distributed tracing, CQRS, Saga are some popular examples.
+    \cite{microservice-architecture} \cite{microservices-pitfalls} \cite{microservices}
+
+    \subsection{Stream processing}
+    Stream processing refers to a special style of reactive systems.
+    It is also equivalent to data flow programming in which a graph of operators exists.
+    These operators receive events as a result of work of other operators, process them and produce other events.
+    These events represent immutable facts, something that has happened.
+    The order at which events arrive to the next operator matters;
+    so usually in stream processing systems, publish-subscribe pattern implemented using some sort of queue,
+    journal, commit log or topic.
+    \cite{flink} \cite{fast-data-archs}
+
+    The foundation of a stream processing pipeline is its data flow graph.
+
+    \subsubsection{Data flow graph}
+    Data flow graph is a useful tool to express and study how data is flown in a stream processing system.
+    There are two type of data flow graphs: \textbf{logical} and \textbf{physical}.
+    In a logical data flow graph nodes represent \textbf{operators} like sum, count, filter and aggregate.
+    It does not give any information about deployment.
+    On the other hand, a physical data flow graph illustrates how exactly the pipeline looks when deployed.
+    Like how many instances of each \textbf{task} should be deployed.
+    Task is equivalent of operator but in physical data flow graph.
+    We implement an operator and deploy it as some tasks.
+    Similar to implementing a microservice and deploying some instances of it.
+
+    \begin{figure}[ht]
+        \caption{Example of physical data flow graph. Taken from \cite{flink}}
+        \label{physical-data-flow-graph-example}
+        \includegraphics[width=\linewidth, scale=0.6]{images/physical-data-flow-graph.png}
+    \end{figure}
+
+    Graph \ref{physical-data-flow-graph-example} shows an example of a physical data flow graph with 6 tasks (3
+    operators).
+    This pipeline counts occurrences of each hashtag in a stream of tweets which includes following operators:
+
+    \begin{itemize}
+        \item A source that brings tweets into the stream processing pipeline
+        \item A processor that extracts hashtags
+        \item A stateful processor that counts occurrences of each hashtag
+        \item A sink that represents end of this pipeline which receives realtime count of each hashtag. It might
+        save results in a file or publish them to another system.
+    \end{itemize}
+
+    \subsubsection{Parallelism}
+    There are two types of parallelism is stream processing systems:
+
+    \paragraph{Task parallelism}
+    Tasks from different operators process same data.
+    Imagine having a stream of tweets.
+    One operator extract hashtags, another one extracts mentions and maybe another counts number of words in each
+    tweet.
+
+    \paragraph{Data parallelism}
+    Tasks from same operator process different data.
+    The data (event) in the topics of pipeline is in key:value format.
+    Data with same key ends up in the same task unless the corresponding task stops working (re-balancing).
+    Data parallelism is achievable by technics like partitioning of topic which is implemented by tools like Kafka.
+    Data parallelism is basically equivalent to concept of scaling out in microservices terminology (scaling
+    horizontally).
+
+    \subsubsection{Latency}
+    Latency, in stream processing systems, is defined as the time takes for ONE event to be processed.
+    In an ideal stream processing system, the latency reflects the actual processing work on the events.
+    Which means events don't wait to be processed.
+    In other words events get processed as soon as they arrive.
+    \textbf{95th-percentile latency value of 10ms`} is an example of expressing latency in stream processing system.
+    It means 95 percent of events are processed within 10 ms.
+    Obviously, the lower the latency, the better.
+
+    \subsubsection{Throughput}
+    Throughput, in stream processing systems, depends on both latency and input rate.
+    So low throughput doesn't necessarily mean high latency.
+    A better metric is \textbf{peak throughput} which shows the limit on the performance of system at maximum load.
+    When system reaches peak throughput, increasing input load, will actually reduce throughput and can even lead to
+    data loss (due to buffer overflow).
+
+    \subsubsection{Operations}
+    There are two types of operations:
+    \textbf{Stateless} operations like filter and map are not concerned with past.
+    They are easier to scale and more resilient.
+    While \textbf{stateful} operations keep a snapshot of past (state).
+    The state may mutate after processing each event.
+    Operations like sum, count, average and aggregate are stateful.
+    Such operations are harder to scale.
+    The hardship comes from the fact that apart from scaling out the tasks, the state part assinged to each task need
+    to become co-located for the task.
+    It brings challenges like the best partitioning policy and correct key selection.
+    For example when partitioning geospatial data partitioning policy may differ based on the use case.
+
+
+    \chapter{Underlying tools}
+    In this section we describe some of many technologies which taken into action in order to make FenceX possible.
+    The explanation won't exceed a simple introduction since detailed information goes beyod context of this thesis.
+
+    \subsection{Kafka}
+    Kafka\cite{kafka} is an event streaming tool.
+    It is a distributed implementation of journal (commit log).
+    Main components in the Kafka ecosystem are: a cluster of servers (brokers) and clients (event producers and consumers).
+    The broker is written in Scala while client libraries are available in variety of programming languages.
+
+    Kafka is one of the famous go to option when an architecture relies on publish subscribe pattern.
+    It has a concept called \textbf{topic} which is a durable journal (a queue).
+    The subscribers to the topic can be grouped for load distribution purposes.
+    Each topic can be partitioned so that each group member subscribes to a partition of a topic.
+    Publisher is responsible for selecting the partition to which an event should be published.
+
+    Events in each partition can be replicated over cluster of Kafka brokers for availability purposes.
+
+    \textbf{only once} and \textbf{at least once} are the available quality of services that Kafka provides.
+
+    When using Kafka, a set of APIs are available to use: producer, consumer, admin, connect and \textbf{Kafka Streams}.
+    There are basically way for interacting with broker and their name exposes their functionality.
+
+    \subsubsection{Kafka Streams}
+    Kafka Streams\cite{kafkaStreamsJoins} is a JVM languages compatible library which allows for publishing
+    data into and reading data from a Kafka cluster in form of stream processing operations.
+    A microservices can just has it as a library, connects to Kafka, defines an operation like \textbf{filer} or
+    \textbf{aggregate} and becomes a node in a stream processing pipeline, a node in a data flow graph.
+    The definition of such operations starts with creating a KStream on top of a topic.
+    Each event in the topic, will be an event in the stream.
+
+    As opposed to other Kafka APIs like producer that are stateless, Kafka Streams supports both stateless and
+    stateful operations.
+    For stateful operations, Kafka Streams ask for defining a KTable.
+    KTable is a key:value table which is essentially backed by a kafka topic as source of truth.
+    However, for ease of accessibility, the data in the topic gets loaded into a database which is RocksDB by default.
+    In case of FenceX, in poll leg, we have used H2 in an in-memory fashion.
+
+    Kafka Streams concept of KTable is not much different from concept of a Table in a traditional database.
+    So it is not unexpected for it to allow for join operations.
+    A join operation can be defined between: two KStreams, two KTables, a KTable and a KStream.
+    In FenceX we have joined a KTable with a KStream.
+    Which means each time an event comes to the stream, a function will be called with two inputs: the event and the
+    key:value record in the KTable with the same key as the event.
+
+    Kafka Streams also supports concepts like event time which allows for defining windowing operations.
+    A use case could be counting number of clicks on a link during each 5 minutes window when each click results in
+    an event.
+
+    \subsection{Docker}
+    ?
+
+    \subsection{Nomad}
+    ?
 
 
     \chapter{FenceX}
@@ -1080,268 +1343,6 @@
     This counter is a metric gathered every now and again by a time series database called Prometheus.
 
 
-    \section{Underlying Ideas and sciense}
-    In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
-    We cover them only to the extent that context of this thesis allows.
-
-    \subsection{Reactive systems}
-    A distributed system, in simple terms, is a software having more than one deployable component.
-    These components are sometimes equal and/or sometimes different.
-    However, from point of view of an outside observer, there is only one working system.
-    From within, there are many processes, actors, services or etc working together to serve an overall purpose.
-
-    Among distributed systems architectural styles, reactive is of special interest in this thesis.
-    A reactive system, as defined in reactive manifesto \cite{reactive-manifesto} has the following properties:
-    \begin{itemize}
-        \item \textbf{Responsive:} a responsive system provides fast response in a consistent manner.
-        \item \textbf{Resilient:} A resilient system keeps responding to the possible degree in face of failure.
-        \textbf{replication and isolation} are corner stones of resiliency.
-        \item \textbf{Elastic:} An elastic system keeps responding under varying work load. Avoiding bottlenecks and cost
-        effective resource allocation play an important role in achieving elasticity.
-        \item \textbf{Message Driven:} Non-blocking asynchronous message passing brings about isolation, location
-        transparency and back pressure for distributed system components.
-    \end{itemize}
-
-    \begin{figure}[ht]
-        \caption{Reactive systems' value chain \cite{reactive-manifesto}}
-        \label{fig:reactive-value}
-        \includegraphics[width=\linewidth, scale=0.4]{images/reactive-traits.png}
-    \end{figure}
-
-    As figure \ref{fig:reactive-value} suggests, designing and implementing a distributed system in reactive style
-    has the following benefits: easier to maintain, easier to change and higher responsiveness.
-
-    So in summary, a reactive system consists of isolated components communicating using asynchronous non-blocking message passing.
-
-    An ideal reactive system conforms to ACID2\cite{reactive-microsystems}.
-    ACID2 is the counterpart of ACID in transactional databases.
-    So instead of atomicity, consistency, isolation, durability, ACID2 is:
-    \begin{itemize}
-        \item \textbf{Associative:} Messages can be grouped together, using a key for example.
-        \item \textbf{Commutative:} The order at which messages arrive to components does not affect the desired
-        outcome.
-        \item \textbf{Idempotent:} Components of system should receive a message more than once, they act as if message arrived only once.
-        \item \textbf{Distributed:} The system has more than one component.
-    \end{itemize}
-
-    A reactive system, specially when conforming to ACID2, has potential to scale out very easy to a very a high extent.
-
-    When it comes to replication of data over components in a reactive system, in case consistency matters, order of
-    messages becomes important.
-    Order at which messages arrive has a logical time aspect which is important for achieving occasional consistency.
-    It is very challenging for a distributed system to be strongly consistent.
-    So if it is acceptable to relax the requirements to occasional/eventual consistency, a reactive system in which
-    order of messages are reserved works well.
-
-    The style with which messages are produced has a direct effect on system design and implementation.
-    A message can be a query (what is X), an event (X has happened), a command (do X) and an update (X is 232 now).
-    The preferred message semantic in reactive systems is \textbf{event}s.
-    An event represent something that has happened in the past, an immutable truth.
-    Such events can be published into a queue reserving their order.
-    System components can subscribe to the queue and update their own image of the world (state) according to the
-    events that has happened.
-
-    In order to achieve such a system design, events should be considered first in the design rather than the domain.
-    Verbs first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
-
-    \subsection{Microservices}
-    Once upon a time the whole software, an information system for example, was one process deployed manually on a big
-    physically available machine.
-    This software was maintained by a big team in one code base.
-    To change any part of it, was a headache to make sure even the smallest change will not break the whole software.
-    Everything was tightly coupled after all.
-    It was all about code re-use.
-    If developers managed to change it properly, building the code took hours and forget about how long it took to
-    run the tests (if there was any of course).
-    After manually deploying the executable artifact into a physically available server in the corner of office, an
-    equal sign forgotten in a loop condition, brought the whole service down 11 pm same day.
-    Manager panics, wakes every developer who can, with hope of a hot fix.
-
-    Hot fix applied, everyone back to sleep, customers are happy.
-    If fact so happy that they invite their friends to use the service.
-    More clients, more money, great.
-    Too good to be true though.
-    14 pm next day, number of users using the service simultaneously rockets to outside range of available resources.
-    CPU usage is 100 percent, no free memory left on the machine and only one out of 10 user is actually getting
-    service instead of just looking at loading bar.
-
-    Developers run around city to find RAMs with bigger capacity as a temporal solution.
-    IT people start to think about assembling a more powerful server with all brand-new more powerful hardware.
-
-    Those days are gone due to adoption of cloud technologies combined with microservices.
-
-    \paragraph{Microservices} is an architectural style in which software is divided into some small components
-    called services.
-    Those (micro)services communicate with each other and serve the overall purpose of software.
-    Each service is maintained by a special team, has its own code base, has its own database, exposes its own APIs, is
-    tested independently, is packaged separately and is deployed as a separate process.
-
-    The less these services share, the better.
-    Decoupling services as much as possible is an important aspect of microservices.
-    Because for example, the less services are dependent on each other, the easier they can be changed.
-
-    So now that software is developed into microservices, each microservice can be changed independently by the
-    team responsible for maintaining it, deployed separately after a short build and test process.
-    A bug in one of the services can not bring the whole system down as well.
-    When load on one of the microservices increases, more instances of it can be easily deployed (scale out).
-    And hopefully instead of deploying executable artifact into a physically available machine in the corner of
-    office, microservices are packaged as docker images and deployed into a container orchestration tool provided as
-    a managed cloud service.
-
-    Of course turning a monolith into a distributed system brings all the challenges of distributed systems with it.
-    Having data spread around different services makes strong consistency very hard to achieve.
-    Load balancing between available instances of each service is something new to deal with.
-    Monitoring of and communication between services requires special attention.
-    And so on.
-    In order to solve the mentioned challenges and much more, best practices, design patterns, architectural patterns
-    and tools become handy.
-    System designers and developers select a sub set of these helps based on the functional and non-functional
-    requirements of their system, size of their organization and other relevant factors.
-    API gateway, Service registry, Distributed tracing, CQRS, Saga are some popular examples.
-    \cite{microservice-architecture} \cite{microservices-pitfalls} \cite{microservices}
-
-    \subsection{Stream processing}
-    Stream processing refers to a special style of reactive systems.
-    It is also equivalent to data flow programming in which a graph of operators exists.
-    These operators receive events as a result of work of other operators, process them and produce other events.
-    These events represent immutable facts, something that has happened.
-    The order at which events arrive to the next operator matters;
-    so usually in stream processing systems, publish-subscribe pattern implemented using some sort of queue,
-    journal, commit log or topic.
-    \cite{flink} \cite{fast-data-archs}
-
-    The foundation of a stream processing pipeline is its data flow graph.
-
-    \subsubsection{Data flow graph}
-    Data flow graph is a useful tool to express and study how data is flown in a stream processing system.
-    There are two type of data flow graphs: \textbf{logical} and \textbf{physical}.
-    In a logical data flow graph nodes represent \textbf{operators} like sum, count, filter and aggregate.
-    It does not give any information about deployment.
-    On the other hand, a physical data flow graph illustrates how exactly the pipeline looks when deployed.
-    Like how many instances of each \textbf{task} should be deployed.
-    Task is equivalent of operator but in physical data flow graph.
-    We implement an operator and deploy it as some tasks.
-    Similar to implementing a microservice and deploying some instances of it.
-
-    \begin{figure}[ht]
-        \caption{Example of physical data flow graph. Taken from \cite{flink}}
-        \label{physical-data-flow-graph-example}
-        \includegraphics[width=\linewidth, scale=0.6]{images/physical-data-flow-graph.png}
-    \end{figure}
-
-    Graph \ref{physical-data-flow-graph-example} shows an example of a physical data flow graph with 6 tasks (3
-    operators).
-    This pipeline counts occurrences of each hashtag in a stream of tweets which includes following operators:
-
-    \begin{itemize}
-        \item A source that brings tweets into the stream processing pipeline
-        \item A processor that extracts hashtags
-        \item A stateful processor that counts occurrences of each hashtag
-        \item A sink that represents end of this pipeline which receives realtime count of each hashtag. It might
-        save results in a file or publish them to another system.
-    \end{itemize}
-
-    \subsubsection{Parallelism}
-    There are two types of parallelism is stream processing systems:
-
-    \paragraph{Task parallelism}
-    Tasks from different operators process same data.
-    Imagine having a stream of tweets.
-    One operator extract hashtags, another one extracts mentions and maybe another counts number of words in each
-    tweet.
-
-    \paragraph{Data parallelism}
-    Tasks from same operator process different data.
-    The data (event) in the topics of pipeline is in key:value format.
-    Data with same key ends up in the same task unless the corresponding task stops working (re-balancing).
-    Data parallelism is achievable by technics like partitioning of topic which is implemented by tools like Kafka.
-    Data parallelism is basically equivalent to concept of scaling out in microservices terminology (scaling
-    horizontally).
-
-    \subsubsection{Latency}
-    Latency, in stream processing systems, is defined as the time takes for ONE event to be processed.
-    In an ideal stream processing system, the latency reflects the actual processing work on the events.
-    Which means events don't wait to be processed.
-    In other words events get processed as soon as they arrive.
-    \textbf{95th-percentile latency value of 10ms`} is an example of expressing latency in stream processing system.
-    It means 95 percent of events are processed within 10 ms.
-    Obviously, the lower the latency, the better.
-
-    \subsubsection{Throughput}
-    Throughput, in stream processing systems, depends on both latency and input rate.
-    So low throughput doesn't necessarily mean high latency.
-    A better metric is \textbf{peak throughput} which shows the limit on the performance of system at maximum load.
-    When system reaches peak throughput, increasing input load, will actually reduce throughput and can even lead to
-    data loss (due to buffer overflow).
-
-    \subsubsection{Operations}
-    There are two types of operations:
-    \textbf{Stateless} operations like filter and map are not concerned with past.
-    They are easier to scale and more resilient.
-    While \textbf{stateful} operations keep a snapshot of past (state).
-    The state may mutate after processing each event.
-    Operations like sum, count, average and aggregate are stateful.
-    Such operations are harder to scale.
-    The hardship comes from the fact that apart from scaling out the tasks, the state part assinged to each task need
-    to become co-located for the task.
-    It brings challenges like the best partitioning policy and correct key selection.
-    For example when partitioning geospatial data partitioning policy may differ based on the use case.
-
-
-    \section{Underlying tools}
-    In this section we describe some of many technologies which taken into action in order to make FenceX possible.
-    The explanation won't exceed a simple introduction since detailed information goes beyod context of this thesis.
-
-    \subsection{Kafka}
-    Kafka\cite{kafka} is an event streaming tool.
-    It is a distributed implementation of journal (commit log).
-    Main components in the Kafka ecosystem are: a cluster of servers (brokers) and clients (event producers and consumers).
-    The broker is written in Scala while client libraries are available in variety of programming languages.
-
-    Kafka is one of the famous go to option when an architecture relies on publish subscribe pattern.
-    It has a concept called \textbf{topic} which is a durable journal (a queue).
-    The subscribers to the topic can be grouped for load distribution purposes.
-    Each topic can be partitioned so that each group member subscribes to a partition of a topic.
-    Publisher is responsible for selecting the partition to which an event should be published.
-
-    Events in each partition can be replicated over cluster of Kafka brokers for availability purposes.
-
-    \textbf{only once} and \textbf{at least once} are the available quality of services that Kafka provides.
-
-    When using Kafka, a set of APIs are available to use: producer, consumer, admin, connect and \textbf{Kafka Streams}.
-    There are basically way for interacting with broker and their name exposes their functionality.
-
-    \subsubsection{Kafka Streams}
-    Kafka Streams\cite{kafkaStreamsJoins} is a JVM languages compatible library which allows for publishing
-    data into and reading data from a Kafka cluster in form of stream processing operations.
-    A microservices can just has it as a library, connects to Kafka, defines an operation like \textbf{filer} or
-    \textbf{aggregate} and becomes a node in a stream processing pipeline, a node in a data flow graph.
-    The definition of such operations starts with creating a KStream on top of a topic.
-    Each event in the topic, will be an event in the stream.
-
-    As opposed to other Kafka APIs like producer that are stateless, Kafka Streams supports both stateless and
-    stateful operations.
-    For stateful operations, Kafka Streams ask for defining a KTable.
-    KTable is a key:value table which is essentially backed by a kafka topic as source of truth.
-    However, for ease of accessibility, the data in the topic gets loaded into a database which is RocksDB by default.
-    In case of FenceX, in poll leg, we have used H2 in an in-memory fashion.
-
-    Kafka Streams concept of KTable is not much different from concept of a Table in a traditional database.
-    So it is not unexpected for it to allow for join operations.
-    A join operation can be defined between: two KStreams, two KTables, a KTable and a KStream.
-    In FenceX we have joined a KTable with a KStream.
-    Which means each time an event comes to the stream, a function will be called with two inputs: the event and the
-    key:value record in the KTable with the same key as the event.
-
-    Kafka Streams also supports concepts like event time which allows for defining windowing operations.
-    A use case could be counting number of clicks on a link during each 5 minutes window when each click results in
-    an event.
-
-    \subsection{Docker}
-
-    \subsection{Nomad}
-
-
     \chapter{System deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.
     It is also always limited to the hardware resources available, like any other software.
@@ -1448,7 +1449,7 @@
     Mostly during our evaluations the bottleneck to throughput was our input rate.
 
 
-    \section{Evalution of system throughput}
+    \section{System throughput}
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
     calculate the peak throughput based on available resources.
     Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.

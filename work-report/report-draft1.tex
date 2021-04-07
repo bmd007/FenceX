@@ -1551,12 +1551,12 @@
     The load can be data set size, table size or incoming HTTP query rate.
     Performance is also case and context dependent.
     It can be query latency or throughput.
-    In stream processing systems the load is the rate of input, rate of incoming events, the rate at
-    which source produces input in to the pipeline.
-    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
-    fence.
+    In stream processing systems the load is the rate of input, rate of incoming events, the rate at which source
+    produces input in to the pipeline.
+    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by fence.
     And, for push leg is the rate at which location reports arrive.
     Performance in our experiments is throughput of push leg and poll leg.
+    We expeect FenceX to show strong scalability characteristics in both of its legs.
 
     \subsection{Push leg}
     Push leg strong scalability evaluation scenario:
@@ -1565,7 +1565,8 @@
         \item[2-] Start an ongoing stream of location reports with fixed rate toward FenceX.
         \item[3-] Deploy only one instance of realtime-fencing (should not to be rich in resources as we want it to
         be overwhelmed).
-        \item[4-] Check the throughput. Hopefully it is much lower than the input rate.
+        \item[4-] Check the throughput.
+        Hopefully it is much lower than the input rate.
         \item[5-] Deploy one more instances of realtime-fencing with exactly same resources as previous one.
         \item[6-] Assert an increase in throughput.
         \item[7-] Keep adding instances and asserting increase in throughput until throughput stops increasing.
@@ -1869,6 +1870,7 @@
     fence.
     And, for push leg is the rate at which location reports arrive.
     Performance in case of our experiments, is throughput of push leg and poll leg.
+    We expect both legs of FenceX to have weak scalability characteristic.
 
     \subsection{Push leg}
     Push leg weak scalability evaluation scenario:

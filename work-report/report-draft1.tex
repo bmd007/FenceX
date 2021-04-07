@@ -72,6 +72,7 @@
     \null\newpage
     \setcounter{page}{2}
 
+
     \section{abstract}
     Since emergence of smartphones, smart cars and other mobile objects with GPS sensor attached to them, (non-)
     functional requirement of geofencing systems has significantly changed.
@@ -102,6 +103,7 @@
 
     \newpage
 
+
     \section{Acknowledgment}
     Huge thanks and appreciations to all people who had a hand in the actualization of FenceX.
     First and foremost, my supervisor, Salman Toor, who trusted in me and my idea.
@@ -113,17 +115,21 @@
     (anonymized) which we have used intensively in the evaluation phase.
     Last but not least my friend and ex-college, Juan Fandino, whose work was inspirational for FenceX.
 
+
     \section{Open source}
     All of the work has been done during this thesis including reports and implementations is available in
     a Github repository (github.com/bmd007/statefull-geofencing-faas).
     The content of this repository is available to be used openly.
     Please feel free to contribute as well.
 
+
     \chapter{Introduction}
     ?
 
+
     \chapter{Related work}
     ?
+
 
     \chapter{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
@@ -207,6 +213,7 @@
     \end{figure}
     Figure \ref{fig:texas} illustrates usage of an online tool \cite{WKTtool} to show a geospatial WKT on a map.
     The WKT refers to borders of state Texas in US which is taken from \cite{WKTs}.
+
 
     \section{Requirements}
     Both styles of geofencing are CPU intensive.
@@ -298,6 +305,7 @@
     So no need for distributed transactions or implementation of Saga as there is not much of intertwined
     interactions that can go wrong.
 
+
     \chapter{FenceX}
     FenceX is a stream processing system designed and implemented into microservices.
     It can also be identified as a reactive distributed system that is applying event driven architecture for
@@ -313,6 +321,7 @@
         publisher, module and subsystem.
         \item \textbf{Instance:} instance, task.
     \end{itemize}
+
 
     \section{System overview}
     As you can see in the figure \ref{fig:logical-dfg}, FenceX has 6 operators.
@@ -388,6 +397,7 @@
 
     From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of
     these legs have their own characteristics and require individual attention.
+
 
     \section{Physical data flow graph}
     \begin{figure}[ht]
@@ -594,6 +604,7 @@
     At the moment we have not continued the stream but ideally the status should be published into another kafka
     topic so that other operation down the stream processing pipeline can use it, like alarming.
 
+
     \section{Non-functional characteristics}
     In this section we describe how different non-functional requirements of system has been achieved based on the
     design and architectural decisions.
@@ -762,6 +773,7 @@
 
     We calculate the push leg throughput by increasing a counter everytime FenceX calculates a fence-point intersection.
     This counter is a metric gathered every now and again by a time series database called Prometheus.
+
 
     \section{Underlying Ideas and sciense}
     In this section we cover the architectural and scientific ideas which play fundamental roles in this thesis.
@@ -970,6 +982,7 @@
     It brings challenges like the best partitioning policy and correct key selection.
     For example when partitioning geospatial data partitioning policy may differ based on the use case.
 
+
     \section{Underlying tools}
     In this section we describe some of many technologies which taken into action in order to make FenceX possible.
     The explanation won't exceed a simple introduction since detailed information goes beyod context of this thesis.
@@ -1022,6 +1035,7 @@
     \subsection{Docker}
 
     \subsection{Nomad}
+
 
     \chapter{System deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.
@@ -1086,6 +1100,7 @@
     After preparing the infrastructure, Nomad calculated available resources to the applications that will be
     deployed into worker nodes as 16670 MHz of computation power and 16 GB of memory.
 
+
     \chapter{Experiments and validation}
     In this chapter we explain the process and results of evaluating FenceX.
     This process consists of many experiments with different setup and goals.
@@ -1134,8 +1149,7 @@
     Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.
     For on demand style, the input rate is the number of HTTP requests (query by fence) per second that system receives.
     For realtime operations, the input rate is the number of location reports arrive at system per second.
-    As mentioned previously, for each setup, exists a threshold for input rate above which throughput won't go any
-    higher by increasing input.
+    For each setup, exists a threshold for input rate above which increasing input rate won't result in throughput going higher.
 
     \paragraph{}
     In order to calculate the throughput in each experiment, we use a combination of tools, Prometheus and
@@ -1682,8 +1696,7 @@
     Table \ref{table:ex10-dv} shows, for experiment 10, how many instances of each FenceX microservices we have
     deployed in addition to the amount of resources we have assigned to each.
     Compared to experiment 9, we have deployed one more instance of realtime-fencing.
-    The row in table \ref{table:ex10-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 10.
+    The row in table \ref{table:ex10-dv} with no values corresponds to a microservice which does not relate to the experiment 10.
     The following figure illustrates how input rate and throughput have changed during experiment 10.
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
@@ -2286,8 +2299,6 @@
     For example when a mover enters a no-go area and gets back out within seconds, an alarm might not needed to be
     generated.
     Currently, FenceX just detects enter/exit events on a one by one basis.
-
-
 
     \part[Stateful FAAS]{FenceX: Stateful Function as a serivce platform}
 

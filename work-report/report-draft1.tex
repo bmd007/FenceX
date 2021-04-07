@@ -129,10 +129,113 @@
 
 
     \chapter{Introduction}
-    ?
+    Geofencing plays an important role in our day to day life nowadays in different styles and scales.
+    The most famous use case of geofencing is to take a taxi from an online taxi provider like Uber or Cabonline
+    (Swedish).
+    A traveler selects a pick up point and system should send the offer (order) to the available taxies.
+    It is clear that the system can't send the offer to all the taxies available around the world.
+    It might take forever until one of them accepts the offer;
+    which results in a very poor user experience.
+    So what if the taxi provider comes up with an area on the map in which cars can reach the pick up point in less
+    than 5 minutes.
+    Or an area on the map, a circle, with radius of 1 KM around the pick up point?
+    Let's call this hypothetical area \textbf{fence}.
+    On the other side of the story we have taxies with a GPS sensor attached to them reporting their location every
+    now and again to the system.
+    Maybe every 20 seconds.
+    In this example, to geofence is to find cars which their latest reported location is within that fence.
+    In this type of geofencing the fences are created on the fly when ever there is a request for a taxi.
+    So the fencing operation happens in an on-demand manner.
+
+    Another example of geofencing use cases is pet care.
+    Imagine a cat living in with a family in a safe and calm neighbourhood.
+    The cat can play around the neighbourhood with no need of supervision and care taker.
+    Within that area, the cat can find his way back home easily.
+    The cat owners does not want the cat to go out or stay out of that safe zone.
+    So they attach a GPS sensor to the cat and make it report the cat's location every 1 minute to a geofencing system.
+    They also draw a fence (shape) on a map (using UI of the geofencing system) representing their neighbourhood, the
+    safe zone.
+    And then ask the system to notify them by sending an notification to their phone when ever the cat goes out side
+    of that fence.
+    In this example, the fence is not much dynamic compared to the previous example.
+    The cat owners draw the fence once and system saves it.
+    The fences changes if the cat gets older or they move to another area for example.
+    What triggers a fencing operation in this example is each of location reports which GPS modules attached to cat
+    sends to the system.
+    So every 1 minute one geofencing operation happens in order to check if the cat is still within the safe area or
+    not.
+    This type of geofencing has is of realtime nature.
+
+    \paragraph{}
+    The examples above helps clarifying the way in which this thesis has categorized geofencing operations.
+    On-demand and realtime.
+    Each of them has different functional and non-functional requirements.
+    The style of geofencing is not the only thing that affects the requirements.
+    The nature of business under development and use case also are affective.
+    In some use cases, like food delivery, the rate of location reports can be as low as one per minute for each
+    pet without any problem.
+    In other cases, like taxi business or police dispatch, the rate of location report can be a high as one per 30
+    seconds for each vehicle;
+    These numbers gave a better impression about non-functional requirements of geofencing systems when we consider
+    together with the number of moving objects interacting with the system.
+    Just for sake of example imagine a taxi company with 6000 active cars.
+    Which is not far from reality.
+    6000 cars sending 1 location update every 30 second each means 12000 location updates to be processed every
+    minute.
+    So a geofencing system is required to be able to handle different rates of input load.
+
+    \paragraph{}
+    For on-demand geofencing the system has keeps track of latest reported location of movers while in realtime
+    style, a database of fences is required.
+    In on-demand geofencing, a geospatial index is queried which results in comparably higher latency.
+    On the other hand, realtime style only requires a number/id index and has lower latency consequently.
+
+    \paragraph{}
+    In order to implement a geofencing system, a database engine which supports geospatial index with a simple MVC
+    web application on top should suffice.
+    One package of code which is responsible for receiving location reports, processing them and then saving them in
+    a database table, handling (HTTP) request coming from UI and even rendering the web UI.
+    This application can be deployed very easily on a virtual machine during a weekend and everyone will be happy
+    during the week.
+
+    The described system, however will not satisfy the non-functional requirements that we have mentioned before.
+    Also, it is not easy to change any part of it.
+    After each change, the whole software should be compiled, one big artifact should be created, all tests should be
+    executed (if any exists) and a time consuming deployment should happen.
+    If anything happen during run time, the whole service goes down.
+    In case incoming load increases, the only way to handle it is to add more resources to the machine running the
+    application.
+    This are some of common issues with monolith applications.
+
+    Our contribution is design, implementation and evaluation of a geofencing system which relies on stream
+    processing and microservice in order to achieve high throughput, high scalability and high availabilty.
+    FenceX supports both styles of geofencing (on-demand and realtime).
+    We have achieved these characteristics by using microservices as the major architecture of the system.
+    Which means we a system consists of small de-coupled components trying to share nothing as much as possible.
+    These microservices communicate using Kafka which is a event streaming platform.
+    Such style of communication enriched our work by becoming a foundation for stream processing.
+    Combining Kafka and Kafka Streams resulted in a stream processing pipeline that its operations are packaged and
+    deployed as microservices.
+
+    \paragraph{}
+    Having a stream processing based system which has stateful operations gave us the ability to look the system from
+    function as a service point of view.
+    The easiest approach at the moment to write and program and deploy in cloud is to write it as a function;
+    then gave the code to one of the FAAS (function as a service) providers like AWS lambda.
+    They will do the all required work in order to expose your function, as an HTTP api for example, to internet.
+    However, such FAAS providers do not support stateful functions.
+    So only stateless operations like compression of images are well suited to enjoy convenience of FAAS.
+    Our work, apart from being a geofencing system, is an implmentaion for the idea of FAAS which supports stateful
+    operations as well.
+    We have modeled execution of a function in a FAAS environment with exeuction of a operatoion in a stream
+    processing pipeline.
+    Since our pipeline supports stateful operations, we can have stateful functions as well.
+
+    ??? bullet points still needed?
 
 
     \chapter{Related works}
+    ?
 
     \subsection{Large Scale Indexing of Geofences}
     In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that
@@ -510,7 +613,7 @@
     The listing below illustrates words that refer to similar things but originate from different terminologies.
 
     \begin{itemize}
-        \item  \textbf{Microservice:} microservice, service, operation, event processor, processor, subscriber,
+        \item \textbf{Microservice:} microservice, service, operation, event processor, processor, subscriber,
         publisher, module and subsystem.
         \item \textbf{Instance:} instance, task.
     \end{itemize}

@@ -1077,7 +1077,7 @@
     Sometimes the stores are backed by a database using file system as storage.
 
     So finally we resolved the mystery of inconsistency in FenceX. Also, we covered some aspects of the work which
-    makes FenceX high throughput.
+    makes FenceX able to deliver high throughput.
 
     \subsection{realtime-fencing}
     Realtime-fencing is a Kafka Streams application responsible for keeping track of fences, receiving location updates
@@ -1595,7 +1595,7 @@
     However, since \cite{Nechifor_Comnac_2013} has no considerations for scalability and availability, the lower
     throughput of FenceX so far doesn't mean \cite{Nechifor_Comnac_2013} out performs FenceX.
     It is also important to mention that so far 15k/s is the highest input rate we could produce.
-    So we are not sure currently if 15k/s is bound on throughput of FenceX.
+    So we are not sure currently if 15k/s is the upper bound on throughput of FenceX.
 
     \clearpage
 

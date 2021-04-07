@@ -1151,14 +1151,20 @@
     We can just have a look at the corresponding graphs during execution of test scenarios in order to see the realtime
     value of throughput and input rate.
 
+    \paragraph{}
+    During evaluation for both legs of FenceX, we expect the highest throughput that we will observe to be higher
+    than corresponding throughput achieved by \cite{Nechifor_Comnac_2013} and
+    \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}.
+    We will provide a more detailed comparison at the end of this section.
+
     \subsection{Push leg}
     Push throughput evaluation scenario:
     \begin{itemize}
         \item[1-] Define fences for movers using all the trips in the bench-marking application database.
         \item[2-] Send a shocking stream of location reports into the FenceX.
         \item[3-] Check the throughput.
-        \item[4-] Repeat the experiment after changing the deployment configuration. (Maybe add more instances or add
-        more CPU) until finding peak throughput and/or a possible upper bound for throughput.
+        \item[4-] Repeat the experiment after changing the deployment configuration and input rate pattern. (Maybe add
+        more instances or add more CPU) until finding peak throughput and/or a possible upper bound for throughput.
     \end{itemize}
 
     \subsubsection{Experiment 1}
@@ -1184,6 +1190,10 @@
     After successful deployment, we followed the previously mentioned scenario.
     The following figures illustrate how input rate and throughput have changed during each repetition of experiment 1
     with different input rate patterns.
+    It is important to note that the pattern at which input rate changes, which differs among repetitions, is not of
+    relevance to system throughput experiments.
+    What matters in these experiments is that if throughout follows the input rate pattern in addition to the highest
+    achieved throughput.
 
     \begin{figure}[h!]
         \centering

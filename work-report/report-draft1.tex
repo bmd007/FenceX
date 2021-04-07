@@ -89,8 +89,12 @@
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
     Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
     as a service.
-    This has been achieved by allowing custom implementation for stream processing operations in the pipeline.
-    Since FenceX has both stateful and stateless operations, it can be considered a stateful FAAS platform.
+    Currently available function as a service providers, lambda from AWS most famously, does not allow for stateful
+    functions.
+    In this thesis, thanks to stateful operations of stream processing which are part of the FenceX pipeline, stateful
+    functions are possible.
+    This has been achieved by allowing custom implementation for those operations.
+    And of course FenceX supports stateless function as well.
     While comparing FenceX with related works, we observed better results in multiple dimensions, peak throughput
     and resiliency for example.
 

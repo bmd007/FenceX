@@ -179,7 +179,7 @@
     Also, we couldn't find any information about H2 supporting other geospatial representations out of the box.
 
     \subsection{WKT}
-    WKT (well known text)  \cite{WKT} is a text mark up language which is a format for geometric information.
+    WKT (well known text) is a text mark up language which is a format for geometric information.
     Items below are examples of WKT strings representing raw geometry data.
     \begin{itemize}
         \item POINT(6 10): a point with x=6 and y=10
@@ -1023,12 +1023,7 @@
 
     \subsection{Nomad}
 
-    \chapter{Experiments and validation}
-    In this chapter we explain the process and results of evaluating FenceX.
-    This process consists of many experiments with different setup and goals.
-    Each experiment had a preparation phase, execution, observation and finally conclusion.
-
-    \section{Deployment}
+    \chapter{System deployment}
     The deployment configuration for FenceX microservices in production depends on the exact needs of business.
     It is also always limited to the hardware resources available, like any other software.
     During evaluation of FenceX for this thesis we had access to 4 virtual machines with the following resources
@@ -1090,6 +1085,11 @@
     \paragraph{}
     After preparing the infrastructure, Nomad calculated available resources to the applications that will be
     deployed into worker nodes as 16670 MHz of computation power and 16 GB of memory.
+
+    \chapter{Experiments and validation}
+    In this chapter we explain the process and results of evaluating FenceX.
+    This process consists of many experiments with different setup and goals.
+    Each experiment had a preparation phase, execution, observation and finally conclusion.
 
     \subsection{Benchmarking application}
     Before diving into the test cases, it is worth the effort to explain how bench-marking application works and what

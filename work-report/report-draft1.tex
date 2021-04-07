@@ -225,7 +225,7 @@
     They will do the all required work in order to expose your function, as an HTTP api for example, to internet.
     However, such FAAS providers do not support stateful functions.
     So only stateless operations like compression of images are well suited to enjoy convenience of FAAS.
-    Our work, apart from being a geofencing system, is an implmentaion for the idea of FAAS which supports stateful
+    Our work, apart from being a geofencing system, is an implementation for the idea of FAAS which supports stateful
     operations as well.
     We have modeled execution of a function in a FAAS environment with exeuction of a operatoion in a stream
     processing pipeline.
@@ -235,10 +235,9 @@
 
 
     \chapter{Related works}
-    ?
 
     \subsection{Large Scale Indexing of Geofences}
-    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that
+    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, an on demand style geofencing system is introduced that
     supports large scales of data and load.
     This system has a concept of worker which refers to instances of application that answer to queries.
     As apposed to clients which send queries to the worker nodes.
@@ -257,7 +256,7 @@
     We will not, however, describe the indexing strategy further since it is outside context of this thesis.
 
     \subsection{Using Complex Event Processing for implementing a geofencing service}
-    A push style realtime geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
+    A realtime style geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
     It relies on a CEP (complex event processing) for fence entrance/exit detection.
     Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
     System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
@@ -277,6 +276,9 @@
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
 
+    \subsection{Overall comparison}
+    The work that has been done during this thesis is distinguishable from other reviewed works in terms of
+    of the achieved level of availability, scalability and peak throughput.
 
     \chapter{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
@@ -736,7 +738,7 @@
 
 
     \section{Microservices internal design and implentation}
-    Apart from common fact stated preciously, FenceX microservices can be described in a more detailed way as following:
+    FenceX microservices can be described in details as following:
 
     \subsection{location-update-publisher}
     Location-update-publisher is a simple Kafka publisher.
@@ -1119,7 +1121,7 @@
         \item \textbf{Commutative:} The order at which messages arrive to components does not affect the desired
         outcome.
         \item \textbf{Idempotent:} Components of system should receive a message more than once, they act as if message arrived only once.
-        \item \textbf{Distributed:} .
+        \item \textbf{Distributed:} The system has more than one component.
     \end{itemize}
 
     A reactive system, specially when conforming to ACID2, has potential to scale out very easy to a very a high extent.
@@ -2434,7 +2436,8 @@
         \item[2-] Start an ongoing load of queries (query by fence) with fixed low rate.
         \item[3-] Deploy only one instance of location-aggregate (should not be too rich in resources, we want it to
         be overwhelmed).
-        \item[4-] Check the throughput. Hopefully it is equal to input rate.
+        \item[4-] Check the throughput.
+        Hopefully it is equal to input rate.
         \item[5-] Deploy one more instances of location-aggregate with exactly same resources as previous one. Also,
         increase the input rate (like double).
         \item[6-] Assert that throughput covers the input rate.

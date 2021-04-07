@@ -106,7 +106,7 @@
     \subsection{Note for readers}
     This document is structured in a top-down style.
     Which means initially the work is described with assumption that readers are familiar with all the mentioned
-    technologies, patterns, buzz words and etc.
+    technologies, patterns and buzz words.
     Later in following sections, we tried to cover the used technologies, patterns and other scientific aspects
     separately to the extent that context of thesis allows, and most of the references are made in those sections.
 
@@ -153,8 +153,8 @@
     \begin{itemize}
         \item In poll style we have a \textbf{database of locations} and in push style, a \textbf{database of fences}.
         \item Poll style geofencing has an \textbf{on demand} nature while push style is of \textbf{real time} nature.
-        \item Poll style fencing use cases: Taxi/police/ambulance dispatch, disaster management and etc.
-        \item Push style fencing use cases: Elderly/Kid/Pet care, (gambling) addiction management and etc.
+        \item Poll style fencing use case examples: Taxi/police/ambulance dispatch, disaster management.
+        \item Push style fencing use case examples: Elderly/Kid/Pet care, (gambling) addiction management.
     \end{itemize}
 
     Please note that using poll/push terminology is an idea brought up in this thesis in order to facilitate
@@ -729,7 +729,7 @@
     In such service everything is coupled together due to high reliance on code reuse.
     The alternative is to break down this monolith into different microservices each of them responsible for doing
     mainly one thing.
-    They will have their own database, build process, deployment process and etc.
+    They will have their own database, build process, deployment process and monitoring dashboards.
     These microservices ideally share nothing and communicate ONLY using messages (reactive).
     Such de coupled microservices can be introduced over time to the whole system when ever new requirements requires so.
     This way development and design of new features is independent of others;
@@ -869,8 +869,8 @@
     \paragraph{Microservices} is an architectural style in which software is divided into some small components
     called services.
     Those (micro)services communicate with each other and serve the overall purpose of software.
-    Each service is maintained by a special team, has its code base, has its own database, exposes its own APIs, is
-    tested independently, is deployed as a separate process and etc.
+    Each service is maintained by a special team, has its own code base, has its own database, exposes its own APIs, is
+    tested independently, is packaged separately and is deployed as a separate process.
 
     The less these services share, the better.
     Decoupling services as much as possible is an important aspect of microservices.
@@ -1140,7 +1140,7 @@
     Mostly during our evaluations the bottleneck to throughput was our input rate.
 
 
-    \section{Evalution of pure throughput}
+    \section{Evalution of system throughput}
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
     calculate the peak throughput based on available resources.
     Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.
@@ -1272,7 +1272,7 @@
     We have deployed one more instance of relevant microservice plus changing the input rate pattern.
     The throughput again followed the input pattern.
 
-    \subsubsection{Conclusion of pure throughput evaluation}
+    \subsubsection{Conclusion of system throughput evaluation}
     So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
     application.
     We can clearly see in the graphs that regardless of setup, push throughput (intersections/second) follows pretty
@@ -2371,7 +2371,7 @@
     Which results in unnecessary latency, too many connections and loss of execution time budget.
 
     As a result, FAAS model is better to be used for stateless operations.
-    Creating a thumbnail for an image, compressing an image or piece of audio and etc.
+    Creating a thumbnail for an image, compressing an image or compressing a piece of audio.
     All the required computation can be carried out without need for storage or database.
 
     So what about stateful operations?

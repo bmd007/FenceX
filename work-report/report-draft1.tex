@@ -152,7 +152,7 @@
     The cat can play around the neighbourhood with no need of supervision and care taker.
     Within that area, the cat can find his way back home easily.
     The cat owners does not want the cat to go out or stay out of that safe zone.
-    So they attach a GPS sensor to the cat and make it report the cat's location every 1 minute to a geofencing system.
+    So they attach a GPS sensor to the cat and make it report the cat's location every minute to a geofencing system.
     They also draw a fence (shape) on a map (using UI of the geofencing system) representing their neighbourhood, the
     safe zone.
     And then ask the system to notify them by sending an notification to their phone when ever the cat goes out side
@@ -162,30 +162,30 @@
     The fences changes if the cat gets older or they move to another area for example.
     What triggers a fencing operation in this example is each of location reports which GPS modules attached to cat
     sends to the system.
-    So every 1 minute one geofencing operation happens in order to check if the cat is still within the safe area or
+    So every minute one geofencing operation happens in order to check if the cat is still within the safe area or
     not.
-    This type of geofencing has is of realtime nature.
+    This type of geofencing is of realtime nature.
 
     \paragraph{}
     The examples above helps clarifying the way in which this thesis has categorized geofencing operations.
-    On-demand and realtime.
+    On demand and realtime.
     Each of them has different functional and non-functional requirements.
     The style of geofencing is not the only thing that affects the requirements.
-    The nature of business under development and use case also are affective.
+    The nature of business under development and use case also are effective.
     In some use cases, like food delivery, the rate of location reports can be as low as one per minute for each
-    pet without any problem.
-    In other cases, like taxi business or police dispatch, the rate of location report can be a high as one per 30
+    mover without any problem.
+    In other cases, like taxi business or police dispatch, the rate of location reports can be a high as one per 30
     seconds for each vehicle;
-    These numbers gave a better impression about non-functional requirements of geofencing systems when we consider
+    These numbers gave a better impression about non-functional requirements of geofencing systems when considerws
     together with the number of moving objects interacting with the system.
     Just for sake of example imagine a taxi company with 6000 active cars.
     Which is not far from reality.
-    6000 cars sending 1 location update every 30 second each means 12000 location updates to be processed every
-    minute.
+    6000 cars sending 1 location update every 30 second.
+    It means 12000 location updates to be processed every minute.
     So a geofencing system is required to be able to handle different rates of input load.
 
     \paragraph{}
-    For on demand geofencing the system has keeps track of latest reported location of movers while in realtime
+    For on demand geofencing the system has to keeps track of latest reported location of movers while in realtime
     style, a database of fences is required.
     In on demand geofencing, a geospatial index is queried which results in comparably higher latency.
     On the other hand, realtime style only requires a number/id index and has lower latency consequently.
@@ -203,19 +203,21 @@
     After each change, the whole software should be compiled, one big artifact should be created, all tests should be
     executed (if any exists) and a time consuming deployment should happen.
     If anything happen during run time, the whole service goes down.
-    In case incoming load increases, the only way to handle it is to add more resources to the machine running the
-    application.
+    In case incoming load increases enough so that currently availalbe resources get saturated, the only way to handle
+    the situation is to add more resources to the machine running the application.
     This are some of common issues with monolith applications.
 
-    Our contribution is design, implementation and evaluation of a geofencing system called FenceX which relies on
-    stream processing and microservice in order to achieve high throughput, high scalability and high availability.
-    FenceX supports both styles of geofencing (on demand and realtime).
+    \paragraph{}
+    Our contribution is design, implementation and evaluation of a geofencing system supporting both styles of
+    geofencing (on demand and realtime) called FenceX.
+    It relies on stream processing and microservice in order to achieve high throughput, high scalability and high
+    availability.
     We have achieved these characteristics by using microservices as the major architecture of the system.
-    Which means we a system consists of small de-coupled components trying to share nothing as much as possible.
-    These microservices communicate using Kafka which is a event streaming platform.
+    Which means our system consists of small de-coupled components trying to share nothing as much as possible.
+    These microservices communicate using Kafka which is an event streaming platform.
     Such style of communication enriched our work by becoming a foundation for stream processing.
-    Combining Kafka and Kafka Streams resulted in a stream processing pipeline that its operations are packaged and
-    deployed as microservices.
+    Combining Kafka and Kafka Streams (a stream processing framework) resulted in a stream processing pipeline that its
+    operations are packaged and deployed as microservices.
 
     \paragraph{}
     Having a stream processing based system which has stateful operations gave us the ability to look the system from
@@ -224,14 +226,15 @@
     then gave the code to one of the FAAS (function as a service) providers like AWS lambda.
     They will do the all required work in order to expose your function, as an HTTP api for example, to internet.
     However, such FAAS providers do not support stateful functions.
-    So only stateless operations like compression of images are well suited to enjoy convenience of FAAS.
+    So only stateless operations like compression of an images are well suited to enjoy convenience of FAAS.
     Our work, apart from being a geofencing system, is an implementation for the idea of FAAS which supports stateful
     operations as well.
-    We have modeled execution of a function in a FAAS environment with exeuction of a operatoion in a stream
+    We have modeled execution of a function in a FAAS environment with execution of a operation in a stream
     processing pipeline.
     Since our pipeline supports stateful operations, we can have stateful functions as well.
 
-    ??? bullet points still needed?
+
+    ??? bullet points still needed ???
 
 
     \chapter{Related works}
@@ -279,6 +282,8 @@
     \subsection{Overall comparison}
     The work that has been done during this thesis is distinguishable from other reviewed works in terms of
     of the achieved level of availability, scalability and peak throughput.
+    Using a modern system architecture called microservices and modeling the system a stream processing pipeline
+    implemented on top of Kafka with help of Kafka Streams also make our work different from others.
 
 
     \chapter{Geofencing}
@@ -425,7 +430,7 @@
     As a result of required system being a general geofencing provider, the required precision of system might vary
     based on the users and use cases.
     So FenceX should be able to ingest very high rates of location reports.
-    Looking at potential use cases, in some the report rate could be like one report per mover every 1 minute and
+    Looking at potential use cases, in some the report rate could be like one report per mover every minute and
     maximum of 1K active movers at the same time.
     Other cases might involve 1 location report per mover every 5 second with 1M active movers.
     So FenceX should have a very high capacity to handle load and stress.
@@ -1593,9 +1598,9 @@
     It has achieved throughput of 20K/s which is higher than the highest throughput we so far managed to observe in
     FenceX evaluations of push leg.
     However, since \cite{Nechifor_Comnac_2013} has no considerations for scalability and availability, the lower
-    throughput of FenceX so far doesn't mean \cite{Nechifor_Comnac_2013} out performs FenceX.
+    throughput of FenceX doesn't mean \cite{Nechifor_Comnac_2013} out performs FenceX.
     It is also important to mention that so far 15k/s is the highest input rate we could produce.
-    So we are not sure currently if 15k/s is the upper bound on throughput of FenceX.
+    So we are not yet sure if 15k/s is the upper bound on throughput of FenceX.
 
     \clearpage
 
@@ -2524,6 +2529,10 @@
     Specially when producing input and process it on realtime involves too much IO latency.
     All in all, pull leg of FenceX has shown free fall scalability properties and ability to deliver throughput of
     ~65k/s.
+
+    The throughput FenceX has achieved here (65k/s) is much higher compared to the throughput achieved by
+    \cite{Nechifor_Comnac_2013}.
+    So now we can claim with confidence that FenceX solution has out performed \cite{Nechifor_Comnac_2013}.
 
     \clearpage
 

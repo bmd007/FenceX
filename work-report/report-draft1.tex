@@ -703,6 +703,8 @@
         \includegraphics[width=\linewidth ,scale=0.2]{images/physical-data-flow-diagram.png}
     \end{figure}
 
+    \clearpage
+
     Figure \ref{fig:physical-dfg} is a physical data flow graph, illustrating how possibly FenceX components can be
     deployed as instances of microservices containing stream processing pipeline tasks.
     Each group of tasks that has similar color, are one unit of deployment, an instance of a microservice.
@@ -710,25 +712,15 @@
     The combination of tasks below will be deployed as one microservice:
     \begin{itemize}
         \item{location-update-publisher} alone makes a microservice called \textbf{location-update-publisher}.
-        \item{filter and location-aggregate} together make a microservice called \textbf{location-aggregate}. This the poll leg of FenceX.
-        \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \textbf{realtime-fencing}. This the push leg of FenceX.
+        \item{filter and location-aggregate} together make a microservice called \textbf{location-aggregate}.
+        This the poll leg of FenceX.
+        \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \textbf{realtime-fencing}.
+        This the push leg of FenceX.
     \end{itemize}
 
     You can see that each microservice exists two times in \ref{fig:physical-dfg} differed by color.
     It means FenseX deploys more than one instance of each microservice for scalability and resiliency purposes.
     Such characteristics will be discussed in details later.
-
-    Below are the facts common about all FenceX microservices:
-    \begin{itemize}
-        \item They are implemented using Java 15.
-        \item They are implemented with extensive help from Spring family frameworks and libraries like Spring boot, Spring data, Spring webflux, Spring cloud and many more.
-        \item They are packaged as layered docker images, so the deployment artifacts of FenceX are docker images.
-        \item So far all of them expose some HTTP APIs implemented using Spring webflux on top of project reactor.
-        As a result they are reactive applications which means they process HTTP requests in an asynchronous and non blocking manner.
-        \item All of them expose a HTTP API for fetching metrics about their resource usage, JVM status, geofencing
-        operations and some other metrics.
-        \item After successful deployment, they will be registered into a service discovery tool called Consul\cite{Consul}.
-    \end{itemize}
 
     \subsection{Inter microservices communication}
     At the moment there is no need for HTTP communication between FenceX microservices.
@@ -899,6 +891,21 @@
     So after the join we end up with a stream of moverId:intersection-status updates.
     At the moment we have not continued the stream but ideally the status should be published into another kafka
     topic so that other operation down the stream processing pipeline can use it, like alarming.
+
+    \subsection{Common aspecsts of FenceX microservices}
+    Points listed below are technical information which are true for all of the FenceX microservices.
+
+    \begin{itemize}
+        \item They are implemented using Java 15.
+        \item They are implemented with extensive help from Spring family frameworks and libraries like Spring boot,
+        Spring data, Spring webflux and Spring cloud.
+        \item They are packaged as layered docker images, so the deployment artifacts of FenceX are docker images.
+        \item They expose some HTTP APIs implemented using Spring webflux which is on top of project reactor.
+        As a result they are reactive applications meaning they process HTTP requests in an asynchronous and non
+        -blocking manner.
+        \item They expose a HTTP API for fetching metrics about their resource usage, JVM status and geofencing
+        operations.
+    \end{itemize}
 
 
     \section{Non-functional characteristics}

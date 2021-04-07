@@ -73,24 +73,26 @@
     \setcounter{page}{2}
 
 
-    \section{abstract}
+    \section{Abstract}
     Since emergence of smartphones, smart cars and other mobile objects with GPS sensor attached to them, (non-)
     functional requirement of geofencing systems has significantly changed.
     Previously, the number of mobile objects thus the size of geospatial data about them and their load on the
     geofencing systems were much lower.
     Also, geofencing services were not much integrated in the day to day life of nonprofessional users.
     Nowadays, on the other hand, geofencing systems are required to process large loads of requests and data in
-    realtime with a very high availability for much wider range of users.
-    FenceX is a geofencing system that supports both realtime and on demand geofencing in a highly scalable manner.
-    FenceX delivers geofencing with high throughput and is designed with resiliency and availability in mind.
-    The main pillars of FenceX are stream processing and microservices which resulted in a reactive distributed
-    system.
+    realtime with a much higher availability while serving wider range of users.
+    Online taxi providers, elderly care platforms, pet tracking systems and disaster management systems are examples
+    of use cases in which geofencing with aforementioned non-functional requirements is in action.
+    In this thesis we have designed and implemented a geofencing system (FenceX) with those needs in mind;
+    FenceX supports both realtime and on demand geofencing in a highly scalable manner.
+    The main pillars of FenceX, which enable those properties, are stream processing and microservices which resulted
+    in a reactive distributed system.
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
     Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
     as a service.
     This has been achieved by allowing custom implementation for stream processing operations in the pipeline.
     Since FenceX has both stateful and stateless operations, it can be considered a stateful FAAS platform.
-    While comparing FenceX with other works done, we observed better results in multiple dimensions, peak throughput
+    While comparing FenceX with related works, we observed better results in multiple dimensions, peak throughput
     and resiliency for example.
 
     \newpage

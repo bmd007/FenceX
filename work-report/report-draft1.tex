@@ -135,6 +135,100 @@
     \chapter{Related work}
     ?
 
+    \subsection{Large Scale Indexing of Geofences}
+    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that supports large scales
+    of data and load.
+    This system has a concept of worker which refers to instances of application that answer to queries.
+    As apposed to clients which send queries to the worker nodes.
+    Dynamic caching and work load distribution over multiple instances of workers are the bases of achieved
+    scalability.
+
+    Each worker instance is responsible for indexing a region of the world, which allows for lower query and index latency.
+    Since each worker instance is responsible for different part of the world, queries targeting border areas need
+    special treatment.
+    As a solution, each worker instance also is responsible for areas around its dedicated region.
+
+    It is notable that software in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} uses a custom geospatial index,
+    custom design and implementation.
+    Using a custom index most probably means that the whole data is stored and processed in memory which allows for higher throughput.
+    We will not, however, describe further the indexing strategy since it is outside context of this thesis.
+
+    Throughput in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} is defined as number of location updates processed per second.
+    Such processing involves updating an index plus a query to find a crossing geofence.
+
+    When they are using benefit of localhost communication without any data replication involved (no availability), a
+    throughput of 250k/s has been achieved on average.
+    However, once they introduce data replication and inter server communication, the throughout drops to sub 10k/s
+    range at best.
+
+    \subsubsection{Comparison}
+    The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
+    functionalities, is comparable to poll leg of FenceX.
+    Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
+    scalability.
+
+    FenceX, however, does not apply partitioning data among worker instances in poll leg, which makes it much easier to
+    scale out.
+    Also, the load balancing strategy when forwarding client queries to worker instances can be as simple as
+    round-robin in FenceX.
+    As a result, no throughput would be lost during load balancing.
+
+    When it comes to numbers, FenceX has achieved a throughput in range of 15k/s compared to sub 10k/s for
+    \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}.
+    Although \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} has done wonderful when no availability was in action
+    (no replication), we do not consider it a win over FenceX.
+    FenceX has always been tested with full replication in action.
+    So all in all, FenceX has achieved a higher throughout.
+
+    \subsection{Using Complex Event Processing for implementing a geofencing service}
+    A push style realtime geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
+    It relies on a CEP (complex event processing) for fence entrance/exit detection.
+    Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
+    System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
+    Unit of concurrency in \cite{Nechifor_Comnac_2013} is not clear.
+    So it is not clear what are the bounds for scalability of the introduced system.
+
+    Throughput in this system is defined as number of location updates processed per second.
+    Evaluations have shown that it can has achieved throughput of around 20k/s.
+
+    \subsubsection{Comparison}
+    Unlike FenceX, \cite{Nechifor_Comnac_2013} does not seem to have any considerations for
+    scalability and availability.
+    Also, when it comes to throughput, push leg of FenceX has achieved 65k/s which is much higher than 20k/s.
+
+    \subsection{Cloudburst: stateful functions-as-a-service}
+    In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
+    taken into action.
+    Each function accesses the cache as storage of state.
+    Functions are executed by function executors which are deployed in virtual machines.
+    For each virtual machine, one cache instance exists.
+    In order to keep the caches consistent, they are backed by an auto-scaling key:value store called Anna.
+    And Anna uses lattice composition to fight inconsistency.
+
+    Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
+    order to gain high scalability.
+
+    Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
+
+    \begin{table}[h!]
+        \begin{tabular}{ |l|l|l| }
+            \hline
+            Property/System          & FenceX                    & \cite{Functions-as-a-Service-2020} \\
+            \hline
+            Consistency              & Eventual                  & Strong                             \\
+            Statefulness strategy    & Stream processing         & Co-located caches                  \\
+            ACID2 conforming         & yes                       & yes                                \\
+            Data replication         & yes                       & yes                                \\
+            Function execution retry & yes                       & yes                                \\
+            State as KEY:VALUE data  & yes                       & yes                                \\
+            Custom functions         & practically yes           & yes                                \\
+            Underlying system        & Kafka/Spring/KafkaStreams & Anna                               \\
+            \hline
+        \end{tabular}
+        \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
+        \label{table:fencex-comp}
+    \end{table}
+
 
     \chapter{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
@@ -2206,72 +2300,6 @@
     \clearpage
 
 
-    \section{Related work}
-    In this section we will go over a couple of papers which has introduced a geofencing systems and we compare them
-    to FenceX.
-
-    \subsection{Large Scale Indexing of Geofences}
-    In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, a poll style on demand geofencing system is introduced that supports large scales
-    of data and load.
-    This system has a concept of worker which refers to instances of application that answer to queries.
-    As apposed to clients which send queries to the worker nodes.
-    Dynamic caching and work load distribution over multiple instances of workers are the bases of achieved
-    scalability.
-
-    Each worker instance is responsible for indexing a region of the world, which allows for lower query and index latency.
-    Since each worker instance is responsible for different part of the world, queries targeting border areas need
-    special treatment.
-    As a solution, each worker instance also is responsible for areas around its dedicated region.
-
-    It is notable that software in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} uses a custom geospatial index,
-    custom design and implementation.
-    Using a custom index most probably means that the whole data is stored and processed in memory which allows for higher throughput.
-    We will not, however, describe further the indexing strategy since it is outside context of this thesis.
-
-    Throughput in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} is defined as number of location updates processed per second.
-    Such processing involves updating an index plus a query to find a crossing geofence.
-
-    When they are using benefit of localhost communication without any data replication involved (no availability), a
-    throughput of 250k/s has been achieved on average.
-    However, once they introduce data replication and inter server communication, the throughout drops to sub 10k/s
-    range at best.
-
-    \subsubsection{Comparison}
-    The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
-    functionalities, is comparable to poll leg of FenceX.
-    Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
-    scalability.
-
-    FenceX, however, does not apply partitioning data among worker instances in poll leg, which makes it much easier to
-    scale out.
-    Also, the load balancing strategy when forwarding client queries to worker instances can be as simple as
-    round-robin in FenceX.
-    As a result, no throughput would be lost during load balancing.
-
-    When it comes to numbers, FenceX has achieved a throughput in range of 15k/s compared to sub 10k/s for
-    \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}.
-    Although \cite{Cirillo-Jacobs-Martin-Szczytowski-2014} has done wonderful when no availability was in action
-    (no replication), we do not consider it a win over FenceX.
-    FenceX has always been tested with full replication in action.
-    So all in all, FenceX has achieved a higher throughout.
-
-    \subsection{Using Complex Event Processing for implementing a geofencing service}
-    A push style realtime geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
-    It relies on a CEP (complex event processing) for fence entrance/exit detection.
-    Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
-    System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
-    Unit of concurrency in \cite{Nechifor_Comnac_2013} is not clear.
-    So it is not clear what are the bounds for scalability of the introduced system.
-
-    Throughput in this system is defined as number of location updates processed per second.
-    Evaluations have shown that it can has achieved throughput of around 20k/s.
-
-    \subsubsection{Comparison}
-    Unlike FenceX, \cite{Nechifor_Comnac_2013} does not seem to have any considerations for
-    scalability and availability.
-    Also, when it comes to throughput, push leg of FenceX has achieved 65k/s which is much higher than 20k/s.
-
-
     \chapter{Conclusion}
     During this thesis we have combined microservices and stream processing concepts in order to design, implement
     and evaluate a highly scalable resilient geofencing system called FenceX.
@@ -2433,44 +2461,6 @@
     Since FenceX needs that complied version of Functions, they can be implemented in pretty much any JVM language as
     far as they can be compiled into a Java class (Java byte code).
     Being language agnostic is another promise of FAAS idea which FenceX delivers to some extent.
-
-
-    \section{Comparison}
-    In this section we compare how FenceX has achieved stataful FAAS compared to another available work.
-
-    \subsection{Cloudburst: stateful functions-as-a-service}
-    In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
-    taken into action.
-    Each function accesses the cache as storage of state.
-    Functions are executed by function executors which are deployed in virtual machines.
-    For each virtual machine, one cache instance exists.
-    In order to keep the caches consistent, they are backed by an auto-scaling key:value store called Anna.
-    And Anna uses lattice composition to fight inconsistency.
-
-    Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
-    order to gain high scalability.
-
-    Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
-
-    \begin{table}[h!]
-        \begin{tabular}{ |l|l|l| }
-            \hline
-            Property/System          & FenceX                    & \cite{Functions-as-a-Service-2020} \\
-            \hline
-            Consistency              & Eventual                  & Strong                             \\
-            Statefulness strategy    & Stream processing         & Co-located caches                  \\
-            ACID2 conforming         & yes                       & yes                                \\
-            Data replication         & yes                       & yes                                \\
-            Function execution retry & yes                       & yes                                \\
-            State as KEY:VALUE data  & yes                       & yes                                \\
-            Custom functions         & practically yes           & yes                                \\
-            Underlying system        & Kafka/Spring/KafkaStreams & Anna                               \\
-            \hline
-        \end{tabular}
-        \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
-        \label{table:fencex-comp}
-    \end{table}
-
 
     \section{Future work}
     FenceX is only the core/kernel part of a FAAS platform.

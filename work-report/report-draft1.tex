@@ -74,6 +74,7 @@
 
 
     \section{Abstract}
+    To check if a location on map is within a hypothetical shape (covering an area of map) is called geofencing.
     Since emergence of smartphones, smart cars and other mobile objects with GPS sensor attached to them, (non-)
     functional requirement of geofencing systems has significantly changed.
     Previously, the number of mobile objects thus the size of geospatial data about them and their load on the
@@ -84,9 +85,7 @@
     Online taxi providers, elderly care platforms, pet tracking systems and disaster management systems are examples
     of use cases in which geofencing with aforementioned non-functional requirements is in action.
     In this thesis we have designed and implemented a geofencing system (FenceX) with those needs in mind;
-    FenceX supports both realtime and on demand geofencing in a highly scalable manner.
-    The main pillars of FenceX, which enable those properties, are stream processing and microservices which resulted
-    in a reactive distributed system.
+    The main pillars of FenceX, which enable those properties, are stream processing and microservices.
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
     Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
     as a service.

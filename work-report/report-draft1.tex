@@ -145,7 +145,7 @@
     Maybe every 20 seconds.
     In this example, to geofence is to find cars which their latest reported location is within that fence.
     In this type of geofencing the fences are created on the fly when ever there is a request for a taxi.
-    So the fencing operation happens in an on-demand manner.
+    So the fencing operation happens in an on demand manner.
 
     Another example of geofencing use cases is pet care.
     Imagine a cat living in with a family in a safe and calm neighbourhood.
@@ -185,9 +185,9 @@
     So a geofencing system is required to be able to handle different rates of input load.
 
     \paragraph{}
-    For on-demand geofencing the system has keeps track of latest reported location of movers while in realtime
+    For on demand geofencing the system has keeps track of latest reported location of movers while in realtime
     style, a database of fences is required.
-    In on-demand geofencing, a geospatial index is queried which results in comparably higher latency.
+    In on demand geofencing, a geospatial index is queried which results in comparably higher latency.
     On the other hand, realtime style only requires a number/id index and has lower latency consequently.
 
     \paragraph{}
@@ -209,7 +209,7 @@
 
     Our contribution is design, implementation and evaluation of a geofencing system called FenceX which relies on
     stream processing and microservice in order to achieve high throughput, high scalability and high availability.
-    FenceX supports both styles of geofencing (on-demand and realtime).
+    FenceX supports both styles of geofencing (on demand and realtime).
     We have achieved these characteristics by using microservices as the major architecture of the system.
     Which means we a system consists of small de-coupled components trying to share nothing as much as possible.
     These microservices communicate using Kafka which is a event streaming platform.
@@ -855,12 +855,6 @@
     Kafka Streams also supports concepts like event time which allows for defining windowing operations.
     A use case could be counting number of clicks on a link during each 5 minutes window when each click results in
     an event.
-
-    \subsection{Docker}
-    ?
-
-    \subsection{Nomad}
-    ?
 
 
     \chapter{FenceX}
@@ -2551,10 +2545,17 @@
 
     When it comes to resiliency thanks to replication, scaling out (instead of up), re-balancing features of kafka
     consumers and highly decoupled components, FenceX has demonstrated being reliable under non-ideal conditions.
-    ??
-    ???
-    ????
-    ?????FAAS stuff
+
+    \paragraph{}
+    Another way to look at FenceX is to consider it as an implementation for the idea of FAAS (function as a service).
+    Stateful FAAS to be more precise.
+    FenceX is basically a steam processing pipeline which has both stateful and stateless operations.
+    Although the operations in the pipeline are limited to design of pipeline at each point at time, implementation
+    of each pipeline can be customized without need to change the core program.
+    In fact different implementations cab be plugged in as libraries.
+    Which is similar to implementing a custom function and give to a FAAS provider.
+    The major difference between our system and other implementations of FAAS is that since we have stateful
+    operations in the pipeline, we allow for stateful functions.
 
 
     \chapter{Future work}

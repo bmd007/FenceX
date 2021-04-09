@@ -222,13 +222,13 @@
     Having a stream processing based system which has stateful operations gave us the ability to look the system from
     function as a service point of view.
     The easiest approach at the moment to write and program and deploy in cloud is to write it as a function;
-    then gave the code to one of the FAAS (function as a service) providers like AWS lambda.
+    then gave the code to one of the FaaS (function as a service) providers like AWS lambda.
     They will do the all required work in order to expose your function, as an HTTP api for example, to internet.
-    However, such FAAS providers do not support stateful functions.
-    So only stateless operations like compression of an images are well suited to enjoy convenience of FAAS.
-    Our work, apart from being a geofencing system, is an implementation for the idea of FAAS which supports stateful
+    However, such FaaS providers do not support stateful functions.
+    So only stateless operations like compression of an images are well suited to enjoy convenience of FaaS.
+    Our work, apart from being a geofencing system, is an implementation for the idea of FaaS which supports stateful
     operations as well.
-    We have modeled execution of a function in a FAAS environment with execution of a operation in a stream
+    We have modeled execution of a function in a FaaS environment with execution of a operation in a stream
     processing pipeline.
     Since our pipeline supports stateful operations, we can have stateful functions as well.
 
@@ -268,7 +268,7 @@
 
 
     \section{Cloudburst: stateful functions-as-a-service}
-    In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
+    In \cite{Functions-as-a-Service-2020}, to achieve stateful FaaS, co-location of cache and functions has been
     taken into action.
     Each function accesses the cache as storage of state.
     Functions are executed by function executors which are deployed in virtual machines.
@@ -284,8 +284,22 @@
     achieved level of availability, scalability and peak throughput.
     Using a modern system architecture called microservices and modeling the system a stream processing pipeline
     implemented on top of Kafka with help of Kafka Streams also make our work different from others.
-%    mention that I have mixed geofencing and faas
-%    I have aggresively tested the whole environment ...... highlight the difference
+
+    Bringing stateful FaaS idea into the realm of geofencing is uniquely done in this thesis.
+    Geofencing operations involved in FenceX can be implemented as custom libraries and be plugged into the system.
+    At highest level of abstraction, users (developers) can implement those functions using a simple web GUI and
+    deploy the result with a few clicks.
+    This is not a feature of any of the reviewed works.
+
+    In terms of level of consistency, FenceX is eventually consistent and as a result can deliver higher throughput
+    compared to the reviewed works, which are strongly consistent.
+
+    The number and range of tests and experiments carried out in order to evaluate FenceX during this thesis is
+    outstanding.
+    Extensive experiments for checking throughput, availability and scalability.
+    These experiment has been done with a setup close to production with production level tooling in addition to
+    production level data replication.
+    As a consequence, the result are more reliable.
 
 
     \chapter{Geofencing}
@@ -374,7 +388,7 @@
     The WKT refers to borders of state Texas in US which is taken from \cite{WKTs}.
 
 
-    \section{Problem statement}
+    \section{Challenges related to geofencing}
     Both styles of geofencing are CPU intensive.
     Also, geofencing is usually implemented using databases interacting with disk and accessed over network.
     So a combination of natural computational latency and IO latency limits the overall throughput of geofencing systems.
@@ -413,6 +427,7 @@
     inconsistency among it's components.
 
     \subsection{Functional requirements}
+%    write what is funtional requirement  first....
     Movers want their location reports be received by FenceX.
     This report contains the coordinate (latitude, longitude) at which mover was located when producing the report.
     A timestamp might be included in the report as well.
@@ -431,6 +446,7 @@
     In case no fence is defined for a specific mover, no fence-point intersection should be calculated.
 
     \subsection{Non-functional requirements}
+%    write what is funtional requirement  first....
     As a result of required system being a general geofencing provider, the required precision of system might vary
     based on the users and use cases.
     So FenceX should be able to ingest very high rates of location reports.
@@ -465,16 +481,16 @@
     interactions that can go wrong.
 
 
-    \chapter{FAAS}
+    \chapter{FaaS, Function-as-a-Service}
     FenceX apart from being a geofencing system, can also be considered as an implementation for idea of function as a service.
     Stateful function as a service actually.
     In a sense, geofencing is just one special usage our system.
     So other types of computation can also be implemented in the same way without changing the architecture in any
     significant manner.
-    In the following sections we will explain what is FAAS and how FenceX is a FAAS provider.
+    In the following sections we will explain what is FaaS and how FenceX is a FaaS provider.
+%all the info is in the next sections and add reference
 
-
-    \section{Understanding FAAS}
+    \section{Function-as-a-Service}
     Consider a start up company is shaping around a brilliant brand-new audio compression algorithm.
     Two computer science engineers came up with an algorithm and now want to make money out of it.
     They don't want to publish any software or library but an online service, a few APIs (HTTP for example) only.
@@ -520,15 +536,15 @@
     AWS lambda\cite{lambda} is the most famous one.
 
 
-    \section{Stateless FAAS}
-    In FAAS model, apart from separating business logic and execution platform, storage is also separated from
+    \section{Stateless FaaS}
+    In FaaS model, apart from separating business logic and execution platform, storage is also separated from
     execution platform.
     That is because of storage being not easy to scale in a distributed fashion.
     As a consequence, having very small computation units working totally decoupled, comes with price of not being
     able to access storage.
     Or not being able to access storage in the classic way.
     IO is usually an expensive operation regardless of execution model.
-    When it comes to FAAS, IO becomes much harder to achieve due to following reasons:
+    When it comes to FaaS, IO becomes much harder to achieve due to following reasons:
 
     \paragraph{Network:} Since there is no storage and file system attached to each function, all IO should happen
     over network which brings about high latency which reduces throughput as a result.
@@ -542,16 +558,16 @@
     So each time a function requires database or storage connection, a brand-new connection should be created.
     Which results in unnecessary latency, too many connections and loss of execution time budget.
 
-    As a result, FAAS model is better to be used for stateless operations.
+    As a result, FaaS model is better to be used for stateless operations.
     Creating a thumbnail for an image, compressing an image or compressing a piece of audio.
     All the required computation can be carried out without need for storage or database.
 
     So what about stateful operations?
-    Can't we enjoy the high level abstraction of FAAS model with stateful operations?
+    Can't we enjoy the high level abstraction of FaaS model with stateful operations?
 
 
-    \section{Stream processing and Stateful FAAS}
-    For developers (users of FAAS platform), the function they implement has only some inputs parameters and an output.
+    \section{Stream processing and Stateful FaaS}
+    For developers (users of FaaS platform), the function they implement has only some inputs parameters and an output.
     The input parameters can be driven from the triggering event/request/message.
     This is not different from implementing operations in a stream processing pipeline.
     Each stream processing operation, regardless of being stateful or stateless, is very similar to a function which
@@ -559,37 +575,38 @@
     For stateful operations, another input parameter exists which is the latest captured state for the key of the event.
     Please remember that in stream processing systems, events and states are key:value tuples.
 
-    So we can actually implement a FAAS platform by modeling it as a stream processing pipeline.
+    So we can actually implement a FaaS platform by modeling it as a stream processing pipeline.
     What we need is a source operation which has some adaptors.
     The adaptors turn an incoming request, HTTP for example, into a Kafka event so that operations down the pipeline
     can process them.
     Of course this implementation is asynchronous and eventually consistent.
     Paying that cost, brings about the benefit of stateful operations.
     Since we can just enjoy stateful operations in a stream processing pipeline in a highly scalable manner,
-    a FAAS platform implemented by stream processing pipeline allows for definition of stateful functions as well.
+    a FaaS platform implemented by stream processing pipeline allows for definition of stateful functions as well.
 
     The only thing that users of system (developers) should do is to implement body of stream processing operations.
 
 
-    \section{FenceX and FAAS}
+    \section{FenceX and FaaS}
     FenceX, as described previously, is a stream processing pipeline among many other things.
     It has both stateful and stateless operations.
     However, FenceX is designed in a way that operations are defined by architecture but their implementation should
     be provided as libraries.
     Each operation on execution, uses an object of a Java Class called Function.
     The mentioned library provides instances of those Functions.
-    So such library can be provided by users of FenceX (developers) in the same way that FAAS users provide
+    So such library can be provided by users of FenceX (developers) in the same way that FaaS users provide
     implementation for their functions.
     The signature of functions however is pre-defined due to architectural decisions.
     And the available operations to implement are also limited to what is needed for the architecture.
 
-    So FenceX is an implementation for the idea of Stateful FAAS.
+    So FenceX is an implementation for the idea of Stateful FaaS.
     It allows for distributed de-coupled highly scalable stateful function by limiting what function can be implemented.
     In a sense the implementation of those functions can be anything, so the limitation is more conceptual.
 
-    Since FenceX needs that complied version of Functions, they can be implemented in pretty much any JVM language as
-    far as they can be compiled into a Java class (Java byte code).
-    Being language agnostic is another promise of FAAS idea which FenceX delivers to some extent.
+    Since FenceX needs that complied version of Functions, they can be implemented in any JVM language as far as they
+    can be compiled into a Java class (Java byte code).
+%    todo For example Kotlin
+    Being language agnostic is another promise of FaaS idea which FenceX delivers to some extent.
     Table \ref{table:fencex-comp} compares FenceX with the solution provided by \cite{Functions-as-a-Service-2020}.
 
     \begin{table}[h!]
@@ -612,7 +629,8 @@
     \end{table}
 
 
-    \chapter{Underlying sciense and technologies}
+%    todo check spelling
+    \chapter{Theoretical concepts and related technologies}
     In this section we cover the architectural and scientific ideas and technologies which played a major roles in
     this thesis.
     We cover them only to the extent that context of this thesis allows.
@@ -866,7 +884,7 @@
     an event.
 
 
-    \chapter{FenceX}
+    \chapter{FenceX, framework and architecture}
     FenceX is a stream processing system designed and implemented into microservices.
     It can also be identified as a reactive distributed system that is applying event driven architecture for
     communication of its modules.
@@ -1156,7 +1174,7 @@
     At the moment we have not continued the stream but ideally the status should be published into another kafka
     topic so that other operation down the stream processing pipeline can use it, like alarming.
 
-    \subsection{Common aspecsts of FenceX microservices}
+    \subsection{Facts about FenceX microservices}
     Points listed below are technical information which are true for all of the FenceX microservices.
 
     \begin{itemize}
@@ -1171,12 +1189,12 @@
         operations.
     \end{itemize}
 
-
-    \section{Non-functional characteristics}
-    In this section we describe how different non-functional requirements of system has been achieved based on the
+%todo re arrange the section/subsection
+    \chapter{FenceX  characteristics}
+    In this chapter we describe how different non-functional requirements of system has been achieved based on the
     design and architectural decisions.
 
-    \subsection{Availability}
+    \section{Availability}
     Availability has many aspects in software development specifically when it comes to distributed systems.
     The main practice to achieve high availability is to scale out meaning deploying more than one instance of the
     application, application sub-components for that matter.
@@ -1198,7 +1216,7 @@
     We use a full fledged production level container orchestration tool called Nomad\cite{nomad} for managing deployment of
     FenceX microservices.
 
-    \subsubsection{Back pressure}
+    \subsection{Back pressure}
     Back pressure\cite{reactive-manifesto}, in simple terms, is ability of responder to control the flow of incoming requests.
     If microservice A is sending an ongoing load of requests to microservice B, if back pressure is enabled for
     their communication solution, at each point in time, B can take as many requests as it can process and respond at
@@ -1222,7 +1240,7 @@
     something happens to during processing of an event, event processor will get that event back from topic once it's
     ready again.
 
-    \subsection{Scalability}
+    \section{Scalability}
     A software system being scalable in simple terms means that system can handle different sizes and frequencies of
     input load successfully.
     There are different elements in a software system that can grow:
@@ -2545,14 +2563,14 @@
     consumers and highly decoupled components, FenceX has demonstrated being reliable under non-ideal conditions.
 
     \paragraph{}
-    Another way to look at FenceX is to consider it as an implementation for the idea of FAAS (function as a service).
-    Stateful FAAS to be more precise.
+    Another way to look at FenceX is to consider it as an implementation for the idea of FaaS (function as a service).
+    Stateful FaaS to be more precise.
     FenceX is basically a steam processing pipeline which has both stateful and stateless operations.
     Although the operations in the pipeline are limited to design of pipeline at each point at time, implementation
     of each pipeline can be customized without need to change the core program.
     In fact different implementations cab be plugged in as libraries.
-    Which is similar to implementing a custom function and give to a FAAS provider.
-    The major difference between our system and other implementations of FAAS is that since we have stateful
+    Which is similar to implementing a custom function and give to a FaaS provider.
+    The major difference between our system and other implementations of FaaS is that since we have stateful
     operations in the pipeline, we allow for stateful functions.
 
 
@@ -2570,7 +2588,7 @@
     Currently, FenceX just detects enter/exit events on a one by one basis.
 
     \paragraph{}
-    FenceX is only the core/kernel part of a FAAS platform.
+    FenceX is only the core/kernel part of a FaaS platform.
     In order to make it a fully functioning cloud service, some other tools and layers should be built around and
     upon it.
     For example, a web UI in which developers implement their functions (simple cases) and the system compiles

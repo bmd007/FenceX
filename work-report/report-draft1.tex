@@ -1,9 +1,10 @@
 \documentclass[a4]{report}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage{graphicx}
 \usepackage{fancyhdr}
 \usepackage[export]{adjustbox}
+\usepackage{graphicx}
+\usepackage{rotating}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -1514,33 +1515,32 @@
     What matters in these experiments is that if throughout follows the input rate pattern in addition to the highest
     achieved throughput.
 
-    \begin{figure}[h!]
-        \centering
-        \caption{FenceX push throughput ex1-1}
+    \begin{sidewaysfigure}[h!]
+%        \centering
         \label{fig:ex1-1}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(15,6).png}
-    \end{figure}
+        \caption{FenceX push throughput ex1-1}
+        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(15,6).png}
+    \end{sidewaysfigure}
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push throughput ex1-2}
         \label{fig:ex1-2}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(19,7).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(19,7).png}
+    \end{sidewaysfigure}
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push throughput ex1-3}
         \label{fig:ex1-3}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(22,9).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(22,9).png}
+    \end{sidewaysfigure}
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push throughput ex1-4}
         \label{fig:ex1-4}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex1-benchmarking(23,10).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(23,10).png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3} and \ref{fig:ex1-4} illustrate input rate
     (location-updates per second) with green line and push throughput (number of fence-point intersection
@@ -1550,8 +1550,6 @@
     Also, throughput were mainly always as high as input rate.
     The highest input rate we managed to produce during these experiments was around 15K location updates per second
     and FenceX just managed to handle it very well with the given deployment setup.
-
-    \clearpage
 
     \subsubsection{Experiment 2}
     \begin{table}[h!]
@@ -1577,12 +1575,13 @@
     experiment 2.
     The following figure illustrates how input rate and throughput have changed during experiment 2.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push throughput ex2}
         \label{fig:ex2}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex2-benchmarking(24,10).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex2-benchmarking(24,10).png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1 (figures \ref{fig:ex1-1} for
     example).
@@ -1604,8 +1603,6 @@
     throughput of FenceX doesn't mean \cite{Nechifor_Comnac_2013} out performs FenceX.
     It is also important to mention that so far 15k/s is the highest input rate we could produce.
     So we are not yet sure if 15k/s is the upper bound on throughput of FenceX.
-
-    \clearpage
 
     \subsection{Pull leg}
     Pull throughput evaluation scenario:
@@ -1639,19 +1636,18 @@
     experiment 3.
     The following figure illustrates how input rate and throughput have changed during experiment 3.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX pull throughput ex3}
         \label{fig:ex3}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex3-benchmarking(16,9).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex3-benchmarking(16,9).png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and pull
     throughput (number of queries answered without error) with the yellow line.
     In this experiment, the input rate was around 12k/s at highest which is handled well by 2 rather rich instances of
     location-aggregate.
-
-    \clearpage
 
     \subsubsection{Experiment 4}
     \begin{table}[h!]
@@ -1677,19 +1673,19 @@
     The following figures illustrate how input rate and throughput have changed during experiment 4 while applying
     different patterns of input.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX pull throughput ex4-1}
         \label{fig:ex4-1}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex4-benchmarking(19,10).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex4-benchmarking(19,10).png}
+    \end{sidewaysfigure}
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX pull throughput ex4-2}
         \label{fig:ex4-2}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex4-benchmarking(22,10).png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex4-benchmarking(22,10).png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to the graphs from experiment 3.
     Comparing to experiment 3, in experiment 4 we changed the available resources to pull leg plus changing the input
@@ -1794,19 +1790,19 @@
     They also show how (and when) number of deployed instances of related microservices has changed during this
     experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg availability ex5-1}
         \label{fig:ex5-1}
         \includegraphics[width=\linewidth, scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
-    \end{figure}
+    \end{sidewaysfigure}
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg availability ex5-2}
         \label{fig:ex5-2}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
     Green line illustrates the ongoing input stream of location updates and pink point shows
@@ -1841,7 +1837,6 @@
     \end{itemize}
 
     \clearpage
-
     \subsubsection{Experiment 7}
     \begin{table}[h!]
         \centering
@@ -1866,12 +1861,13 @@
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX pull leg availability ex7}
         \label{fig:ex7}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     In figure \ref{fig:ex7} the purple line is the input rate (number of queries received by FenceX per
     second) and the yellow line shows the rate of queries answered successfully.
@@ -1927,8 +1923,6 @@
     This is because the input stream is ongoing and fixed rate, so process of buffered location updates only adds to
     throughput in that specific moments.
 
-    \clearpage
-
     \subsubsection{Experiment 8}
     \begin{table}[h!]
         \centering
@@ -1952,12 +1946,13 @@
     The following figure illustrates how input rate and throughput have changed during experiment 8.
     It also shows number of deployed instances of related microservices during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg strong scalability ex8}
         \label{fig:ex8}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     In figure \ref{fig:ex8} the green line is essentially the input rate (number of location updates per second),
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
@@ -1967,8 +1962,6 @@
     So figure \ref{fig:ex8} illustrates that one instance of realtime-fencing with the rather low given resources, can
     only handle one 3rd of input rate.
     Which is 5k intersections per second out of 15k location updates per second.
-
-    \clearpage
 
     \subsubsection{Experiment 9}
     \begin{table}[h!]
@@ -1995,20 +1988,19 @@
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg strong scalability ex9}
         \label{fig:ex9}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     Looking at figure \ref{fig:ex9} we can easily observe that once the second instance is up and running, after
     re-balancing, throughput goes proportionally up, from 5k/s to 10k/s.
     At this point we can guess that without changing anything, just adding one more instance of realtime-fencing
     should be enough to cover the whole 15k/s input rate.
     15K location updates per second is the highest input rate that we could produce in a stable manner.
-
-    \clearpage
 
     \subsubsection{Experiment 10}
     \begin{table}[h!]
@@ -2034,19 +2026,18 @@
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg strong scalability ex10}
         \label{fig:ex10}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     As we expected, deploying three instances of realtime-fencing with the given resources, was enough to process 15K
     location updates per second.
     Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
     Around the end parts of the graph, throughput is higher than input rate.
-
-    \clearpage
 
     \subsubsection{Experiment 11}
     Now in order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
@@ -2076,12 +2067,13 @@
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg strong scalability ex11}
         \label{fig:ex11}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     The clear observation is that adding one more instance didn't have any special effect on the throughput.
     This is expected since throughput can not exceed input rate regardless of processing power.
@@ -2109,8 +2101,6 @@
     avoids some queries from being answered.
     Those queries will be considered as failed.
 
-    \clearpage
-
     \subsubsection{Experiment 17}
     \begin{table}[h!]
         \centering
@@ -2134,12 +2124,11 @@
     The following figure illustrates how input rate and throughput have changed during experiment 17.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX pull leg strong scalability ex17}
         \label{fig:ex17}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
+    \end{sidewaysfigure}
 
     \clearpage
 
@@ -2167,12 +2156,13 @@
     The following figure illustrates how input rate and throughput have changed during experiment 18.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX pull leg strong scalability ex18}
         \label{fig:ex18}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line represents input rate, number of incoming HTTP
     requests.
@@ -2240,8 +2230,6 @@
     higher than the input rate.
     This is because the input stream is ongoing and fixed rate.
 
-    \clearpage
-
     \subsubsection{Experiment 19}
     \begin{table}[h!]
         \centering
@@ -2265,12 +2253,13 @@
     The following figure illustrates how input rate and throughput have changed during experiment 19.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg weak scalability ex19}
         \label{fig:ex19}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex19-benchmarking-ongoing-1per16sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex19-benchmarking-ongoing-1per16sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     In figure \ref{fig:ex19} the green line is input rate (number of location updates per second),
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
@@ -2279,8 +2268,6 @@
 
     So far with one limited in resources instance of realtime-fencing, FenceX has managed to deal with around 2K
     location updates per second successfully in a stable manner.
-
-    \clearpage
 
     \subsubsection{Experiment 20}
     \begin{table}[h!]
@@ -2306,16 +2293,15 @@
     The following figure illustrates how input rate and throughput have changed during experiment 20.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg weak scalability ex20}
         \label{fig:ex20}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex20-benchmarking-ongoing-1per10sec.png}
-    \end{figure}
-
-    Two such instances of realtime-fencing managed to handle around 3K location updates per second.
+        \includegraphics[scale=0.5]{images/evaluation/ex20-benchmarking-ongoing-1per10sec.png}
+    \end{sidewaysfigure}
 
     \clearpage
+
+    Two such instances of realtime-fencing managed to handle around 3K location updates per second.
 
     \subsubsection{Experiment 21}
     \begin{table}[h!]
@@ -2341,12 +2327,11 @@
     The following figure illustrates how input rate and throughput have changed during experiment 21.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg weak scalability ex21}
         \label{fig:ex21}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex21-benchmarking-ongoing-1per6sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex21-benchmarking-ongoing-1per6sec.png}
+    \end{sidewaysfigure}
     Four such instances of realtime-fencing managed to handle around 5K location updates per second.
 
     \clearpage
@@ -2375,15 +2360,16 @@
     The following figure illustrates how input rate and throughput have changed during experiment 22.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg weak scalability ex22}
         \label{fig:ex22}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
-    \end{figure}
-    Five instances of realtime-fencing managed to handle around 15K location updates per second.
+        \includegraphics[scale=0.5]{images/evaluation/ex22-benchmarking-ongoing-1per2sec.png}
+    \end{sidewaysfigure}
 
     \clearpage
+
+    Five instances of realtime-fencing managed to handle around 15K location updates per second.
+
 
     \subsubsection{Experiment 23}
     \begin{table}[h!]
@@ -2409,12 +2395,13 @@
     The following figure illustrates how input rate and throughput have changed during experiment 23.
     It also shows how many instances of related microservices were up and running during this experiment.
 
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg weak scalability ex23}
         \label{fig:ex23}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex23-benchmarking-ongoing-2per2sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     Ten such instances of realtime-fencing managed to handle around 15K location updates per second.
     However, in experiment 23 our intention was to increase input rate to above 15k/s which we did not manage due to
@@ -2511,14 +2498,13 @@
     It also shows how (and when) number of deployed instances of related microservices has changed during this
     experiment.
 
-    \clearpage
-
-    \begin{figure}[h!]
-        \centering
+    \begin{sidewaysfigure}[h!]
         \caption{FenceX push leg free fall scalability ex24}
         \label{fig:ex24}
-        \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
-    \end{figure}
+        \includegraphics[scale=0.5]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
+    \end{sidewaysfigure}
+
+    \clearpage
 
     In figure \ref{fig:ex24} the green line is input rate (number of location updates per second),
     yellow line represents throughput (number of fence point intersections) and the pink dots shows number of

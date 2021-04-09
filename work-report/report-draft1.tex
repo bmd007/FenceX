@@ -148,8 +148,8 @@
     So the fencing operation happens in an on demand manner.
 
     Another example of geofencing use cases is pet care.
-    Imagine a cat living in with a family in a safe and calm neighbourhood.
-    The cat can play around the neighbourhood with no need of supervision and care taker.
+    Consider a cat living with a family in a safe and calm neighbourhood.
+    The cat can play around the neighbourhood with no need of care taker.
     Within that area, the cat can find his way back home easily.
     The cat owners does not want the cat to go out or stay out of that safe zone.
     So they attach a GPS sensor to the cat and make it report the cat's location every minute to a geofencing system.
@@ -234,12 +234,9 @@
     Since our pipeline supports stateful operations, we can have stateful functions as well.
 
 
-    ??? bullet points still needed ???
-
-
     \chapter{Related works}
 
-    \subsection{Large Scale Indexing of Geofences}
+    \section{Large Scale Indexing of Geofences}
     In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, an on demand style geofencing system is introduced that
     supports large scales of data and load.
     This system has a concept of worker which refers to instances of application that answer to queries.
@@ -258,7 +255,7 @@
     higher throughput.
     We will not, however, describe the indexing strategy further since it is outside context of this thesis.
 
-    \subsection{Using Complex Event Processing for implementing a geofencing service}
+    \section{Using Complex Event Processing for implementing a geofencing service}
     A realtime style geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
     It relies on a CEP (complex event processing) for fence entrance/exit detection.
     Which is comparable to functionalities of push leg of FenceX where realtime fence point intersections happen.
@@ -268,7 +265,7 @@
     Throughput in this system is defined as number of location updates processed per second.
     Evaluations have shown that it has achieved throughput of around 20k/s.
 
-    \subsection{Cloudburst: stateful functions-as-a-service}
+    \section{Cloudburst: stateful functions-as-a-service}
     In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
     taken into action.
     Each function accesses the cache as storage of state.
@@ -279,17 +276,19 @@
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
 
-    \subsection{Overall comparison}
-    The work that has been done during this thesis is distinguishable from other reviewed works in terms of
-    of the achieved level of availability, scalability and peak throughput.
+    \section{Comparison with the state of the art}
+    The work that has been done during this thesis is distinguishable from other reviewed works in terms of the
+    achieved level of availability, scalability and peak throughput.
     Using a modern system architecture called microservices and modeling the system a stream processing pipeline
     implemented on top of Kafka with help of Kafka Streams also make our work different from others.
+%    mention that I have mixed geofencing and faas
+%    I have aggresively tested the whole environment ...... highlight the difference
 
 
     \chapter{Geofencing}
     Geofencing essentially is checking whether a geospatial point is inside a geospatial shape or not.
-    This can be done in two styles: push and poll.
-    In poll style, a fence (geospatial shape) is queried against a database of coordinates (mover-id:geospatial point).
+    This can be done in two styles: push and pull.
+    In pull style, a fence (geospatial shape) is queried against a database of coordinates (mover-id:geospatial point).
     The result is all coordinates residing in the fence.
     This type of geofencing relies on geospatial indexing.
     So updating and querying the database of coordinates is CPU intensive.
@@ -302,19 +301,21 @@
 
     We can compare these two styles as following:
     \begin{itemize}
-        \item In poll style we have a \textbf{database of locations} and in push style, a \textbf{database of fences}.
-        \item Poll style geofencing has an \textbf{on demand} nature while push style is of \textbf{real time} nature.
-        \item Poll style fencing use case examples: Taxi/police/ambulance dispatch, disaster management.
+        \item In pull style we have a \textbf{database of locations}
+        \item In pull style, a \textbf{database of fences}.
+        \item Pull style geofencing has an \textbf{on demand} nature while push style is of \textbf{real time} nature.
+        \item Pull style fencing use case examples: Taxi/police/ambulance dispatch, disaster management.
         \item Push style fencing use case examples: Elderly/Kid/Pet care, (gambling) addiction management.
     \end{itemize}
 
-    Please note that using poll/push terminology is an idea brought up in this thesis in order to facilitate
+    Please note that using pull/push terminology is an idea brought up in this thesis in order to facilitate
     conversations about different approaches to geofencing.
 
     \paragraph{}
     In order to represent geospatial data several standards (formats) are available, namely WKT\cite{WKT}, WKB\cite{wkb},
     GeoJSON\cite{geoJson} and GML\cite{gml}.
     Please check the data presentation standard upon which they are based in the table \ref{table:geofencing-formats}.
+%    todo reprahse this sentence
 
     \begin{table}[h!]
         \centering
@@ -471,7 +472,7 @@
 
 
     \section{Understanding FAAS}
-    Imagine a start up company is shaping around a brilliant brand-new audio compression algorithm.
+    Consider a start up company is shaping around a brilliant brand-new audio compression algorithm.
     Two computer science engineers came up with an algorithm and now want to make money out of it.
     They don't want to publish any software or library but an online service, a few APIs (HTTP for example) only.
     They are confident enough in their work to know that once their service is up and running, a lot of companies
@@ -775,7 +776,7 @@
 
     \paragraph{Task parallelism}
     Tasks from different operators process same data.
-    Imagine having a stream of tweets.
+    Consider a stream of tweets for example.
     One operator extract hashtags, another one extracts mentions and maybe another counts number of words in each
     tweet.
 
@@ -848,7 +849,7 @@
     For stateful operations, Kafka Streams ask for defining a KTable.
     KTable is a key:value table which is essentially backed by a kafka topic as source of truth.
     However, for ease of accessibility, the data in the topic gets loaded into a database which is RocksDB by default.
-    In case of FenceX, in poll leg, we have used H2 in an in-memory fashion.
+    In case of FenceX, in pull leg, we have used H2 in an in-memory fashion.
 
     Kafka Streams concept of KTable is not much different from concept of a Table in a traditional database.
     So it is not unexpected for it to allow for join operations.
@@ -933,7 +934,7 @@
     Implementation of this operator is not withing boundaries of this thesis.
     So we won't describe it in details.
 
-    \subsection{Push and Poll legs}
+    \subsection{Push and Pull legs}
     As described previously, FenceX provides two styles of geofencing, on demand and real time.
 
     Sending HTTP queries with a geospatial fence (query by fence) to FenceX is of on demand nature.
@@ -941,9 +942,9 @@
     In this style, fences are very dynamic.
     The fence will be checked against the whole database of mover locations.
     \textbf{location-aggregate} is responsible for this style of fencing.
-    Since sending query to a system is like polling data out of it, the parts of FenceX making this possible are
-    considered poll leg.
-    So \textbf{location-aggregate} is poll leg of FenceX.
+    Since sending query to a system is like pulling data out of it, the parts of FenceX making this possible are
+    considered pull leg.
+    So \textbf{location-aggregate} is pull leg of FenceX.
 
     Calculating fence-point intersection for every location report, on the other hand, is of real time nature.
     For each new location report, system pushes a intersection calculation result.
@@ -951,7 +952,7 @@
     push leg of FenceX.
     In this style the defined fences are more static and don't change frequently over time.
 
-    From now on, we will use the notions of push and poll leg frequently specially in the evaluation phase, Each of
+    From now on, we will use the notions of push and pull leg frequently specially in the evaluation phase, Each of
     these legs have their own characteristics and require individual attention.
 
 
@@ -973,7 +974,7 @@
     \begin{itemize}
         \item{location-update-publisher} alone makes a microservice called \textbf{location-update-publisher}.
         \item{filter and location-aggregate} together make a microservice called \textbf{location-aggregate}.
-        This the poll leg of FenceX.
+        This the pull leg of FenceX.
         \item{filter, fence-aggregate and fence-location-intersection} together make a microservice called \textbf{realtime-fencing}.
         This the push leg of FenceX.
     \end{itemize}
@@ -1050,7 +1051,7 @@
     The nodes in the cluster need to be consistent after all, even if only they act as cold idle replicas.
     Co-located in memory databases, on the other hand, usually doesn't have any consideration for replication and/or
     consistency.
-    Since we want to scale out poll leg of FenceX, facing inconsistency issues is inevitable.
+    Since we want to scale out pull leg of FenceX, facing inconsistency issues is inevitable.
     So we need a way to make each instances of location-aggregate (all of the H2 instances) have same data, same
     image of the world.
     H2 provides an out-of-the-box solution for keeping its instances consistent, even when configured to be embedded
@@ -1304,13 +1305,13 @@
 
     \subsection{Throughput}
     For FenceX throughput of two types of operations matter the most.
-    Throughput of HTTP requests for querying the database of locations against a fence (poll leg throughput).
+    Throughput of HTTP requests for querying the database of locations against a fence (pull leg throughput).
     And, throughput of fence-point intersections (push leg throughput).
     Throughput is usually closely related to scalability since high throughput is achievable only under high input load.
 
-    \subsubsection{Poll leg throughput}
+    \subsubsection{Pull leg throughput}
     Is the number of queries (by fence) that FenceX can respond to successfully in a unit of time (seconds).
-    This throughput is a factor of number of queries one can send to FenceX which is the input rate in the poll leg context.
+    This throughput is a factor of number of queries one can send to FenceX which is the input rate in the pull leg context.
     Another effective factor is the latency of each query.
     This latency depends on the amount of IO involved, geospatial index algorithm, network access latency, CPU speed
     and number of parallel queries.
@@ -1318,10 +1319,10 @@
     Also using reactive programming for implementing HTTP APIs, removes the latency that waiting for blocking IO
     operations imposes.
 
-    Also, using microservices architecture and scaling out the poll leg instances leads to more capacity for responding
+    Also, using microservices architecture and scaling out the pull leg instances leads to more capacity for responding
     to simultaneous queries.
 
-    We calculate the poll leg throughput by increasing a counter everytime FenceX respond to a query successfully.
+    We calculate the pull leg throughput by increasing a counter everytime FenceX respond to a query successfully.
     This counter is a metric gathered every now and again by a time series database called Prometheus\cite{prometheus}.
 
     \subsubsection{Push leg throughput}
@@ -1447,7 +1448,7 @@
     \section{System throughput}
     In this section we go over the experiments we have conducted in order to not only stress test FenceX but also
     calculate the peak throughput based on available resources.
-    Throughput is a direct factor of input rate both for on demand poll style operations and realtime push style ones.
+    Throughput is a direct factor of input rate both for on demand pull style operations and realtime push style ones.
     For on demand style, the input rate is the number of HTTP requests (query by fence) per second that system receives.
     For realtime operations, the input rate is the number of location reports arrive at system per second.
     For each setup, exists a threshold for input rate above which increasing input rate won't result in throughput going higher.
@@ -1455,13 +1456,13 @@
     \paragraph{}
     In order to calculate the throughput in each experiment, we use a combination of tools, Prometheus and
     Grafana\cite{grafana}.
-    Prometheus is a time series database that polls different types of metrics out of each of FenceX microservices on
+    Prometheus is a time series database that pulls different types of metrics out of each of FenceX microservices on
     a frequent basis.
     Grafana is a visualization tool that reads metric data from Prometheus and illustrates it into a variety of graphs.
     The metrics can be general like CPU usage or number of JVM threads.
     They can also be custom to each application like number of fence-point intersection calculations.
     Using this setup, we created realtime graphs that shows pull and push throughput of FenceX in addition to other
-    information like push and poll input rate.
+    information like push and pull input rate.
     Thanks to that, we do not need to calculate the throughput after each experiment.
     We can just have a look at the corresponding graphs during execution of test scenarios in order to see the realtime
     value of throughput and input rate.
@@ -1604,8 +1605,8 @@
 
     \clearpage
 
-    \subsection{Poll leg}
-    Poll throughput evaluation scenario:
+    \subsection{Pull leg}
+    Pull throughput evaluation scenario:
     \begin{itemize}
         \item[1-] Send many location updates to FenceX using all the trips in the bench-marking application database.
         \item[2-] Send a shocking load of queries (query by fence) to FenceX.
@@ -1638,12 +1639,12 @@
 
     \begin{figure}[h!]
         \centering
-        \caption{FenceX poll throughput ex3}
+        \caption{FenceX pull throughput ex3}
         \label{fig:ex3}
         \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex3-benchmarking(16,9).png}
     \end{figure}
 
-    Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and poll
+    Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and pull
     throughput (number of queries answered without error) with the yellow line.
     In this experiment, the input rate was around 12k/s at highest which is handled well by 2 rather rich instances of
     location-aggregate.
@@ -1676,40 +1677,40 @@
 
     \begin{figure}[h!]
         \centering
-        \caption{FenceX poll throughput ex4-1}
+        \caption{FenceX pull throughput ex4-1}
         \label{fig:ex4-1}
         \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex4-benchmarking(19,10).png}
     \end{figure}
 
     \begin{figure}[h!]
         \centering
-        \caption{FenceX poll throughput ex4-2}
+        \caption{FenceX pull throughput ex4-2}
         \label{fig:ex4-2}
         \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex4-benchmarking(22,10).png}
     \end{figure}
 
     Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to the graphs from experiment 3.
-    Comparing to experiment 3, in experiment 4 we changed the available resources to poll leg plus changing the input
+    Comparing to experiment 3, in experiment 4 we changed the available resources to pull leg plus changing the input
     rate pattern.
     The change in the input pattern is subtle however.
-    In this experiment, the input rate was around 12k/s at highest which is handled well by poll leg of FenceX.
+    In this experiment, the input rate was around 12k/s at highest which is handled well by pull leg of FenceX.
 
-    \subsubsection{Conclusion of poll throughput experiments}
+    \subsubsection{Conclusion of pull throughput experiments}
     Experiments 3 and 4 show that we have failed to increase the input rate as we progressed.
     Although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
     again the bottleneck was input rate which is limited by our physical available resources.
-    We can clearly see in the graphs that regardless of setup, poll throughput (queries/sec) follows pretty
+    We can clearly see in the graphs that regardless of setup, pull throughput (queries/sec) follows pretty
     much the exact pattern of changes in input rate (queries sent/sec).
-    So there is no point in continuing poll throughput experiments with current available hardware.
+    So there is no point in continuing pull throughput experiments with current available hardware.
     However, the highest input rate we managed to produce during these experiments was in the range of [12-13]k queries
     per second which FenceX just managed to handle very well.
 
     The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
-    functionalities, is comparable to poll leg of FenceX.
+    functionalities, is comparable to pull leg of FenceX.
     Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
     scalability.
 
-    FenceX, however, does not apply partitioning data among worker instances in poll leg, which makes it much easier to
+    FenceX, however, does not apply partitioning data among worker instances in pull leg, which makes it much easier to
     scale out.
     Also, the load balancing strategy when forwarding client queries to worker instances can be as simple as
     round-robin in FenceX.
@@ -1824,8 +1825,8 @@
     Also, thanks to durability and offset system of Kafka topics the probability of an event not getting processed
     eventually is very low.
 
-    \subsection{Poll leg}
-    Poll leg availability evaluation scenario:
+    \subsection{Pull leg}
+    Pull leg availability evaluation scenario:
     \begin{itemize}
         \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) to FenceX.
@@ -1865,7 +1866,7 @@
 
     \begin{figure}[h!]
         \centering
-        \caption{FenceX poll leg availability ex7}
+        \caption{FenceX pull leg availability ex7}
         \label{fig:ex7}
         \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex7-benchmarking-ongoing-2per10sec.png}
     \end{figure}
@@ -1875,15 +1876,15 @@
     Red line shows how many queries FenceX failed to respond.
     A failure to respond in this load range means that the service supposed to answer the query was not
     up and running at that moment.
-    It is clear that once one of the instances of poll leg goes because of restart, the throughput drops and error
+    It is clear that once one of the instances of pull leg goes because of restart, the throughput drops and error
     rate goes up accordingly.
     Once restart and re-balancing finishes successfully, the throughput increases back to the previous
     value and error rate drops back to zero.
     Please note that re-balancing has no direct affect on queries by fence.
     However, health of each Kafka or Kafka Stream application is dependent on a successful re-balancing.
 
-    \subsubsection{Conclusion of poll leg availability experiments}
-    Poll leg of FenceX can handle some of it's instances going down and coming back up.
+    \subsubsection{Conclusion of pull leg availability experiments}
+    Pull leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
     temporarily.
 
@@ -1897,9 +1898,9 @@
     It can be query latency or throughput.
     In stream processing systems the load is the rate of input, rate of incoming events, the rate at which source
     produces input in to the pipeline.
-    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by fence.
+    In FenceX, for pull leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by fence.
     And, for push leg is the rate at which location reports arrive.
-    Performance in our experiments is throughput of push leg and poll leg.
+    Performance in our experiments is throughput of push leg and pull leg.
     We expeect FenceX to show strong scalability characteristics in both of its legs.
 
     \subsection{Push leg}
@@ -2089,8 +2090,8 @@
     Push leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
 
-    \subsection{Poll leg}
-    Poll leg strong scalability evaluation scenario:
+    \subsection{Pull leg}
+    Pull leg strong scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Send location reports for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed rate.
@@ -2133,7 +2134,7 @@
 
     \begin{figure}[h!]
         \centering
-        \caption{FenceX poll leg strong scalability ex17}
+        \caption{FenceX pull leg strong scalability ex17}
         \label{fig:ex17}
         \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
     \end{figure}
@@ -2166,7 +2167,7 @@
 
     \begin{figure}[h!]
         \centering
-        \caption{FenceX poll leg strong scalability ex18}
+        \caption{FenceX pull leg strong scalability ex18}
         \label{fig:ex18}
         \includegraphics[width=\linewidth, scale=2]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
     \end{figure}
@@ -2178,23 +2179,23 @@
     As figures show, FenceX has managed to handle 2k queries per second with one not so rich instance of location-aggregate.
     Adding one more instance resulted in throughput becoming equal to input rate (~6K queries per second).
 
-    One of the differences between push and poll leg is that the minimum resources required for poll leg to function
+    One of the differences between push and pull leg is that the minimum resources required for pull leg to function
     smoothly is much higher than push leg.
-    This is due to the fact that poll leg has global in memory data store.
-    Also, the amount of data exists in poll leg is substantially higher.
+    This is due to the fact that pull leg has global in memory data store.
+    Also, the amount of data exists in pull leg is substantially higher.
     There is usually way more location updates for each mover than fences.
     In fact currently, there will be at most one fence in push leg for each mover compared to many location updates
-    in poll leg.
+    in pull leg.
 
     As an overall consequence, when we deploy even one instance of location-aggregate, it's already rich enough to be
     able to answer many HTTP requests (query by fence).
     Which is about half of the input rate we can produce at maximum in a stable ongoing manner.
     So when we deploy two instances of location-aggregate with the mentioned resources, two available instances just
     handle our full capacity of input load production.
-    So there is no point in continuing strong scalability experiments for poll leg withing this range of input.
+    So there is no point in continuing strong scalability experiments for pull leg withing this range of input.
 
-    \subsubsection{Conclusion of poll leg strong scalability experiments}
-    Poll leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to
+    \subsubsection{Conclusion of pull leg strong scalability experiments}
+    Pull leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to
     produce.
     So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
 
@@ -2209,10 +2210,10 @@
     It can be query latency or throughput.
     In stream processing systems, load is the rate of input, rate of incoming events, the rate at
     which source publishes input in to the pipeline.
-    In FenceX, for poll leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
+    In FenceX, for pull leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by
     fence.
     And, for push leg is the rate at which location reports arrive.
-    Performance in case of our experiments, is throughput of push leg and poll leg.
+    Performance in case of our experiments, is throughput of push leg and pull leg.
     We expect both legs of FenceX to have weak scalability characteristic.
 
     \subsection{Push leg}
@@ -2423,8 +2424,8 @@
     throughput got higher.
     So push leg of FenceX managed to scale well in face of increasing load and it has weak scalability characteristics.
 
-    \subsection{Poll leg}
-    Poll leg weak scalability evaluation scenario:
+    \subsection{Pull leg}
+    Pull leg weak scalability evaluation scenario:
     \begin{itemize}
         \item[1-] Send location updates for movers using all the trips in the bench-marking application database.
         \item[2-] Start an ongoing load of queries (query by fence) with fixed low rate.
@@ -2441,7 +2442,7 @@
 
     Relaying on the observations from previous experiments, two instances of location-aggregate (with minimum
     resources for working smoothly) can easily cover our maximum capacity for producing input load.
-    So there is no point in carrying out weak scalability experiments for poll leg.
+    So there is no point in carrying out weak scalability experiments for pull leg.
 
 
     \section{Free fall scalability}
@@ -2531,7 +2532,7 @@
     ~65k/s.
 
     The throughput FenceX has achieved here (65k/s) is much higher compared to the throughput achieved by
-    \cite{Nechifor_Comnac_2013}.
+    \cite{Nechifor_Comnac_2013} (20k/s).
     So now we can claim with confidence that FenceX solution has out performed \cite{Nechifor_Comnac_2013}.
 
     \clearpage

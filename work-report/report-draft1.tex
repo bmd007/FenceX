@@ -5,6 +5,8 @@
 \usepackage[export]{adjustbox}
 \usepackage{graphicx}
 \usepackage{rotating}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -490,6 +492,7 @@
     In the following sections we will explain what is FaaS and how FenceX is a FaaS provider.
 %all the info is in the next sections and add reference
 
+
     \section{Function-as-a-Service}
     Consider a start up company is shaping around a brilliant brand-new audio compression algorithm.
     Two computer science engineers came up with an algorithm and now want to make money out of it.
@@ -630,6 +633,8 @@
 
 
 %    todo check spelling
+
+
     \chapter{Theoretical concepts and related technologies}
     In this section we cover the architectural and scientific ideas and technologies which played a major roles in
     this thesis.
@@ -1190,9 +1195,12 @@
     \end{itemize}
 
 %todo re arrange the section/subsection
-    \chapter{FenceX  characteristics}
+
+
+    \chapter{FenceX characteristics}
     In this chapter we describe how different non-functional requirements of system has been achieved based on the
     design and architectural decisions.
+
 
     \section{Availability}
     Availability has many aspects in software development specifically when it comes to distributed systems.
@@ -1239,6 +1247,7 @@
     In case of Kafka, due to support for the acknowledgement of being done with processing an event, even if
     something happens to during processing of an event, event processor will get that event back from topic once it's
     ready again.
+
 
     \section{Scalability}
     A software system being scalable in simple terms means that system can handle different sizes and frequencies of
@@ -1423,17 +1432,20 @@
     After preparing the infrastructure, Nomad calculated available resources to the applications that will be
     deployed into worker nodes as 16670 MHz of computation power and 16 GB of memory.
 
+%todo check the sections
+%    todo bench-marking all over the place,, no benchmarking
+
 
     \chapter{Experiments and validation}
     In this chapter we explain the process and results of evaluating FenceX.
     This process consists of many experiments with different setup and goals.
     Each experiment had a preparation phase, execution, observation and finally conclusion.
 
-    \subsection{Benchmarking application}
-    Before diving into the test cases, it is worth the effort to explain how bench-marking application works and what
-    functionalities it provides.
 
-    Generally speaking it is a microservice similar to other services in FenceX.
+    \section{Benchmarking application}
+    Before diving into the test cases, it is important to highlight how bench-marking application works and what
+    functionalities it provides.
+    It is a microservice similar to other services in FenceX.
     It registers itself into Consul and has HTTP APIs.
     It is based on spring-webflux\cite{webflux} reactive stack in order to handle IO better.
     The role of bench-marking is to imitate the behaviour of real world mover location report publishers,
@@ -1447,7 +1459,6 @@
 
     \paragraph{}
     bench-marking can send HTTP requests to realtime-fencing and define fences for movers.
-    For simplicity mover ID will the trip ID.
 
     \paragraph{}
     bench-marking can send HTTP requests to location-update-publisher and report coordinates for each trip.
@@ -1503,8 +1514,9 @@
         \item[4-] Repeat the experiment after changing the deployment configuration and input rate pattern. (Maybe add
         more instances or add more CPU) until finding peak throughput and/or a possible upper bound for throughput.
     \end{itemize}
+%    todo repeat the experiment group name in the expriment title
 
-    \subsubsection{Experiment 1}
+    \subsubsection{Experiment 1: Push leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1534,28 +1546,37 @@
     achieved throughput.
 
     \begin{sidewaysfigure}[h!]
-%        \centering
-        \label{fig:ex1-1}
-        \caption{FenceX push throughput ex1-1}
-        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(15,6).png}
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \label{fig:ex1-1}
+            \caption{FenceX push throughput ex1-1}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex1-benchmarking(15,6).png}
+        \end{subfigure}
+
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push throughput ex1-2}
+            \label{fig:ex1-2}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex1-benchmarking(19,7).png}
+        \end{subfigure}
     \end{sidewaysfigure}
 
     \begin{sidewaysfigure}[h!]
-        \caption{FenceX push throughput ex1-2}
-        \label{fig:ex1-2}
-        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(19,7).png}
-    \end{sidewaysfigure}
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push throughput ex1-3}
+            \label{fig:ex1-3}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex1-benchmarking(22,9).png}
+        \end{subfigure}
 
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX push throughput ex1-3}
-        \label{fig:ex1-3}
-        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(22,9).png}
-    \end{sidewaysfigure}
-
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX push throughput ex1-4}
-        \label{fig:ex1-4}
-        \includegraphics[scale=0.5]{images/evaluation/ex1-benchmarking(23,10).png}
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push throughput ex1-4}
+            \label{fig:ex1-4}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex1-benchmarking(23,10).png}
+        \end{subfigure}
     \end{sidewaysfigure}
 
     \clearpage
@@ -1593,10 +1614,11 @@
     experiment 2.
     The following figure illustrates how input rate and throughput have changed during experiment 2.
 
+
     \begin{sidewaysfigure}[h!]
         \caption{FenceX push throughput ex2}
         \label{fig:ex2}
-        \includegraphics[scale=0.5]{images/evaluation/ex2-benchmarking(24,10).png}
+        \includegraphics[width=\textwidth, height=0.3\textheight]{images/evaluation/ex2-benchmarking(24,10).png}
     \end{sidewaysfigure}
 
     \clearpage
@@ -1692,15 +1714,20 @@
     different patterns of input.
 
     \begin{sidewaysfigure}[h!]
-        \caption{FenceX pull throughput ex4-1}
-        \label{fig:ex4-1}
-        \includegraphics[scale=0.5]{images/evaluation/ex4-benchmarking(19,10).png}
-    \end{sidewaysfigure}
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX pull throughput ex4-1}
+            \label{fig:ex4-1}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex4-benchmarking(19,10).png}
+        \end{subfigure}
 
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX pull throughput ex4-2}
-        \label{fig:ex4-2}
-        \includegraphics[scale=0.5]{images/evaluation/ex4-benchmarking(22,10).png}
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX pull throughput ex4-2}
+            \label{fig:ex4-2}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex4-benchmarking(22,10).png}
+        \end{subfigure}
     \end{sidewaysfigure}
 
     \clearpage
@@ -1809,15 +1836,20 @@
     experiment.
 
     \begin{sidewaysfigure}[h!]
-        \caption{FenceX push leg availability ex5-1}
-        \label{fig:ex5-1}
-        \includegraphics[width=\linewidth, scale=0.4]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
-    \end{sidewaysfigure}
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push leg availability ex5-1}
+            \label{fig:ex5-1}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex5-benchmarking-ongoing-2per6sec.png}
+        \end{subfigure}
 
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX push leg availability ex5-2}
-        \label{fig:ex5-2}
-        \includegraphics[scale=0.5]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push leg availability ex5-2}
+            \label{fig:ex5-2}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex5-benchmarking-ongoing-2per7sec.png}
+        \end{subfigure}
     \end{sidewaysfigure}
 
     \clearpage
@@ -1855,6 +1887,7 @@
     \end{itemize}
 
     \clearpage
+
     \subsubsection{Experiment 7}
     \begin{table}[h!]
         \centering
@@ -2092,11 +2125,10 @@
     \end{sidewaysfigure}
 
     \clearpage
-
+%todo more details
     The clear observation is that adding one more instance didn't have any special effect on the throughput.
     This is expected since throughput can not exceed input rate regardless of processing power.
-    However, we can again see the effect of buffered location updates during re-balancing pretty much all over the
-    graph.
+    However, we can again see the effect of buffered location updates during re-balancing all over the graph.
 
     \subsubsection{Conclusion of push leg strong scalability experiments}
     Push leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to produce.
@@ -2388,7 +2420,6 @@
 
     Five instances of realtime-fencing managed to handle around 15K location updates per second.
 
-
     \subsubsection{Experiment 23}
     \begin{table}[h!]
         \centering
@@ -2425,6 +2456,7 @@
     However, in experiment 23 our intention was to increase input rate to above 15k/s which we did not manage due to
     limitations on the available resources to bench-marking application.
     So we will not continue weak scalability experiments for push log further.
+%todo add more details
 
     \subsubsection{Conclusion of push leg weak scalability experiments}
     We observed that as we increased input rate and deployed more instances of push leg of FenceX, push leg
@@ -2451,8 +2483,10 @@
     resources for working smoothly) can easily cover our maximum capacity for producing input load.
     So there is no point in carrying out weak scalability experiments for pull leg.
 
+%spell checking and talk how tolerance is checkd here
 
-    \section{Free fall scalability}
+
+    \section{Stress Tolerance}
     In order to stress test stream processing systems or when trying to find out how they can scale under high rates
     of input load, naturally we need to be able to produce high rates of input in the first place.
     This can be challenging when the input data is complex to produce and/or available resources to our input
@@ -2517,9 +2551,10 @@
     experiment.
 
     \begin{sidewaysfigure}[h!]
+        \centering
         \caption{FenceX push leg free fall scalability ex24}
         \label{fig:ex24}
-        \includegraphics[scale=0.5]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
+        \includegraphics[width=\textwidth, height=0.3\textheight]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
     \end{sidewaysfigure}
 
     \clearpage
@@ -2544,7 +2579,7 @@
     \clearpage
 
 
-    \chapter{Conclusion}
+    \chapter{Conclusion and future directions}
     During this thesis we have combined microservices and stream processing concepts in order to design, implement
     and evaluate a highly scalable resilient geofencing system called FenceX.
     FenceX can handle high input rates and deliver high throughput with low latency.
@@ -2573,8 +2608,7 @@
     The major difference between our system and other implementations of FaaS is that since we have stateful
     operations in the pipeline, we allow for stateful functions.
 
-
-    \chapter{Future work}
+    \paragraph{}
     During our evaluations, we have used only one type of data collected from real taxi trip.
     Evaluating FenceX using data collected from people walking in an area can be also very insightful.
 

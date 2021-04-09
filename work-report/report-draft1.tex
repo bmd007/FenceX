@@ -72,24 +72,23 @@
     \null\newpage
     \setcounter{page}{2}
 
-
-    \section{Abstract}
-    To check if a location on map is within a hypothetical shape (covering an area of map) is called geofencing.
+    \section*{Abstract}
+    To check if a location on a map is within a hypothetical shape (covering an area of map) is called geofencing.
     Since emergence of smartphones, smart cars and other mobile objects with GPS sensor attached to them, (non-)
     functional requirement of geofencing systems has significantly changed.
     Previously, the number of mobile objects thus the size of geospatial data about them and their load on the
     geofencing systems were much lower.
-    Also, geofencing services were not much integrated in the day to day life of nonprofessional users.
+    Also, geofencing services were not much integrated in the day-to-day life of nonprofessional users.
     Nowadays, on the other hand, geofencing systems are required to process large loads of requests and data in
     realtime with a much higher availability while serving wider range of users.
     Online taxi providers, elderly care platforms, pet tracking systems and disaster management systems are examples
     of use cases in which geofencing with aforementioned non-functional requirements is in action.
-    In this thesis we have designed and implemented a geofencing system (FenceX) with those needs in mind;
+    In this thesis we have designed and implemented a geofencing system called FenceX \cite{fencex} with those needs in mind;
     The main pillars of FenceX, which enable those properties, are stream processing and microservices.
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
     Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
     as a service.
-    Currently available function as a service providers, lambda from AWS most famously, does not allow for stateful
+    Currently, available function as a service providers, lambda from AWS most famously, does not allow for stateful
     functions.
     In this thesis, thanks to stateful operations of stream processing which are part of the FenceX pipeline, stateful
     functions are possible.
@@ -97,6 +96,24 @@
     And of course FenceX supports stateless function as well.
     While comparing FenceX with related works, we observed better results in multiple dimensions, peak throughput
     and resiliency for example.
+
+    \section*{Acknowledgement}
+    Huge thanks and appreciations to all people who had a hand in the actualization of FenceX.
+    First and foremost, my supervisor, Salman Toor, who trusted in me and my idea.
+    Without his continues feedback and support FenceX wouldn't make it to existence.
+    Also, reviewer of this thesis, Sadi Alawadi, whose feedback was necessary to keep the work relevant and
+    scientific.
+    Special appreciation to Snic cloud who provided us with computational resources needed for evaluation of FenceX
+    under project 2020/20-3.
+    Also, Cabonline and my manager there at time,  Emil Ekdahl, for providing us with real taxi trip data
+    (anonymized) which we have used intensively in the evaluation phase.
+    Last but not least my friend and ex-college, Juan Fandino, whose work was inspirational for FenceX.
+
+    \section*{Open source}
+    All of the work has been done during this thesis including reports and implementations is available in
+    a Github repository (github.com/bmd007/statefull-geofencing-faas).
+    The content of this repository is available to be used openly.
+    Please feel free to contribute as well.
 
     \newpage
 
@@ -107,25 +124,6 @@
     \listoftables
 
     \newpage
-
-
-    \section{Acknowledgment}
-    Huge thanks and appreciations to all people who had a hand in the actualization of FenceX.
-    First and foremost, my supervisor, Salman Toor, who trusted in me and my idea.
-    Without his continues feedback and support FenceX wouldn't make it to existence.
-    Also reviewer of this thesis, Sadi Alawadi, whose feedback was necessary to keep the work relevant and scientific.
-    Special appreciation to Snic cloud who provided us with computational resources needed for evaluation of FenceX
-    under project 2020/20-3.
-    Also, Cabonline and my manager there at time,  Emil Ekdahl, for providing us with real taxi trip data
-    (anonymized) which we have used intensively in the evaluation phase.
-    Last but not least my friend and ex-college, Juan Fandino, whose work was inspirational for FenceX.
-
-
-    \section{Open source}
-    All of the work has been done during this thesis including reports and implementations is available in
-    a Github repository (github.com/bmd007/statefull-geofencing-faas).
-    The content of this repository is available to be used openly.
-    Please feel free to contribute as well.
 
 
     \chapter{Introduction}
@@ -236,6 +234,7 @@
 
     \chapter{Related works}
 
+
     \section{Large Scale Indexing of Geofences}
     In \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, an on demand style geofencing system is introduced that
     supports large scales of data and load.
@@ -255,6 +254,7 @@
     higher throughput.
     We will not, however, describe the indexing strategy further since it is outside context of this thesis.
 
+
     \section{Using Complex Event Processing for implementing a geofencing service}
     A realtime style geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
     It relies on a CEP (complex event processing) for fence entrance/exit detection.
@@ -264,6 +264,7 @@
     So it is not clear what are the bounds for scalability of the introduced system.
     Throughput in this system is defined as number of location updates processed per second.
     Evaluations have shown that it has achieved throughput of around 20k/s.
+
 
     \section{Cloudburst: stateful functions-as-a-service}
     In \cite{Functions-as-a-Service-2020}, to achieve stateful FAAS, co-location of cache and functions has been
@@ -275,6 +276,7 @@
     And Anna uses lattice composition to fight inconsistency.
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
+
 
     \section{Comparison with the state of the art}
     The work that has been done during this thesis is distinguishable from other reviewed works in terms of the

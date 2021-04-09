@@ -78,7 +78,7 @@
     \section*{Abstract}
     To check if a location on a map is within a hypothetical shape (covering an area of map) is called geofencing.
     Since emergence of smartphones, smart cars and other mobile objects with GPS sensor attached to them, (non-)
-    functional requirement of geofencing systems has significantly changed.
+    functional requirements of geofencing systems has significantly changed.
     Previously, the number of mobile objects thus the size of geospatial data about them and their load on the
     geofencing systems were much lower.
     Also, geofencing services were not much integrated in the day-to-day life of nonprofessional users.
@@ -86,17 +86,15 @@
     realtime with a much higher availability while serving wider range of users.
     Online taxi providers, elderly care platforms, pet tracking systems and disaster management systems are examples
     of use cases in which geofencing with aforementioned non-functional requirements is in action.
-    In this thesis we have designed and implemented a geofencing system called FenceX \cite{fencex} with those needs in mind;
+    In this thesis we have designed and implemented a geofencing system called FenceX with those needs in mind;
     The main pillars of FenceX, which enable those properties, are stream processing and microservices.
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
     Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
     as a service.
     Currently, available function as a service providers, lambda from AWS most famously, does not allow for stateful
     functions.
-    In this thesis, thanks to stateful operations of stream processing which are part of the FenceX pipeline, stateful
-    functions are possible.
-    This has been achieved by allowing custom implementation for those operations.
-    And of course FenceX supports stateless function as well.
+    In this thesis, thanks to usage Kafka Stream as the stream processing framework which supports stateful
+    operations, stateful functions became possible.
     While comparing FenceX with related works, we observed better results in multiple dimensions, peak throughput
     and resiliency for example.
 
@@ -130,9 +128,8 @@
 
 
     \chapter{Introduction}
-    Geofencing plays an important role in our day to day life nowadays in different styles and scales.
-    The most famous use case of geofencing is to take a taxi from an online taxi provider like Uber or Cabonline
-    (Swedish company).
+    Geofencing\cite{geofencing} plays an important role in our day to day life nowadays in different styles and scales.
+    The most famous use case of geofencing is to take a taxi\cite{taxi-geofencing} from an online taxi provider like Uber.
     A traveler selects a pick up point and system should send the offer (order) to the available taxies.
     It is clear that the system can't send the offer to all the taxies available around the world.
     It might take forever until one of them accepts the offer;
@@ -148,7 +145,7 @@
     In this type of geofencing the fences are created on the fly when ever there is a request for a taxi.
     So the fencing operation happens in an on demand manner.
 
-    Another example of geofencing use cases is pet care.
+    Another example of geofencing use cases is pet care\cite{pet-geofencing}.
     Consider a cat living with a family in a safe and calm neighbourhood.
     The cat can play around the neighbourhood with no need of care taker.
     Within that area, the cat can find his way back home easily.
@@ -192,7 +189,7 @@
     On the other hand, realtime style only requires a number/id index and has lower latency consequently.
 
     \paragraph{}
-    In order to implement a geofencing system, a database engine which supports geospatial index with a simple MVC
+    In order to implement a geofencing system, a database engine which supports geospatial index with a simple MVC\cite{mvc}
     web application on top should suffice.
     One package of code which is responsible for receiving location reports, processing them and then saving them in
     a database table, handling (HTTP) request coming from UI and even rendering the web UI.
@@ -210,8 +207,8 @@
 
     \paragraph{}
     Our contribution is design, implementation and evaluation of a geofencing system supporting both styles of
-    geofencing (on demand and realtime) called FenceX.
-    It relies on stream processing and microservice in order to achieve high throughput, high scalability and high
+    geofencing (on demand and realtime) called FenceX\cite{fencex}.
+    It relies on stream processing and microservices in order to achieve high throughput, high scalability and high
     availability.
     We have achieved these characteristics by using microservices as the major architecture of the system.
     Which means our system consists of small de-coupled components trying to share nothing as much as possible.

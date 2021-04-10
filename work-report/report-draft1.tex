@@ -93,8 +93,8 @@
     as a service.
     Currently, available function as a service providers, lambda from AWS most famously, does not allow for stateful
     functions.
-    In this thesis, thanks to usage Kafka Stream as the stream processing framework which supports stateful
-    operations, stateful functions became possible.
+    In this thesis, thanks to usage of Kafka Stream as the stream processing framework and its supports for stateful
+    operations, FenceX allows for definition and deployment of stateful functions.
     While comparing FenceX with related works, we observed better results in multiple dimensions, peak throughput
     and resiliency for example.
 
@@ -113,7 +113,7 @@
     \section*{Open source}
     All of the work has been done during this thesis including reports and implementations is available in
     a Github repository (github.com/bmd007/statefull-geofencing-faas).
-    The content of this repository is available to be used openly.
+    The content of this repository is available to be used freely.
     Please feel free to contribute as well.
 
     \newpage
@@ -153,7 +153,7 @@
     So they attach a GPS sensor to the cat and make it report the cat's location every minute to a geofencing system.
     They also draw a fence (shape) on a map (using UI of the geofencing system) representing their neighbourhood, the
     safe zone.
-    And then ask the system to notify them by sending an notification to their phone when ever the cat goes out side
+    And then ask the system to notify them by sending a notification to their phone when ever the cat goes out side
     of that fence.
     In this example, the fence is not much dynamic compared to the previous example.
     The cat owners draw the fence once and system saves it.
@@ -203,16 +203,16 @@
     If anything happen during run time, the whole service goes down.
     In case incoming load increases enough so that currently available resources get saturated, the only way to handle
     the situation is to add more resources to the machine running the application.
-    This are some of common issues with monolith applications.
+    These are some of common issues with monolith\cite{monolith} applications.
 
     \paragraph{}
     Our contribution is design, implementation and evaluation of a geofencing system supporting both styles of
     geofencing (on demand and realtime) called FenceX\cite{fencex}.
-    It relies on stream processing\cite{making-sense-of-stream-processing} and microservices in order to achieve high
-    throughput, high scalability and high availability.
+    It relies on stream processing\cite{making-sense-of-stream-processing} and microservices\cite{microservices} in
+    order to achieve high throughput, high scalability and high availability.
     We have achieved these characteristics by using microservices as the major architecture of the system.
     Which means our system consists of small de-coupled components trying to share nothing as much as possible.
-    These microservices communicate using Kafka\cite{kafka} which is an event streaming platform.
+    These microservices communicate using Kafka\cite{kafka} which is an event streaming\cite{design-event-driven-systems} platform.
     Such style of communication enriched our work by becoming a foundation for stream processing.
     Combining Kafka and Kafka Streams\cite{kafkaStreams}, a stream processing framework, resulted in a
     stream processing pipeline that its operations are packaged and deployed as microservices.
@@ -220,9 +220,9 @@
     \paragraph{}
     Having a stream processing based system which has stateful operations gave us the ability to look the system from
     function as a service\cite{whatisfaas} point of view.
-    The easiest approach at the moment to write and program and deploy in cloud is to write it as a function;
+    The easiest approach at the moment to write a code and deploy it in cloud is to write it as a function;
     then gave the code to one of the FaaS (function as a service) providers like AWS lambda\cite{lambda}.
-    They will do the all required work in order to expose your function, as an HTTP api for example, to internet.
+    They will do the all required work in order to expose that function, as an HTTP api for example, to internet.
     However, such FaaS providers do not support stateful functions.
     So only stateless operations like compression of an images are well suited to enjoy convenience of FaaS.
     Our work, apart from being a geofencing system, is an implementation for the idea of FaaS which supports stateful
@@ -279,8 +279,8 @@
 
 
     \section{On the FaaS Track: Building Stateful Distributed Applications with Serverless Architectures}
-    The work described in \cite{mutableStateless} resulted in a FaaS platform.
-    Which supports stateful operations in a low latency and flexible manner.
+    The work described in \cite{mutableStateless} resulted in a FaaS platform;
+    which supports stateful operations in a low latency and flexible manner.
     They achieved stateful FaaS using a global in memory strongly consistent data layer for state mutation.
     This data layer can be accessed by all the functions (parallel workers/cloud threads).
     For work load distribution, they have partitioned the data layer.
@@ -293,14 +293,14 @@
     \section{Comparison with the state of the art}
     The work that has been done during this thesis is distinguishable from other reviewed works in terms of the
     achieved level of availability, scalability and peak throughput.
-    Using a modern system architecture called microservices and modeling the system a stream processing pipeline
-    implemented on top of Kafka with help of Kafka Streams also make our work different from others.
+    Using a modern system architecture called microservices and modeling the system as a stream processing pipeline
+    implemented on top of Kafka with help of Kafka Streams make our work different from others.
 
-    Bringing stateful FaaS idea into the realm of geofencing is uniquely done in this thesis.
+    Bringing stateful FaaS idea into the realm of geofencing is also uniquely done in this thesis.
     Geofencing operations involved in FenceX can be implemented as custom libraries and be plugged into the system.
     At highest level of abstraction, users (developers) can implement those functions using a simple web GUI and
     deploy the result with a few clicks.
-    This is not a feature of any of the reviewed works.
+    This is not a feature of any of the geofencing related reviewed works.
 
     In terms of level of consistency, FenceX is eventually consistent and as a result can deliver higher throughput
     compared to the reviewed works, which are strongly consistent.
@@ -329,11 +329,12 @@
 
     We can compare these two styles as following:
     \begin{itemize}
-        \item In pull style we have a \textbf{database of locations}
-        \item In pull style, a \textbf{database of fences}.
-        \item Pull style geofencing has an \textbf{on demand} nature while push style is of \textbf{real time} nature.
-        \item Pull style fencing use case examples: Taxi/police/ambulance dispatch, disaster management.
-        \item Push style fencing use case examples: Elderly/Kid/Pet care, (gambling) addiction management.
+        \item In pull style geofencing a \textbf{database of locations} exists.
+        \item In push style geofencing, a \textbf{database of fences} exists.
+        \item Pull style geofencing has an \textbf{on demand} nature.
+        \item Push style geofencing is of \textbf{real time} nature.
+        \item Pull style geofencing use case examples: Taxi/police/ambulance dispatch, disaster management.
+        \item Push style geofencing use case examples: Elderly/Kid/Pet care, (gambling) addiction management.
     \end{itemize}
 
     Please note that using pull/push terminology is an idea brought up in this thesis in order to facilitate
@@ -357,7 +358,7 @@
             WKT               & Plain text         \\
             \hline
         \end{tabular}
-        \caption{Base standard of Geofencing formats}
+        \caption{Base standard of geospatial data representation formats}
         \label{table:geofencing-formats}
     \end{table}
 
@@ -509,7 +510,6 @@
     So other types of computation can also be implemented in the same way without changing the architecture in any
     significant manner.
     In the following sections we will explain what is FaaS and how FenceX is a FaaS provider.
-    We have described the idea of function as a service in details in the following sections.
 
 
     \section{Function-as-a-Service}
@@ -755,8 +755,8 @@
     A bug in one of the services can not bring the whole system down as well.
     When load on one of the microservices increases, more instances of it can be easily deployed (scale out).
     And hopefully instead of deploying executable artifact into a physically available machine in the corner of
-    office, microservices are packaged as docker images and deployed into a container orchestration tool provided as
-    a managed cloud service.
+    office, microservices are packaged as docker\cite{pro-docker} images and deployed into a container orchestration
+    tool provided as a managed cloud service.
 
     Of course turning a monolith into a distributed system brings all the challenges of distributed systems with it.
     Having data spread around different services makes strong consistency very hard to achieve.
@@ -2081,16 +2081,14 @@
 
     Figure \ref{fig:ex10} (experiment 10 ) as we expected, shows that deploying three instances of realtime-fencing
     with the given resources, was enough to process 15K location updates per second.
-    Also in \ref{fig:ex10} we can see the effect of buffered location updates on throughput.
+    Also in figure \ref{fig:ex10} we can see the effect of buffered location updates on throughput.
     Around the end parts of the graph, throughput is higher than input rate.
 
     In order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
     add another instance as the final experiment (experiment 11).
     The clear observation of figure \ref{fig:ex11} (experiment 11) is that adding one more instance did not have any
-    special effect on the throughput.
-    This is expected since throughput can not exceed input rate regardless of processing power.
-    We did not increase the input rate in experiment 11 (as we shouldn't due to strong scalability test scenario) so
-    we did not expect a higher throughput in experiment 11.
+    special effect on the throughput;
+    since throughput can not exceed input rate regardless of processing power.
 
     So as a result of experiments 8 to 11, we can claim that push leg of FenceX has strong scalability characteristics
     at least in the range of input rate we have managed to produce.
@@ -2529,10 +2527,10 @@
     FenceX is basically a steam processing pipeline which has both stateful and stateless operations.
     Although the operations in the pipeline are limited to design of pipeline at each point at time, implementation
     of each pipeline can be customized without need to change the core program.
-    In fact different implementations cab be plugged in as libraries.
+    In fact different implementations can be plugged in as libraries.
     Which is similar to implementing a custom function and give to a FaaS provider.
-    The major difference between our system and other implementations of FaaS is that since we have stateful
-    operations in the pipeline, we allow for stateful functions.
+    The major difference between our system and other implementations of FaaS is that we allow for stateful functions.
+    It was possible since we have stateful operations in the FenceX stream processing pipeline.
 
     \paragraph{}
     During our evaluations, we have used only one type of data collected from real taxi trip.

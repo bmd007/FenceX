@@ -1957,7 +1957,7 @@
     This is because the input stream is ongoing and fixed rate, so process of buffered location updates only adds to
     throughput in that specific moments.
 
-    \subsubsection{Experiment 8: Push leg strong scalability}
+    \subsubsection{Experiments 8 to 11: Push leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1973,31 +1973,6 @@
         \label{table:ex8-dv}
     \end{table}
 
-    Table \ref{table:ex8-dv} shows, for experiment 8, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each.
-    The row in table \ref{table:ex8-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 8.
-    The following figure illustrates how input rate and throughput have changed during experiment 8.
-    It also shows number of deployed instances of related microservices during this experiment.
-
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX push leg strong scalability ex8}
-        \label{fig:ex8}
-        \includegraphics[scale=0.5]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
-    \end{sidewaysfigure}
-
-    \clearpage
-
-    In figure \ref{fig:ex8} the green line is essentially the input rate (number of location updates per second),
-    yellow line represents throughput (number of fence point intersections) and the pink dots shows number of
-    deployed instances of realtime-fencing.
-    Figures in following push leg strong scalability experiments can also be read in the same way.
-
-    So figure \ref{fig:ex8} illustrates that one instance of realtime-fencing with the rather low given resources, can
-    only handle one 3rd of input rate.
-    Which is 5k intersections per second out of 15k location updates per second.
-
-    \subsubsection{Experiment 9: Push leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2013,30 +1988,6 @@
         \label{table:ex9-dv}
     \end{table}
 
-    Table \ref{table:ex9-dv} shows, for experiment 9, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 8, we have deployed one more instance of realtime-fencing.
-    The row in table \ref{table:ex9-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 9.
-    The following figure illustrates how input rate and throughput have changed during experiment 9.
-    It also shows how (and when) number of deployed instances of related microservices has changed during this
-    experiment.
-
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX push leg strong scalability ex9}
-        \label{fig:ex9}
-        \includegraphics[scale=0.5]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
-    \end{sidewaysfigure}
-
-    \clearpage
-
-    Looking at figure \ref{fig:ex9} we can easily observe that once the second instance is up and running, after
-    re-balancing, throughput goes proportionally up, from 5k/s to 10k/s.
-    At this point we can guess that without changing anything, just adding one more instance of realtime-fencing
-    should be enough to cover the whole 15k/s input rate.
-    15K location updates per second is the highest input rate that we could produce in a stable manner.
-
-    \subsubsection{Experiment 10: Push leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2051,31 +2002,6 @@
         \caption{Experiment 10 deployment view}
         \label{table:ex10-dv}
     \end{table}
-
-    Table \ref{table:ex10-dv} shows, for experiment 10, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 9, we have deployed one more instance of realtime-fencing.
-    The row in table \ref{table:ex10-dv} with no values corresponds to a microservice which does not relate to the experiment 10.
-    The following figure illustrates how input rate and throughput have changed during experiment 10.
-    It also shows how (and when) number of deployed instances of related microservices has changed during this
-    experiment.
-
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX push leg strong scalability ex10}
-        \label{fig:ex10}
-        \includegraphics[scale=0.5]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
-    \end{sidewaysfigure}
-
-    \clearpage
-
-    As we expected, deploying three instances of realtime-fencing with the given resources, was enough to process 15K
-    location updates per second.
-    Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
-    Around the end parts of the graph, throughput is higher than input rate.
-
-    \subsubsection{Experiment 11: Push leg strong scalability}
-    Now in order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
-    add another instance as the final step.
 
     \begin{table}[h!]
         \centering
@@ -2092,30 +2018,82 @@
         \label{table:ex11-dv}
     \end{table}
 
-    Table \ref{table:ex11-dv} shows, for experiment 11, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 10, we have deployed one more instance of realtime-fencing.
-    The row in table \ref{table:ex11-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 11.
-    The following figure illustrates how input rate and throughput have changed during experiment 11.
-    It also shows how (and when) number of deployed instances of related microservices has changed during this
-    experiment.
+    Tables \ref{table:ex8-dv}, \ref{table:ex9-dv}, \ref{table:ex10-dv} and \ref{table:ex11-dv} show, for experiments
+    8 to 11, how many instances of each FenceX microservices we have deployed in addition to the amount of resources
+    we have assigned to each.
+    The row in these tables with no values corresponds to a microservice which does not relate to the experiments 8 to 11.
+    The following figure illustrates how input rate and throughput have changed during those experiments.
+    It also shows number of deployed instances of related microservices during this experiment.
 
     \begin{sidewaysfigure}[h!]
-        \caption{FenceX push leg strong scalability ex11}
-        \label{fig:ex11}
-        \includegraphics[scale=0.5]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push leg strong scalability ex8}
+            \label{fig:ex8}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex8-benchmarking-ongoing-2per4sec.png}
+        \end{subfigure}
+
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push leg strong scalability ex9}
+            \label{fig:ex9}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex9-benchmarking-ongoing-2per4sec.png}
+        \end{subfigure}
+    \end{sidewaysfigure}
+
+    \begin{sidewaysfigure}[h!]
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push leg strong scalability ex10}
+            \label{fig:ex10}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex10-benchmarking-ongoing-2per4sec.png}
+        \end{subfigure}
+
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX push leg strong scalability ex11}
+            \label{fig:ex11}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex11-benchmarking-ongoing-2per4sec.png}
+        \end{subfigure}
     \end{sidewaysfigure}
 
     \clearpage
-%todo more details
-    The clear observation is that adding one more instance did not have any special effect on the throughput.
-    This is expected since throughput can not exceed input rate regardless of processing power.
-    However, we can again see the effect of buffered location updates during re-balancing all over the graph.
 
-    \subsubsection{Conclusion of push leg strong scalability experiments}
-    Push leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to produce.
-    So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
+    \subsubsection{Discussion of push leg strong scalability experiments}
+    In figures \ref{fig:ex8}, \ref{fig:ex9},  \ref{fig:ex10} and  \ref{fig:ex11} the green line is essentially the
+    input rate (number of location updates per second), yellow line represents throughput (number of fence point
+    intersections) and the pink dots shows number of deployed instances of realtime-fencing.
+
+    During experiments 8 to 11, we have sent an ongoing stream of location updates to FenceX with fixed rate of 15K
+    location updates per second.
+    It is the highest input rate that we could produce in a stable manner.
+
+    Figure \ref{fig:ex8} (experiment 8) illustrates that one instance of realtime-fencing with the rather low given
+    resources, can only handle one 3rd of input rate.
+    Which is 5k intersections per second out of 15k location updates per second.
+
+    Looking at figure \ref{fig:ex9}  (experiment 9) we can easily observe that once the second instance is up and
+    running, after re-balancing, throughput goes proportionally up, from 5k/s to 10k/s.
+    At this point we can guess that without changing anything, just adding one more instance of realtime-fencing
+    should be enough to cover the whole 15k/s input rate.
+
+    Figure \ref{fig:ex10} (experiment 10 ) as we expected, shows that deploying three instances of realtime-fencing
+    with the given resources, was enough to process 15K location updates per second.
+    Also in \ref{fig:ex10} we can see the effect of buffered location updates on throughput.
+    Around the end parts of the graph, throughput is higher than input rate.
+
+    In order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
+    add another instance as the final experiment (experiment 11).
+    The clear observation of figure \ref{fig:ex11} (experiment 11) is that adding one more instance did not have any
+    special effect on the throughput.
+    This is expected since throughput can not exceed input rate regardless of processing power.
+    We did not increase the input rate in experiment 11 (as we shouldn't due to strong scalability test scenario) so
+    we did not expect a higher throughput in experiment 11.
+
+    So as a result of experiments 8 to 11, we can claim that push leg of FenceX has strong scalability characteristics
+    at least in the range of input rate we have managed to produce.
 
     \subsection{Pull leg}
     Pull leg strong scalability evaluation scenario:
@@ -2135,7 +2113,7 @@
     avoids some queries from being answered.
     Those queries will be considered as failed.
 
-    \subsubsection{Experiment 17: Pull leg strong scalability}
+    \subsubsection{Experiment 17 and 18: Pull leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2151,22 +2129,6 @@
         \label{table:ex17-dv}
     \end{table}
 
-    Table \ref{table:ex17-dv} shows, for experiment 17, how many instances of each FenceX microservices we have
-    initially deployed in addition to the amount of resources we have assigned to each.
-    The row in table \ref{table:ex17-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 17.
-    The following figure illustrates how input rate and throughput have changed during experiment 17.
-    It also shows how many instances of related microservices were up and running during this experiment.
-
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX pull leg strong scalability ex17}
-        \label{fig:ex17}
-        \includegraphics[scale=0.5]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
-    \end{sidewaysfigure}
-
-    \clearpage
-
-    \subsubsection{Experiment 18: Pull leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2182,22 +2144,32 @@
         \label{table:ex18-dv}
     \end{table}
 
-    Table \ref{table:ex18-dv} shows, for experiment 18, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 17, we have deployed one more instance of location-aggregate.
-    The row in table \ref{table:ex18-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 18.
-    The following figure illustrates how input rate and throughput have changed during experiment 18.
-    It also shows how many instances of related microservices were up and running during this experiment.
+    Tables \ref{table:ex17-dv} and \ref{table:ex18-dv} show, for experiments 17 and 18, how many instances of each
+    FenceX microservices we have deployed in addition to the amount of resources we have assigned to each.
+    The row in these tables with no values corresponds to a microservice which does not relate to the experiments 17 and 18.
+    The following figures illustrate how input rate and throughput have changed during experiments 17 and 18.
+    It also shows how many instances of related microservices were up and running during those experiments.
 
     \begin{sidewaysfigure}[h!]
-        \caption{FenceX pull leg strong scalability ex18}
-        \label{fig:ex18}
-        \includegraphics[scale=0.5]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
+        \centering
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX pull leg strong scalability ex17}
+            \label{fig:ex17}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex17-benchmarking-ongoing-2per4sec.png}
+        \end{subfigure}
+
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \caption{FenceX pull leg strong scalability ex18}
+            \label{fig:ex18}
+            \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex18-benchmarking-ongoing-2per4sec.png}
+        \end{subfigure}
     \end{sidewaysfigure}
 
     \clearpage
 
+    \subsubsection{Discussion of pull leg strong scalability experiments}
     In figures \ref{fig:ex17} and \ref{fig:ex18} the blue line represents input rate, number of incoming HTTP
     requests.
     Orange line illustrates throughput which is number of queries responded successfully.
@@ -2207,23 +2179,22 @@
 
     One of the differences between push and pull leg is that the minimum resources required for pull leg to function
     smoothly is much higher than push leg.
-    This is due to the fact that pull leg has global in memory data store.
+    This is due to the fact that pull leg has a global in memory data store.
     Also, the amount of data exists in pull leg is substantially higher.
     There is usually way more location updates for each mover than fences.
-    In fact currently, there will be at most one fence in push leg for each mover compared to many location updates
+    In fact, there will be at most one fence in push leg for each mover compared to many location updates
     in pull leg.
+    So pull leg requires more memory comparatively.
 
-    As an overall consequence, when we deploy even one instance of location-aggregate, it's already rich enough to be
+    As an overall consequence, when we deploy even one instance of location-aggregate, it is already rich enough to be
     able to answer many HTTP requests (query by fence).
     Which is about half of the input rate we can produce at maximum in a stable ongoing manner.
     So when we deploy two instances of location-aggregate with the mentioned resources, two available instances just
     handle our full capacity of input load production.
     So there is no point in continuing strong scalability experiments for pull leg withing this range of input.
 
-    \subsubsection{Conclusion of pull leg strong scalability experiments}
-    Pull leg of FenceX has strong scalability characteristics at least in the range of input rate we have managed to
-    produce.
-    So in case of unexpectedly high load, just scaling realtime-fencing out can prove effective.
+    All in all, pull leg of FenceX has strong scalability characteristics at least in the range of input rate we have
+    managed to produce.
 
 
     \section{Weak scalability}

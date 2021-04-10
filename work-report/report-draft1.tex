@@ -1753,6 +1753,8 @@
     FenceX has always been tested with full replication in action.
     So FenceX is the winner by achieving throughput in range of 15k/s compared to sub 10k/s.
 
+    \clearpage
+
 
     \section{Availability}
     In this section we cover the experiments we have conducted in order to test availability of FenceX.
@@ -1856,6 +1858,7 @@
     Also, thanks to durability and offset system of Kafka topics the probability of an event not getting processed
     eventually is very low.
 
+    \clearpage
 
     \subsection{Pull leg}
     Pull leg availability evaluation scenario:
@@ -1869,8 +1872,6 @@
         \item[7-] Assert that throughput is back to previous value.
         \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
-
-    \clearpage
 
     \subsubsection{Experiment 7: Availability of pull leg}
     \begin{table}[h!]

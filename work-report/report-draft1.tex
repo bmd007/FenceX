@@ -208,8 +208,8 @@
     \paragraph{}
     Our contribution is design, implementation and evaluation of a geofencing system supporting both styles of
     geofencing (on demand and realtime) called FenceX\cite{fencex}.
-    It relies on stream processing and microservices in order to achieve high throughput, high scalability and high
-    availability.
+    It relies on stream processing\cite{making-sense-of-stream-processing} and microservices in order to achieve high
+    throughput, high scalability and high availability.
     We have achieved these characteristics by using microservices as the major architecture of the system.
     Which means our system consists of small de-coupled components trying to share nothing as much as possible.
     These microservices communicate using Kafka\cite{kafka} which is an event streaming platform.
@@ -276,6 +276,18 @@
     And Anna uses lattice composition to fight inconsistency.
     Anna also, has a ACID2 conforming function called merge which is used by \cite{Functions-as-a-Service-2020} in
     order to gain high scalability.
+
+
+    \section{On the FaaS Track: Building Stateful Distributed Applications with Serverless Architectures}
+    The work described in \cite{mutableStateless} resulted in a FaaS platform.
+    Which supports stateful operations in a low latency and flexible manner.
+    They achieved stateful FaaS using a global in memory strongly consistent data layer for state mutation.
+    This data layer can be accessed by all the functions (parallel workers/cloud threads).
+    For work load distribution, they have partitioned the data layer.
+    For durability, they allow replication of data in the data layer.
+    However by default, no data is replicated (replication factor is 1).
+    Fault tolerance comes from data replication and possibility of making functions execute again when facing failure.
+    This platform is best suited for computations that require direct state mutations (rather than immutable state).
 
 
     \section{Comparison with the state of the art}
@@ -543,7 +555,7 @@
 
     What we just described is the sell speech for the function as a service idea.
     Which is provided nowadays by most cloud providers.
-    AWS lambda\cite{lambda} is the most famous one.
+    AWS lambda is the most famous one.
 
 
     \section{Stateless FaaS}
@@ -633,12 +645,13 @@
         \caption{Comparison of  \cite{Functions-as-a-Service-2020} with FenceX}
         \label{table:fencex-comp}
     \end{table}
-    
+
 
     \chapter{Theoretical concepts and related technologies}
     In this section we cover the architectural and scientific ideas and technologies which played a major roles in
     this thesis.
     We cover them only to the extent that context of this thesis allows.
+
 
     \section{Reactive systems}
     A distributed system, in simple terms, is a software having more than one deployable component.
@@ -700,6 +713,7 @@
     In order to achieve such a system design, events should be considered first in the design rather than the domain.
     Verbs first rather than nouns, what happened vs what exists, immutable fact vs cumulative knowledge.
 
+
     \section{Microservices}
     Once upon a time the whole software, an information system for example, was one process deployed manually on a big
     physically available machine.
@@ -755,6 +769,7 @@
     requirements of their system, size of their organization and other relevant factors.
     API gateway, Service registry, Distributed tracing, CQRS, Saga are some popular examples.
     \cite{microservice-architecture} \cite{microservices-pitfalls} \cite{microservices}
+
 
     \section{Stream processing}
     Stream processing refers to a special style of reactive systems.
@@ -842,6 +857,7 @@
     to become co-located for the task.
     It brings challenges like the best partitioning policy and correct key selection.
     For example when partitioning geospatial data partitioning policy may differ based on the use case.
+
 
     \section{Kafka}
     Kafka\cite{kafka} is an event streaming tool.
@@ -1009,9 +1025,10 @@
     It means FenseX deploys more than one instance of each microservice for scalability and resiliency purposes.
     Such characteristics will be discussed in details later.
 
+
     \section{Inter microservices communication}
     At the moment there is no need for HTTP communication between FenceX microservices.
-    However, they can find each other's IP by querying Consul on the fly.
+    However, they can find each other's IP by querying Consul\cite{Consul} on the fly.
 
     The communication style of microservices in FenceX is asynchronous and event driven.
     Which means there are Kakfa topics available for publishing events and subscribing to them.
@@ -1193,7 +1210,7 @@
         \item They expose a HTTP API for fetching metrics about their resource usage, JVM status and geofencing
         operations.
     \end{itemize}
-    
+
 
     \chapter{FenceX characteristics}
     In this chapter we describe how different non-functional requirements of system has been achieved based on the
@@ -1331,6 +1348,7 @@
     When system code is distributed over different code bases, a lot of people can work at the same time on the
     system and deliver value.
 
+
     \section{Throughput}
     For FenceX throughput of two types of operations matter the most.
     Throughput of HTTP requests for querying the database of locations against a fence (pull leg throughput).
@@ -1382,7 +1400,7 @@
             server1 & 8         & 16      & Master keeper       \\
             server2 & 4         & 8       & Nomad worker node   \\
             server3 & 4         & 8       & Nomad worker node   \\
-            server4 & 4         & 16      & Bench-marking        \\
+            server4 & 4         & 16      & Bench-marking       \\
             \hline
         \end{tabular}
         \caption{Virtual machines used in evaluation of FenceX and their overall responsibility}

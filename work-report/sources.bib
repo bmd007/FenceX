@@ -97,7 +97,7 @@
     publisher = "Apress"
 }
 
-@book{a-heart-logs,
+@book{i-heart-logs,
     author = "Jay Kreps",
     title = "I hearts Logs",
     year = "2015",
@@ -411,3 +411,20 @@
     numpages = {15}
 }
 
+@inproceedings{mutableStateless,
+    author = {Barcelona-Pons, Daniel and S\'{a}nchez-Artigas, Marc and Par\'{\i}s, Gerard and Sutra, Pierre and Garc\'{\i}a-L\'{o}pez, Pedro},
+    title = {On the FaaS Track: Building Stateful Distributed Applications with Serverless Architectures},
+    year = {2019},
+    isbn = {9781450370097},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3361525.3361535},
+    doi = {10.1145/3361525.3361535},
+    abstract = {Serverless computing is an emerging paradigm that greatly simplifies the usage of cloud resources and suits well to many tasks. Most notably, Function-as-a-Service (FaaS) enables programmers to develop cloud applications as individual functions that can run and scale independently. Yet, due to the disaggregation of storage and compute resources in FaaS, applications that require fine-grained support for mutable state and synchronization, such as machine learning and scientific computing, are hard to build.In this work, we present Crucial, a system to program highly-concurrent stateful applications with serverless architectures. Its programming model keeps the simplicity of FaaS and allows to port effortlessly multi-threaded algorithms to this new environment. Crucial is built upon the key insight that FaaS resembles to concurrent programming at the scale of a data center. As a consequence, a distributed shared memory layer is the right answer to the need for fine-grained state management and coordination in serverless. We validate our system with the help of micro-benchmarks and various applications. In particular, we implement two common machine learning algorithms: k-means clustering and logistic regression. For both cases, Crucial obtains superior or comparable performance to an equivalent Spark cluster.},
+    booktitle = {Proceedings of the 20th International Middleware Conference},
+    pages = {41–54},
+    numpages = {14},
+    keywords = {synchronization, stateful, Serverless, in-memory, FaaS},
+    location = {Davis, CA, USA},
+    series = {Middleware '19}
+}

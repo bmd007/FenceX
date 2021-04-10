@@ -1527,7 +1527,6 @@
         \item[4-] Repeat the experiment after changing the deployment configuration and input rate pattern. (Maybe add
         more instances or add more CPU) until finding peak throughput and/or a possible upper bound for throughput.
     \end{itemize}
-%    todo repeat the experiment group name in the expriment title
 
     \subsubsection{Experiment 1: Push leg throughput}
     \begin{table}[h!]
@@ -1603,7 +1602,7 @@
     The highest input rate we managed to produce during these experiments was around 15K location updates per second
     and FenceX just managed to handle it very well with the given deployment setup.
 
-    \subsubsection{Experiment 2}
+    \subsubsection{Experiment 2: Push leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1667,7 +1666,7 @@
         more memory) until finding peak throughput and/or a possible upper bound on throughput.
     \end{itemize}
 
-    \subsubsection{Experiment 3}
+    \subsubsection{Experiment 3: Pull leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1702,7 +1701,7 @@
     In this experiment, the input rate was around 12k/s at highest which is handled well by 2 rather rich instances of
     location-aggregate.
 
-    \subsubsection{Experiment 4}
+    \subsubsection{Experiment 4: Pull leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1823,7 +1822,7 @@
         \item[8-] Repeat the experiment with difference of restarting two instances instead of one.
     \end{itemize}
 
-    \subsubsection{Experiment 5}
+    \subsubsection{Experiment 5: Availability of push leg}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1901,7 +1900,7 @@
 
     \clearpage
 
-    \subsubsection{Experiment 7}
+    \subsubsection{Experiment 7: Availability of pull leg}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1987,7 +1986,7 @@
     This is because the input stream is ongoing and fixed rate, so process of buffered location updates only adds to
     throughput in that specific moments.
 
-    \subsubsection{Experiment 8}
+    \subsubsection{Experiment 8: Push leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2027,7 +2026,7 @@
     only handle one 3rd of input rate.
     Which is 5k intersections per second out of 15k location updates per second.
 
-    \subsubsection{Experiment 9}
+    \subsubsection{Experiment 9: Push leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2066,7 +2065,7 @@
     should be enough to cover the whole 15k/s input rate.
     15K location updates per second is the highest input rate that we could produce in a stable manner.
 
-    \subsubsection{Experiment 10}
+    \subsubsection{Experiment 10: Push leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2103,7 +2102,7 @@
     Also in \ref{fig:ex10} we can see effect of buffered location updates on throughput.
     Around the end parts of the graph, throughput is higher than input rate.
 
-    \subsubsection{Experiment 11}
+    \subsubsection{Experiment 11: Push leg strong scalability}
     Now in order to be just sure that adding more instances, won't affect the throughput in any good or bad way, we
     add another instance as the final step.
 
@@ -2139,7 +2138,7 @@
 
     \clearpage
 %todo more details
-    The clear observation is that adding one more instance didn't have any special effect on the throughput.
+    The clear observation is that adding one more instance did not have any special effect on the throughput.
     This is expected since throughput can not exceed input rate regardless of processing power.
     However, we can again see the effect of buffered location updates during re-balancing all over the graph.
 
@@ -2164,7 +2163,7 @@
     avoids some queries from being answered.
     Those queries will be considered as failed.
 
-    \subsubsection{Experiment 17}
+    \subsubsection{Experiment 17: Pull leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2195,7 +2194,7 @@
 
     \clearpage
 
-    \subsubsection{Experiment 18}
+    \subsubsection{Experiment 18: Pull leg strong scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2293,7 +2292,7 @@
     higher than the input rate.
     This is because the input stream is ongoing and fixed rate.
 
-    \subsubsection{Experiment 19}
+    \subsubsection{Experiment 19: Push leg weak scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2332,7 +2331,7 @@
     So far with one limited in resources instance of realtime-fencing, FenceX has managed to deal with around 2K
     location updates per second successfully in a stable manner.
 
-    \subsubsection{Experiment 20}
+    \subsubsection{Experiment 20: Push leg weak scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2366,7 +2365,7 @@
 
     Two such instances of realtime-fencing managed to handle around 3K location updates per second.
 
-    \subsubsection{Experiment 21}
+    \subsubsection{Experiment 21: Push leg weak scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2399,7 +2398,7 @@
 
     \clearpage
 
-    \subsubsection{Experiment 22}
+    \subsubsection{Experiment 22: Push leg weak scalability}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2519,7 +2518,7 @@
     Basically HTTP based communication does not support back pressure.
 
     \subsection{Push leg}
-    Push leg free fall scalability evaluation scenario:
+    Push leg stress tolerance evaluation scenario:
     \begin{itemize}
         \item[1-] Play with different input rates and deployment configurations to get a feeling of how to tune the
         system for best performance
@@ -2529,11 +2528,11 @@
         \item[5-] Now that there is plenty of location updates buffered in the Kafka topic, stop the stream of
         location updates.
         \item[6-] Deploy realtime-fencing instances according to the previously discovered deployment configuration.
-        \item[7-] Check the throughput and assert that it's much higher than maxixmum oberserved throughput in
+        \item[7-] Check the throughput and assert that it's much higher than maximum observed throughput in
         previous experiments.
     \end{itemize}
 
-    \subsubsection{Experiment 24}
+    \subsubsection{Experiment 24: Push leg stress tolerance}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -2563,7 +2562,7 @@
 
     \begin{sidewaysfigure}[h!]
         \centering
-        \caption{FenceX push leg free fall scalability ex24}
+        \caption{FenceX push leg stress tolerance ex24}
         \label{fig:ex24}
         \includegraphics[width=\textwidth, height=0.3\textheight]{images/evaluation/ex24-benchmarking-ongoing-1per2sec.png}
     \end{sidewaysfigure}
@@ -2577,11 +2576,10 @@
     We can clearly observe that after re-balancing among 10 newly deployed instance of realtime-fencing is finished,
     throughput has peaked very fast to about 65K fence-point intersections per second.
 
-    \subsubsection{Conclusion of push leg free fall scalability experiment}
+    \subsubsection{Conclusion of push leg stress tolerance experiment}
     We can relay on buffering properties of stream processing systems for testing throughput of operators.
     Specially when producing input and process it on realtime involves too much IO latency.
-    All in all, pull leg of FenceX has shown free fall scalability properties and ability to deliver throughput of
-    ~65k/s.
+    All in all, pull leg of FenceX has shown high tolerance in face of stressful load and ability to deliver throughput of ~65k/s.
 
     The throughput FenceX has achieved here (65k/s) is much higher compared to the throughput achieved by
     \cite{Nechifor_Comnac_2013} (20k/s).

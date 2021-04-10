@@ -1528,7 +1528,7 @@
         more instances or add more CPU) until finding peak throughput and/or a possible upper bound for throughput.
     \end{itemize}
 
-    \subsubsection{Experiment 1: Push leg throughput}
+    \subsubsection{Experiment 1 and 2: Push leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1544,18 +1544,32 @@
         \label{table:ex1-dv}
     \end{table}
 
-    Table \ref{table:ex1-dv} shows, for experiment 1, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each.
-    The row in table \ref{table:ex1-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 1.
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            Application               & number of instances & CPU(MHz) & RAM(MB) \\
+            \hline
+            location-update-publisher & 5                   & 400      & 700     \\
+            location-aggregate        & -                   & -        & -       \\
+            realtime-fencing          & 5                   & 400      & 700     \\
+            \hline
+        \end{tabular}
+        \caption{Experiment 2 deployment view}
+        \label{table:ex2-dv}
+    \end{table}
+
+    Tables \ref{table:ex1-dv} and \ref{table:ex2-dv} show, for experiments 1 and 2, how many instances of each FenceX
+    microservices we have deployed in addition to the amount of resources we have assigned to each.
+    The row in those tables with no values corresponds to a microservice which does not relate to experiments 1 and 2.
     After successful deployment, we followed the previously mentioned scenario.
-    The following figures illustrate how input rate and throughput have changed during each repetition of experiment 1
-    with different input rate patterns.
-    It is important to note that the pattern at which input rate changes, which differs among repetitions, is not of
-    relevance to system throughput experiments.
+    The following figures illustrate how input rate and throughput have changed during each repetition of experiment
+    1 and also during experiment 2.
+    It is important to note that the pattern at which input rate has changed, which differs among repetitions and
+    experiments, is not of direct relevance to the system throughput.
     So the pattern of changes in input rate and their differences can be ignored.
-    What matters in these experiments is that if throughout follows the input rate pattern in addition to the highest
-    achieved throughput.
+    What matters in these experiments is that if throughout \textbf{follows} the input rate pattern.
+    Also, the highest achieved throughput is the important value we look at during this experiments.
 
     \begin{sidewaysfigure}[h!]
         \centering
@@ -1591,42 +1605,6 @@
         \end{subfigure}
     \end{sidewaysfigure}
 
-    \clearpage
-
-    The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3} and \ref{fig:ex1-4} illustrate input rate
-    (location-updates per second) with green line and push throughput (number of fence-point intersection
-    calculations per second) with the blue line.
-    These figures show that when we tried different input rates (ranging from 8k/s to 15k/s), the throughput was
-    following the change patterns in input rate.
-    Also, throughput were mainly always as high as input rate.
-    The highest input rate we managed to produce during these experiments was around 15K location updates per second
-    and FenceX just managed to handle it very well with the given deployment setup.
-
-    \subsubsection{Experiment 2: Push leg throughput}
-    \begin{table}[h!]
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-            Application               & number of instances & CPU(MHz) & RAM(MB) \\
-            \hline
-            location-update-publisher & 5                   & 400      & 700     \\
-            location-aggregate        & -                   & -        & -       \\
-            realtime-fencing          & 5                   & 400      & 700     \\
-            \hline
-        \end{tabular}
-        \caption{Experiment 2 deployment view}
-        \label{table:ex2-dv}
-    \end{table}
-
-    Table \ref{table:ex2-dv} shows, for experiment 2, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 1, 1 more instance of each related microservice is deployed but with slightly lower
-    computation power available to each.
-    The row in table \ref{table:ex2-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 2.
-    The following figure illustrates how input rate and throughput have changed during experiment 2.
-
-
     \begin{sidewaysfigure}[h!]
         \caption{FenceX push throughput ex2}
         \label{fig:ex2}
@@ -1635,12 +1613,18 @@
 
     \clearpage
 
-    The figure \ref{fig:ex2} can be read in the same way as figures in experiment 1 (figures \ref{fig:ex1-1} for
-    example).
-    We have deployed one more instance of relevant microservice plus changing the input rate pattern.
-    The throughput again followed the input pattern.
+    \subsubsection{Discussion of push throughput experiments}
+    The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3}, \ref{fig:ex1-4} and \ref{fig:ex2} illustrate input
+    rate(location-updates per second) with green line and push throughput (number of fence-point intersection
+    calculations per second) with the blue line.
+    In experiment 1 we have tried different patterns of input rate and in experiment 2 we have deployed one more
+    instance of relevant microservice.
+    These experiments show that when we have applied different input rates (ranging from 8k/s to 15k/s), the throughput
+    has followed the change patterns of input rate.
+    Also, throughput were mainly always \textbf{as high as} input rate.
+    The highest input rate we managed to produce during these experiments was around 15K location updates per second
+    and FenceX just managed to handle it very well with the given deployment setup.
 
-    \subsubsection{Conclusion of push throughput experiments}
     So far the bottleneck is input rate which is limited by our physical resources available to bench-marking
     application.
     We can clearly see in the graphs that regardless of setup, push throughput (intersections/second) follows pretty
@@ -1648,6 +1632,7 @@
     So there is no point in continuing push throughput experiments with current available hardware power.
     The highest throughput observed for push leg so far therefore is ~15k/s.
 
+    \paragraph{}
     The work done in \cite{Nechifor_Comnac_2013} is comparable to push leg of FenceX.
     It has achieved throughput of 20K/s which is higher than the highest throughput we so far managed to observe in
     FenceX evaluations of push leg.
@@ -1666,7 +1651,7 @@
         more memory) until finding peak throughput and/or a possible upper bound on throughput.
     \end{itemize}
 
-    \subsubsection{Experiment 3: Pull leg throughput}
+    \subsubsection{Experiment 3 and 4: Pull leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1682,26 +1667,6 @@
         \label{table:ex3-dv}
     \end{table}
 
-    Table \ref{table:ex3-dv} shows, for experiment 3, how many instances of each FenceX microservices we have initially
-    deployed in addition to the amount of resources we have assigned to each.
-    The row in table \ref{table:ex3-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 3.
-    The following figure illustrates how input rate and throughput have changed during experiment 3.
-
-    \begin{sidewaysfigure}[h!]
-        \caption{FenceX pull throughput ex3}
-        \label{fig:ex3}
-        \includegraphics[scale=0.5]{images/evaluation/ex3-benchmarking(16,9).png}
-    \end{sidewaysfigure}
-
-    \clearpage
-
-    Figure \ref{fig:ex3} illustrates input rate (queries sent successfully per second) with purple line and pull
-    throughput (number of queries answered without error) with the yellow line.
-    In this experiment, the input rate was around 12k/s at highest which is handled well by 2 rather rich instances of
-    location-aggregate.
-
-    \subsubsection{Experiment 4: Pull leg throughput}
     \begin{table}[h!]
         \centering
         \begin{tabular}{|c|c|c|c|}
@@ -1717,13 +1682,18 @@
         \label{table:ex4-dv}
     \end{table}
 
-    Table \ref{table:ex4-dv} shows, for experiment 4, how many instances of each FenceX microservices we have
-    deployed in addition to the amount of resources we have assigned to each.
-    Compared to experiment 3, we have only changed the available resources to location-aggregate.
-    The row in table \ref{table:ex4-dv} with no values corresponds to a microservice which does not relate to the
-    experiment 4.
-    The following figures illustrate how input rate and throughput have changed during experiment 4 while applying
-    different patterns of input.
+
+    Tables \ref{table:ex3-dv} and \ref{table:ex4-dv} show, for experiments 3 and 4, how many instances of each FenceX
+    microservices we have deployed in addition to the amount of resources we have assigned to each.
+    The row in those tables with no values corresponds to a microservice which does not relate to the experiments 3
+    and 4.
+    The following figures illustrates how input rate and throughput have changed during experiment 3 and 4.
+
+    \begin{sidewaysfigure}[h!]
+        \caption{FenceX pull throughput ex3}
+        \label{fig:ex3}
+        \includegraphics[width=\textwidth, height=0.3\textheight]{images/evaluation/ex3-benchmarking(16,9).png}
+    \end{sidewaysfigure}
 
     \begin{sidewaysfigure}[h!]
         \centering
@@ -1742,24 +1712,23 @@
         \end{subfigure}
     \end{sidewaysfigure}
 
-    \clearpage
-
-    Both figure \ref{fig:ex4-1} and \ref{fig:ex4-2} can be read similarly to the graphs from experiment 3.
-    Comparing to experiment 3, in experiment 4 we changed the available resources to pull leg plus changing the input
+    \subsubsection{Discussion of pull throughput experiments}
+    Figures \ref{fig:ex3}, \ref{fig:ex4-1} and \ref{fig:ex4-2} illustrates input rate (queries sent successfully per
+    second) with purple line and pull throughput (number of queries answered without error) with the yellow line.
+    In experiments 3 and 4, the input rate was around 12k/s at highest which is handled well by 2 rather rich
+    instances of location-aggregate.
+    Comparing to experiment 3 with 4, we have changed the available resources to pull leg plus changing the input
     rate pattern.
     The change in the input pattern is subtle however.
-    In this experiment, the input rate was around 12k/s at highest which is handled well by pull leg of FenceX.
 
-    \subsubsection{Conclusion of pull throughput experiments}
     Experiments 3 and 4 show that we have failed to increase the input rate as we progressed.
     Although the CPU usage on location-aggregate instances peaked to 100 percent during these experiments,
     again the bottleneck was input rate which is limited by our physical available resources.
-    We can clearly see in the graphs that regardless of setup, pull throughput (queries/sec) follows pretty
-    much the exact pattern of changes in input rate (queries sent/sec).
+    We can clearly see in the graphs that regardless of setup, pull throughput (queries/sec) \textbf{follows} pattern
+    of changes in input rate (queries sent/sec).
     So there is no point in continuing pull throughput experiments with current available hardware.
-    However, the highest input rate we managed to produce during these experiments was in the range of [12-13]k queries
-    per second which FenceX just managed to handle very well.
 
+    \paragraph{}
     The software introduced in \cite{Cirillo-Jacobs-Martin-Szczytowski-2014}, although having notification
     functionalities, is comparable to pull leg of FenceX.
     Both of them use load sharing (scale out) and in-memory data processing to achieve high throughput and
@@ -2153,7 +2122,8 @@
         \item[2-] Start an ongoing load of queries (query by fence) with fixed rate.
         \item[3-] Deploy only one instance of location-aggregate (should not be too rich in resources, we want it to be
         overwhelmed).
-        \item[4-] Check the throughput. Hopefully it is much lower than the input rate.
+        \item[4-] Check the throughput.
+        Hopefully it is much lower than the input rate.
         \item[5-] Deploy one more instances of location-aggregate with exactly same resources as previous one.
         \item[6-] Assert an increase in throughput.
         \item[7-] Keep adding instances and asserting increase in throughput until throughput stops increasing.
@@ -2277,7 +2247,8 @@
         \item[2-] Start an ongoing stream of location reports with fixed low rate toward FenceX.
         \item[3-] Deploy only one instance of realtime-fencing (should not be too rich in resources as we want it to
         be overwhelmed).
-        \item[4-] Check the throughput. Hopefully it is equal to input rate.
+        \item[4-] Check the throughput.
+        Hopefully it is equal to input rate.
         \item[5-] Deploy one more instances of realtime-fencing with exactly same resources as previous one. Also,
         increase the input rate (like double).
         \item[6-] Assert that throughput covers the input rate.
@@ -2484,8 +2455,8 @@
         be overwhelmed).
         \item[4-] Check the throughput.
         Hopefully it is equal to input rate.
-        \item[5-] Deploy one more instances of location-aggregate with exactly same resources as previous one. Also,
-        increase the input rate (like double).
+        \item[5-] Deploy one more instances of location-aggregate with exactly same resources as previous one.
+        Also, increase the input rate (like double).
         \item[6-] Assert that throughput covers the input rate.
         \item[7-] Keep adding instances, increasing input rate and asserting increase in throughput until throughput
         stops increasing.

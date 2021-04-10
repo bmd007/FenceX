@@ -1452,7 +1452,7 @@
     \chapter{Experiments and validation}
     In this chapter we explain the process and results of evaluating FenceX.
     This process consists of many experiments with different setup and goals.
-    Each experiment had a preparation phase, execution, observation and finally conclusion.
+    Each experiment had a preparation phase, execution, observation and finally discussion.
 
 
     \section{Bench-marking application}
@@ -1575,8 +1575,8 @@
         \centering
         \begin{subfigure}[b]{\textwidth}
             \centering
-            \label{fig:ex1-1}
             \caption{FenceX push throughput ex1-1}
+            \label{fig:ex1-1}
             \includegraphics[width=\textwidth, height=0.3\textheight, scale=2]{images/evaluation/ex1-benchmarking(15,6).png}
         \end{subfigure}
 
@@ -1614,7 +1614,7 @@
     \clearpage
 
     \subsubsection{Discussion of push throughput experiments}
-    The figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3}, \ref{fig:ex1-4} and \ref{fig:ex2} illustrate input
+    Figures \ref{fig:ex1-1}, \ref{fig:ex1-2}, \ref{fig:ex1-3}, \ref{fig:ex1-4} and \ref{fig:ex2} illustrate input
     rate(location-updates per second) with green line and push throughput (number of fence-point intersection
     calculations per second) with the blue line.
     In experiment 1 we have tried different patterns of input rate and in experiment 2 we have deployed one more
@@ -1712,6 +1712,8 @@
         \end{subfigure}
     \end{sidewaysfigure}
 
+    \clearpage
+
     \subsubsection{Discussion of pull throughput experiments}
     Figures \ref{fig:ex3}, \ref{fig:ex4-1} and \ref{fig:ex4-2} illustrates input rate (queries sent successfully per
     second) with purple line and pull throughput (number of queries answered without error) with the yellow line.
@@ -1807,14 +1809,14 @@
         \label{table:ex5-dv}
     \end{table}
 
-    Table \ref{table:ex5-dv} shows, for experiment 5, how many instances of each FenceX microservices we have initially
+    Table \ref{table:ex5-dv} shows, for experiment 5, how many instances of each FenceX microservices we have
     deployed in addition to the amount of resources we have assigned to each.
     The row in table \ref{table:ex5-dv} with no values corresponds to a microservice which does not relate to the
     experiment 5.
     The following figures illustrate how input rate and throughput have changed during repetitions of experiment 5.
-    Each repetition was with different input load pattern.
+    Each repetition was with different input rate pattern.
     They also show how (and when) number of deployed instances of related microservices has changed during this
-    experiment.
+    repetitions.
 
     \begin{sidewaysfigure}[h!]
         \centering
@@ -1835,6 +1837,7 @@
 
     \clearpage
 
+    \subsubsection{Discussion of push leg availability experiments}
     In figures \ref{fig:ex5-1} and \ref{fig:ex5-2}, blue line represents the push throughput.
     Green line illustrates the ongoing input stream of location updates and pink point shows
     number of up and running instances of realtime-fencing.
@@ -1847,12 +1850,12 @@
     didn't get a chance to be processed, get it after re-balancing.
     As a result, we had even a higher throughput than input rate temporarily after re-balancing finishes.
 
-    \subsubsection{Conclusion of push leg availability experiments}
     Push leg of FenceX can handle some of it's instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system under
     high enough input loads.
     Also, thanks to durability and offset system of Kafka topics the probability of an event not getting processed
     eventually is very low.
+
 
     \subsection{Pull leg}
     Pull leg availability evaluation scenario:
@@ -1885,7 +1888,7 @@
         \label{table:ex7-dv}
     \end{table}
 
-    Table \ref{table:ex7-dv} shows, for experiment 7, how many instances of each FenceX microservices we have initially
+    Table \ref{table:ex7-dv} shows, for experiment 7, how many instances of each FenceX microservices we have
     deployed in addition to the amount of resources we have assigned to each.
     The row in table \ref{table:ex7-dv} with no values corresponds to a microservice which does not relate to the
     experiment 7.
@@ -1901,20 +1904,18 @@
 
     \clearpage
 
-    In figure \ref{fig:ex7} the purple line is the input rate (number of queries received by FenceX per
-    second) and the yellow line shows the rate of queries answered successfully.
+    \subsubsection{Discussion of pull leg availability experiments}
+    In figure \ref{fig:ex7} the purple line is the input rate (number of queries received by FenceX per second) and
+    the yellow line shows the rate of queries answered successfully.
     Red line shows how many queries FenceX failed to respond.
     A failure to respond in this load range means that the service supposed to answer the query was not
     up and running at that moment.
-    It is clear that once one of the instances of pull leg goes because of restart, the throughput drops and error
-    rate goes up accordingly.
-    Once restart and re-balancing finishes successfully, the throughput increases back to the previous
-    value and error rate drops back to zero.
-    Please note that re-balancing has no direct affect on queries by fence.
-    However, health of each Kafka or Kafka Stream application is dependent on a successful re-balancing.
+    It is clear that once one of the instances of pull leg goes down (because of restart), the throughput drops and
+    error rate goes up accordingly.
+    Once restart and re-balancing finishes successfully, the throughput increases back to its previous value and
+    error rate drops back to zero.
 
-    \subsubsection{Conclusion of pull leg availability experiments}
-    Pull leg of FenceX can handle some of it's instances going down and coming back up.
+    Pull leg of FenceX can handle some of its instances going down and coming back up.
     Even if an unhealthy instance does not recover, the only effect will be on the overall throughput of system
     temporarily.
 
@@ -1931,7 +1932,7 @@
     In FenceX, for pull leg, similar to previous experiments, load is rate of incoming HTTP requests for queries by fence.
     And, for push leg is the rate at which location reports arrive.
     Performance in our experiments is throughput of push leg and pull leg.
-    We expeect FenceX to show strong scalability characteristics in both of its legs.
+    We expect FenceX to show strong scalability characteristics in both of its legs.
 
     \subsection{Push leg}
     Push leg strong scalability evaluation scenario:

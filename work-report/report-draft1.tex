@@ -82,7 +82,7 @@
     Previously, the number of mobile objects thus the size of geospatial data about them and their load on the
     geofencing systems were much lower.
     Also, geofencing services were not much integrated into the day-to-day life of nonprofessional users.
-    Nowadays, on the other hand, geofencing systems are required to process large loads of requests and data in real-time with a much higher availability while serving a wider range of users.
+    Nowadays, on the other hand, geofencing systems are required to process large loads of requests and data in realtime with a much higher availability while serving a wider range of users.
     Online taxi providers, elderly care platforms, pet tracking systems, and disaster management systems are examples
     of use cases in which geofencing with aforementioned non-functional requirements is in action.
     In this thesis we have designed and implemented a geofencing system called FenceX with those needs in mind;
@@ -156,11 +156,11 @@
     What triggers a fencing operation in this example is each of the location reports which GPS modules attached to the cat sends to the system.
     So every minute one geofencing operation happens to check if the cat is still within the safe area or
     not.
-    This type of geofencing is of real-time nature.
+    This type of geofencing is of realtime nature.
 
     \paragraph{}
     The examples above help to clarify how this thesis has categorized geofencing operations.
-    On-demand and real-time.
+    On-demand and realtime.
     Each of them has different functional and non-functional requirements.
     The style of geofencing is not the only factor affecting the requirements.
     The nature of the business under development and use case also are effective.
@@ -179,7 +179,7 @@
     For on-demand geofencing, the system has to keep track of the latest reported location of movers while in realtime
     style, a database of fences is required.
     In on-demand geofencing, a geospatial index is queried which results in incomparably higher latency.
-    On the other hand, real-time style only requires a number/id index and has lower latency consequently.
+    On the other hand, realtime style only requires a number/id index and has lower latency consequently.
 
     \paragraph{}
     To implement a geofencing system, a database engine that supports geospatial index with a simple MVC\cite{mvc}
@@ -244,9 +244,9 @@
 
 
     \section{Using Complex Event Processing for implementing a geofencing service}
-    A real-time style geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
+    A realtime style geofencing system has been introduced in \cite{Nechifor_Comnac_2013}.
     It relies on a CEP (complex event processing) for fence entrance/exit detection.
-    This is comparable to functionalities of the push leg of FenceX where real-time fence point intersections happen.
+    This is comparable to functionalities of the push leg of FenceX where realtime fence point intersections happen.
     System in \cite{Nechifor_Comnac_2013} is using a classic 3 tiers monolith architecture.
     Unit of concurrency in \cite{Nechifor_Comnac_2013} is not clear.
     So it is not clear what are the bounds for the scalability of the introduced system.
@@ -389,23 +389,23 @@
     \section{Challenges related to geofencing}
     Both styles of geofencing are CPU intensive.
     Also, geofencing is usually implemented using databases interacting with disk and accessed over a network.
-    So a combination of natural computational latency and IO latency limits the overall throughput of geofencing systems.
+    So a combination of natural computational latency and I/O latency limits the overall throughput of geofencing systems.
     This gets worst in high load high scale use cases.
     This means the higher the load, the higher the effect of the aforementioned latencies on the overall performance of the system.
     As a remedy, we can improve the computational aspect of the problem by improving the indexing algorithms.
-    However, usually, the IO latency is much more effective than the operational burden.
+    However, usually, the I/O latency is much more effective than the operational burden.
     So the other approach to improve the throughput is using co-located in-memory databases which do not interact with disk and are accessed through a local network (localhost).
-    In this thesis, we focused on the latter and tried to minimize the IO latency.
+    In this thesis, we focused on the latter and tried to minimize the I/O latency.
 
     \paragraph{}
-    We decided to use co-located in-memory databases to minimize IO.
+    We decided to use co-located in-memory databases to minimize I/O.
     Everything will be fine until our system faces an amount of load which can not be handled properly even after scaling up.
     At this stage, we scale the system out and deploy more than one instance of the program.
     This will also help with the resiliency of the system;
     if one of the instances of the program goes down or stops responding for some reason, the system can still keep serving with the remaining available instances.
 
     \paragraph{}
-    Until now, we achieved high throughput, scalability, and resiliency by minimizing IO latency and scaling the
+    Until now, we achieved high throughput, scalability, and resiliency by minimizing I/O latency and scaling the
     application out.
     This means we ended up with a distributed system containing some components (instances of our application) that
     need to have the same image of the world, same data more precisely.
@@ -416,7 +416,7 @@
     We went for replication over sharding with the hope of keeping clients and data management simple.
     So we need to somehow make those instances have the same image of the world (same data) otherwise, their results will be inconsistent.
 
-    So far we have exchanged IO for the holly inconsistency issue of distributed systems.
+    So far we have exchanged I/O for the holly inconsistency issue of distributed systems.
     So the challenge is to keep the throughput, scalability, and resiliency of the geofencing system high while avoiding inconsistency among its components.
 
     \subsection{Functional requirements}
@@ -538,14 +538,14 @@
     That is because storage not being easy to scale in a distributed fashion.
     As a consequence, having very small computation units working decoupled comes with the price of not being able to access storage.
     Or not being able to access storage classically.
-    IO is usually an expensive operation regardless of the execution model.
-    When it comes to FaaS, IO becomes much harder to achieve due to the following reasons:
+    I/O is usually an expensive operation regardless of the execution model.
+    When it comes to FaaS, I/O becomes much harder to achieve due to the following reasons:
 
-    \paragraph{Network:} Since there is no storage and file system attached to each function, all IO should happen over the network which brings about high latency which reduces throughput as a result.
+    \paragraph{Network:} Since there is no storage and file system attached to each function, all I/O should happen over the network which brings about high latency which reduces throughput as a result.
 
     \paragraph{Run time limitation:} Each function, once called, has a limited time to live.
     If computation does not finish during the time limit, there will be no more chance to continue it.
-    The high latency of IO over the network does not match this limitation.
+    The high latency of I/O over the network does not match this limitation.
 
     \paragraph{Decoupled context:} Since all the running instances of the function are decoupled, there is
     no way for them to share something, a connection to the database for example.
@@ -632,8 +632,9 @@
         \item \textbf{Responsive:} a responsive system provides fast response in a consistent manner.
         \item \textbf{Resilient:} A resilient system keeps responding to the possible degree in face of failure.
         \textbf{replication and isolation} are cornerstones of resiliency.
-        \item \textbf{Elastic:} An elastic system keeps responding under varying workloads. Avoiding bottlenecks and cost-effective resource allocation plays an important role in achieving elasticity.
-        \item \textbf{Message Driven:} Non-blocking asynchronous message passing brings about isolation, location transparency, and backpressure for distributed system components.
+        \item \textbf{Elastic:} An elastic system keeps responding under varying workloads.
+        Avoiding bottlenecks and cost-effective resource allocation plays an important role in achieving elasticity.
+        \item \textbf{Message Driven:} Non-blocking asynchronous message passing brings about isolation, location transparency, and back pressure for distributed system components.
     \end{itemize}
 
     \begin{figure}[ht]
@@ -766,7 +767,7 @@
         \item A source that brings tweets into the stream processing pipeline
         \item A processor that extracts hashtags
         \item A stateful processor that counts occurrences of each hashtag
-        \item A sink that represents the end of this pipeline which receives the real-time count of each hashtag. It might
+        \item A sink that represents the end of this pipeline which receives the realtime count of each hashtag. It might
         save results in a file or publish them to another system.
     \end{itemize}
 
@@ -1016,7 +1017,7 @@
     Usually, in information systems, databases have their own cluster and deployed on machines other than the one on
     which applications are deployed.
     This is done in order to abstract away the availability and scalability challenges of data(base) from developers.
-    The disadvantage is that accessing such a database can only happen over a network that is an IO operation with relatively high latency.
+    The disadvantage is that accessing such a database can only happen over a network that is an I/O operation with relatively high latency.
     Since we aimed for high throughput (low latency) geofencing in FenceX, we decided to use a databases process
     deployed tightly together with location-aggregate.
     The life cycle of this database is managed by location-aggregate.
@@ -1027,9 +1028,9 @@
 
     \subsubsection{In memory database}
     Usually, database systems are configured to use the disk as storage which allows them to grow very big.
-    The downside with this approach is the IO intensiveness of interacting with a disk which means latency.
+    The downside with this approach is the I/O intensiveness of interacting with a disk which means latency.
     Although very high throughput SSD hard drives exist, not only their price tag is high but also they are still not as fast as memory.
-    Since our goal is minimizing IO latency, the H2 database not only is configured to use memory as storage but also
+    Since our goal is minimizing I/O latency, the H2 database not only is configured to use memory as storage but also
     using it in an asynchronous non-blocking manner (nioMemFS).
     This means H2 will act as if a file system exists on the memory and will access it using Java NIO \cite{JavaNio} technology.
 
@@ -1169,12 +1170,12 @@
 
     \subsection{Back pressure}
     Back pressure\cite{reactive-manifesto}, in simple terms, is the ability of the responder to control the flow of incoming requests.
-    If microservice A is sending an ongoing load of requests to microservice B, if backpressure is enabled for
+    If microservice A is sending an ongoing load of requests to microservice B, if back pressure is enabled for
     their communication solution, at each point in time, B can take as many requests as it can process and respond at
     that moment.
     As a result, B won't get overwhelmed and communication will keep flowing smoothly.
 
-    HTTP does not support backpressure, so in the case of A and B, A can send a big load of requests to B and
+    HTTP does not support back pressure, so in the case of A and B, A can send a big load of requests to B and
     essentially bring it down.
     One of the aspects of a reactive system is back pressure.
     A component in a reactive system should be able to somehow communicate that it's under pressure instead of catastrophically collapse.
@@ -1225,9 +1226,9 @@
     \subsection{Incoming HTTP requests}
     All HTTP APIs in FenceX are implemented using reactive stack (instead of thread-based servlet stack) using Spring
     webflux library.
-    Reactive in this context means asynchronous non-blocking IO which allows each instance to process much more HTTP
+    Reactive in this context means asynchronous non-blocking I/O which allows each instance to process much more HTTP
     requests providing having the same resources.
-    In simple terms, no CPU cycles will be wasted for/while WAITING for IO results.
+    In simple terms, no CPU cycles will be wasted for/while WAITING for I/O results.
 
     Also, deploying more than one instance of each microservice allows for load distribution.
     A load balancing solution (client-side load balancing in case of FenceX) distributes the HTTP calls over up and running instances of the target microservice.
@@ -1280,9 +1281,9 @@
     Is the number of queries (by fence) that FenceX can respond to successfully in a unit of time (seconds).
     This throughput is a factor of the number of queries one can send to FenceX which is the input rate in the pull leg context.
     Another effective factor is the latency of each query.
-    This latency depends on the amount of IO involved, geospatial index algorithm, network access latency, CPU speed, and the number of parallel queries.
-    In FenecX we minimized the network latency and IO latency by using an embedded co-located in-memory database.
-    Also using reactive programming for implementing HTTP APIs, removes the latency that waiting for blocking IO
+    This latency depends on the amount of I/O involved, geospatial index algorithm, network access latency, CPU speed, and the number of parallel queries.
+    In FenecX we minimized the network latency and I/O latency by using an embedded co-located in-memory database.
+    Also using reactive programming for implementing HTTP APIs, removes the latency that waiting for blocking I/O
     operations imposes.
 
     Also, using microservices architecture and scaling out the pull leg instances leads to more capacity for responding
@@ -1374,7 +1375,7 @@
     functionalities it provides.
     It is a microservice similar to other services in FenceX.
     It registers itself into Consul and has HTTP APIs.
-    It is based on spring-webflux\cite{webflux} reactive stack in order to handle IO better.
+    It is based on spring-webflux\cite{webflux} reactive stack in order to handle I/O better.
     The role of bench-marking is to imitate the behavior of real-world mover location report publishers,
     smartwatches, or car GPS modules for example.
 
@@ -2307,18 +2308,18 @@
     is limited.
     Stream processing systems rely on some sort of buffering which means events should be stored somewhere so
     that processors can handle them when they are ready.
-    That's how they get some sort of backpressure in reactive systems terminology.
+    That's how they get some sort of back pressure in reactive systems terminology.
     In the case of FenceX, that buffer is the Kafka topics which can grow very large without any problem.
 
     So instead of trying to produce a high rate of input in realtime, we can buffer a large number of events in a Kafka
     topic (waiting to be picked up and processed) while processors are down.
     When enough events got accumulated, we stop buffering events and deploy event processors.
-    Now processors can read the events with the least possible IO involved.
+    Now processors can read the events with the least possible I/O involved.
     Applying this approach, we can assess how well an event processor can be scaled when there is almost no factor involved other than input rate and processing power.
 
     This style of testing is only applicable to push leg since the concept of buffering work differently in terms of
     HTTP request.
-    Basically, HTTP based communication does not support backpressure.
+    Basically, HTTP based communication does not support back pressure.
 
     \subsection{Push leg}
     Push leg stress tolerance evaluation scenario:
@@ -2377,7 +2378,7 @@
     throughput has peaked very fast to about 65K fence-point intersections per second.
 
     We can rely on buffering properties of stream processing systems for testing the throughput of operators.
-    Especially when producing input and process it in realtime involves too much IO latency.
+    Especially when producing input and process it in realtime involves too much I/O latency.
     All in all, pull leg of FenceX has shown high tolerance in face of stressful load and the ability to deliver throughput of ~65k/s.
 
     The throughput FenceX has achieved here (65k/s) is much higher compared to the throughput achieved by
@@ -2393,7 +2394,7 @@
     FenceX can handle high input rates and deliver high throughput with low latency.
     FenceX supports two types of geofencing, on-demand and realtime.
     The on-demand part is achieved by having a fully replicated co-located in-memory geo-aware database.
-    The real-time part is brought about using a distributed join over a partitioned table of the fences and an ongoing stream of location reports.
+    The realtime part is brought about using a distributed join over a partitioned table of the fences and an ongoing stream of location reports.
 
     The result was so scalable that in most evaluation scenarios, we ran out of resources for producing more load
     before we can hit the upper bound of throughput (with a given deployment config).

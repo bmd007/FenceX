@@ -435,3 +435,21 @@
     location = {Davis, CA, USA},
     series = {Middleware '19}
 }
+
+@inproceedings{casualConsistency,
+    author = {Wu, Chenggang and Sreekanti, Vikram and Hellerstein, Joseph M.},
+    title = {Transactional Causal Consistency for Serverless Computing},
+    year = {2020},
+    isbn = {9781450367356},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3318464.3389710},
+    doi = {10.1145/3318464.3389710},
+    abstract = {We consider the setting of serverless Function-as-a-Service (FaaS) platforms, where storage services are disaggregated from the machines that support function execution. FaaS applications consist of compositions of functions, each of which may run on a separate machine and access remote storage. The challenge we address is improving I/O latency in this setting while also providing application-wide consistency. Previous work has explored providing causal consistency for individual I/Os by carefully managing the versions stored in a client-side data cache. In our setting, a single application may execute multiple functions across different nodes, and therefore issue interrelated I/Os to multiple distinct caches. This raises the challenge of Multisite Transactional Causal Consistency (MTCC): the ability to provide causal consistency for all I/Os within a given transaction even if it runs across multiple physical sites. We present protocols for MTCC implemented in a system called HYDROCACHE. Our evaluation demonstrates orders-of-magnitude performance improvements due to caching, while also protecting against consistency anomalies that otherwise arise frequently.},
+    booktitle = {Proceedings of the 2020 ACM SIGMOD International Conference on Management of Data},
+    pages = {83–97},
+    numpages = {15},
+    keywords = {low-latency, serverless computing, causal consistency},
+    location = {Portland, OR, USA},
+    series = {SIGMOD '20}
+}

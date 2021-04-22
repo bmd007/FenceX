@@ -276,6 +276,14 @@
     Fault tolerance comes from data replication and the possibility of making functions execute again when facing failure.
     This platform is best suited for computations that require direct state mutations (rather than immutable state).
 
+    \section{Transactional Causal Consistency for Serverless Computing}
+    The word done in \cite{casualConsistency} can be summarized as a solution for reducing the I/O latency in a stateful FaaS platform.
+    They achieved the stateful aspect of the FaaS by relying on colocated caches to the executing functions.
+    The solution provided by \cite{casualConsistency} also aims for application-wide consistency.
+    The main challenge in their work was to make Multisite Transactional Causal Consistency (MTCC) possible.
+    MTCC can be explained as having causal consistency within a transaction even if it runs on machines located in different physical sites.
+    To make MTCC possible, they have implemented MTCC protocols using a system called HydroCache.
+
 
     \section{Comparison with the state of the art}
     The work that has been done during this thesis is distinguishable from other reviewed works in terms of the

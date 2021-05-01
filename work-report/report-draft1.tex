@@ -76,22 +76,23 @@
     \setcounter{page}{2}
 
     \section*{Abstract}
-    To check if a location on a map is within a hypothetical shape (covering an area of a map) is called geofencing.
-    Since the emergence of smartphones, smart cars, and other mobile objects with GPS sensor attached to them, (non-)
-    functional requirements of geofencing systems have significantly changed.
-    Previously, the number of mobile objects thus the size of geospatial data about them and their load on the
+    To check if a coordinate (location, point on a map) is within a specific area is called geofencing.
+    Since the emergence of smartphones, smart cars, and other mobile objects with GPS sensor attached to them,
+    functional and non-functional requirements of geofencing systems have significantly changed.
+    Previously, the number of mobile objects and thus the size of geospatial data about them and their load on the
     geofencing systems were much lower.
     Also, geofencing services were not much integrated into the day-to-day life of nonprofessional users.
-    Nowadays, on the other hand, geofencing systems are required to process large loads of requests and data in realtime with a much higher availability while serving a wider range of users.
+    Nowadays, on the other hand, geofencing systems are required to process large loads of requests and data in
+    realtime with a much higher availability while serving a wider range of users.
     Online taxi providers, elderly care platforms, pet tracking systems, and disaster management systems are examples
     of use cases in which geofencing with aforementioned non-functional requirements is in action.
-    In this thesis we have designed and implemented a geofencing system called FenceX with those needs in mind;
-    The main pillars of FenceX, which enable those properties, are stream processing and microservices.
+    In this thesis we have designed and implemented a geofencing system called FenceX with those requirements in mind.
+    The main pillars of FenceX, which allow for satisfaction of those requirements, are stream processing and
+    microservices.
     FenceX has shown weak and strong scalability characteristics while being evaluated using real taxi trip data.
     Apart from being a geofencing system, FenceX can be considered an implementation for the idea of stateful function
-    as a service.
-    Currently, the available function as a service providers, Lambda from AWS most famously, do not allow for stateful
-    functions.
+    as a service (FaaS).
+    Currently the available FaaS providers, Lambda from AWS most famously, do not allow for stateful functions.
     In this thesis, thanks to the usage of Kafka Stream as the stream processing framework and its supports for stateful
     operations, FenceX allows for the definition and deployment of stateful functions.
     While comparing FenceX with related works, we observed better results in multiple dimensions, peak throughput
@@ -126,15 +127,14 @@
 
 
     \chapter{Introduction}
-    Geofencing\cite{geofencing} plays an important role in our day-to-day life nowadays in different styles and scales.
+    Geofencing\cite{geofencing} plays an important role in our day-to-day life nowadays.
     The most famous use case of geofencing is to take a taxi\cite{taxi-geofencing} from an online taxi provider like Uber.
     A traveler selects a pickup point and the system should send the offer (order) to the available taxies.
-    The system can't send the offer to all the taxies available around the world.
-    It might take forever until one of them accepts the offer;
-    which results in a very poor user experience.
+    The system can not send the offer to all the taxies available around the world.
+    It might take forever until one of them accepts the offer, which results in a very poor user experience.
     So what if the taxi provider comes up with an area on the map in which cars can reach the pickup point in less than 5 minutes.
     Or an area on the map, a circle, with a radius of 1 KM around the pickup point?
-    Let's call this hypothetical area \textbf{fence}.
+    Let us call this hypothetical area \textbf{fence}.
     On the other side of the story, we have taxies with a GPS sensor attached to them reporting their location every now and again to the system.
     Maybe every 20 seconds.
     In this example, to geofence is to find cars whose latest reported location is within that fence.
@@ -148,12 +148,13 @@
     The cat owners do not want the cat to go out or stay out of that safe zone.
     So they attach a GPS sensor to the cat and make it report the cat's location every minute to a geofencing system.
     They also draw a fence (shape) on a map (using UI of the geofencing system) representing their neighborhood, the safe zone.
-    And then ask the system to notify them by sending a notification to their phone whenever the cat goes outside
-    of that fence.
-    In this example, the fence is not much dynamic compared to the previous example.
+    Then ask the system to notify them by sending a notification to their phone whenever the cat goes outside of that fence.
+    In this example, the fence is not as dynamic compared to the previous example.
     The cat owners draw the fence once and the system saves it.
     The fences change if the cat gets older or they move to another area for example.
-    What triggers a fencing operation in this example is each of the location reports which GPS modules attached to the cat sends to the system.
+    What triggers a fencing operation in this example is each of the location reports which GPS modules sends to the
+    system.
+    The GPS module attached to the cat.
     So every minute one geofencing operation happens to check if the cat is still within the safe area or
     not.
     This type of geofencing is of realtime nature.
@@ -163,14 +164,13 @@
     On-demand and realtime.
     Each of them has different functional and non-functional requirements.
     The style of geofencing is not the only factor affecting the requirements.
-    The nature of the business under development and use case also are effective.
-    In some use cases, like food delivery, the rate of location reports can be as low as one per minute for each mover without any problem.
-    In other cases, like taxi business or police dispatch, the rate of location reports can be a high as one per 30
-    seconds for each vehicle;
-    These numbers gave a better impression about non-functional requirements of geofencing systems when considered
+    In some use cases, like food delivery,  the rate of location reports can be as low as one per minute for each
+    mover without any problem.
+    In other cases, like taxi business or police dispatch, the rate of location reports can be as high as one per 30
+    seconds for each vehicle.
+    These numbers give a better impression about non-functional requirements of geofencing systems when considered
     together with the number of moving objects interacting with the system.
-    Just for sake of example consider a taxi company with 6000 active cars.
-    Which is not far from reality.
+    Just for the sake of example consider a taxi company with 6000 active cars, which is not far from reality.
     6000 cars sending 1 location update every 30 seconds.
     It means 12000 location updates to be processed every minute.
     So a geofencing system is required to be able to handle different rates of input load.
@@ -184,17 +184,18 @@
     \paragraph{}
     To implement a geofencing system, a database engine that supports geospatial index with a simple MVC\cite{mvc}
     web application on top should suffice.
-    One package of code is responsible for receiving location reports, processing them, and then saving them in
+    One package of code is responsible for receiving location reports, processing them, then saving them in
     a database table, handling (HTTP) requests coming from UI, and even rendering the web UI.
-    This application can be deployed very easily on a virtual machine during a weekend and everyone will be happy
-    during the week.
+    This application can be deployed very easily on a virtual machine.
 
     The described system, however, will not satisfy the non-functional requirements that we have mentioned before.
     Also, it is not easy to change any part of it.
-    After each change, the whole software should be compiled, one big artifact should be created, all tests should be executed (if any exists) and a time-consuming deployment should happen.
+    After each change, the whole software should be compiled, one big artifact should be created, all tests should be
+    executed (if any exists) and a time-consuming deployment should happen.
     If anything happens during run time, the whole service goes down.
-    In case incoming load increases enough so that currently available resources get saturated, the only way to handle the situation is to add more resources to the machine running the application.
-    These are some of the common issues with monolith\cite{monolith} applications.
+    In case the incoming load increases enough so that the currently available resources get saturated, the only way to
+    handle the situation is to add more resources to the machine running the application.
+    These are some of the common problems with monolith\cite{monolith} applications.
 
     \paragraph{}
     Our contribution is design, implementation, and evaluation of a geofencing system supporting both styles of
@@ -202,17 +203,17 @@
     It relies on stream processing\cite{making-sense-of-stream-processing} and microservices\cite{microservices} in
     order to achieve high throughput, high scalability, and high availability.
     We have achieved these characteristics by using microservices as the major architecture of the system.
-    This means our system consists of small de-coupled components trying to share nothing as much as possible.
+    This means our system consists of small de-coupled components trying to share as little as possible.
     These microservices communicate using Kafka\cite{kafka} which is an event streaming\cite{design-event-driven-systems} platform.
-    Such style of communication enriched our work by becoming a foundation for stream processing.
+    Such style of communication enabled our work by becoming a foundation for stream processing.
     Combining Kafka and Kafka Streams\cite{KafkaStreams}, a stream processing framework, has resulted in a
     stream processing pipeline that its operations are packaged and deployed as microservices.
 
     \paragraph{}
-    Having a stream processing based system that has stateful operations gave us the ability to look at the system from
+    Having a stream processing based system that has stateful operations give us the ability to look at the system from
     function as a service\cite{whatisfaas} point of view.
-    The easiest approach at the moment to write a code and deploy it in the cloud is to write it as a function;
-    then gave the code to one of the FaaS (function as a service) providers like AWS Lambda \cite{lambda}.
+    The easiest approach at the moment to write a code and deploy it in the cloud is to write it as a function.
+    then give the code to one of the FaaS (function as a service) providers like AWS Lambda \cite{lambda}.
     They will do the all required work to expose that function, as an HTTP API for example, to the internet.
     However, such FaaS providers do not support stateful functions.
     So only stateless operations like compression of an image are well suited to enjoy the convenience of FaaS.
@@ -502,7 +503,7 @@
     \section{Function-as-a-Service}
     Consider a start-up company is shaping around a brilliant brand-new audio compression algorithm.
     Two computer science engineers came up with an algorithm and now want to make money out of it.
-    They don't want to publish any software or library but an online service, a few APIs (HTTP for example) only.
+    They do not want to publish any software or library but an online service, a few APIs (HTTP for example) only.
     They are confident enough in their work to know that once their service is up and running, a lot of companies want to use their service right away.
     Which means a huge number of requests to handle.
     So however they design and implement a system around their algorithm, it should be highly scalable and efficient.
@@ -566,7 +567,7 @@
     All the required computation can be carried out without the need for storage or a database.
 
     So what about stateful operations?
-    Can't we enjoy the high-level abstraction of the FaaS model with stateful operations?
+    Can we enjoy the high-level abstraction of the FaaS model with stateful operations?
 
 
     \section{Stream processing and Stateful FaaS}
@@ -799,7 +800,7 @@
     \subsection{Latency}
     In a stream processing system, latency is defined as the time takes for ONE event to be processed.
     In an ideal stream processing system, the latency reflects the actual processing work on the events.
-    Which means events don't wait to be processed.
+    Which means events do not wait to be processed.
     In other words, events get processed as soon as they arrive.
     \textbf{95th-percentile latency value of 10ms`} is an example of expressing latency in a stream processing system.
     It means 95 percent of events are processed within 10 ms.
@@ -807,7 +808,7 @@
 
     \subsection{Throughput}
     In a stream processing system, Throughput depends on both latency and input rate.
-    So low throughput doesn't necessarily mean high latency.
+    So low throughput does not necessarily mean high latency.
     A better metric is \textbf{peak throughput} which shows the limit on the performance of the system at maximum load.
     When a system reaches peak throughput, increasing input load will actually reduce throughput and can even lead to
     data loss (due to buffer overflow).
@@ -952,7 +953,7 @@
     Calculating fence-point intersection for every location report, on the other hand, is of real time nature.
     For each new location report, the system pushes an intersection calculation result.
     \textbf{fence-location-intersection and fence-aggregate} carry the burden of real time fencing and they are the push leg of FenceX.
-    In this style, the defined fences are more static and don't change frequently over time.
+    In this style, the defined fences are more static and do not change frequently over time.
 
     From now on, we will use the notions of push and pull leg frequently especially in the evaluation phase, Each of
     these legs have their own characteristics and require individual attention.
@@ -1008,7 +1009,7 @@
     The adapters receive location reports.
     Reports will be mapped to the event schema that other microservices understand and finally the event will be published into a topic called \textbf{location-updates}.
     This is a stateless service, so it can be scaled out very easily.
-    Since the functionality of this service is simple, each instance doesn't need to be rich in resources.
+    Since the functionality of this service is simple, each instance does not need to be rich in resources.
 
     \subsection{location-aggregate}
     Location-aggregate is a Kafka Streams application.
@@ -1047,7 +1048,7 @@
     Using database systems maintaining their own dedicated cluster means no need for being worry about the
     possible inconsistency problems.
     The nodes in the cluster need to be consistent after all, even if only they act as cold idle replicas.
-    Co-located in-memory databases, on the other hand, usually don't have any consideration for replication and/or consistency.
+    Co-located in-memory databases, on the other hand, usually do not have any consideration for replication and/or consistency.
     Since we want to scale out the pull leg of FenceX, facing inconsistency issues is inevitable.
     So we need a way to make each instance of location-aggregate (all of the H2 instances) have the same data, the same image of the world.
     H2 provides an out-of-the-box solution for keeping its instances consistent, even when configured to be embedded
@@ -1556,7 +1557,7 @@
     It has achieved a throughput of 20K/s which is higher than the highest throughput we so far managed to observe in
     FenceX evaluations of push leg.
     However, since \cite{Nechifor_Comnac_2013} has no considerations for scalability and availability, the lower
-    throughput of FenceX doesn't mean \cite{Nechifor_Comnac_2013} out performs FenceX.
+    throughput of FenceX does not mean \cite{Nechifor_Comnac_2013} out performs FenceX.
     It is also important to mention that so far 15k/s is the highest input rate we could produce.
     So we are not yet sure if 15k/s is the upper bound on the throughput of FenceX.
 

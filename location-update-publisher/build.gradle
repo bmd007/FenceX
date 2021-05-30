@@ -45,7 +45,7 @@ dependencies {
     //todo use function-web instead. then it will be easy to just copy paste for function-rabbitMq
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.locationtech.jts:jts-core:1.17.1'
+    implementation 'org.locationtech.jts:jts-core:1.18.1'
     implementation "com.google.guava:guava:30.1.1-jre"
 
     implementation files('libs/statefull-geofencing-faas-common-beta.jar')

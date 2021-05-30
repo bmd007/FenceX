@@ -93,7 +93,7 @@ jacocoTestReport {
 }
 
 bootJar {
-    layered()
+
 }
 
 tasks.named('wrapper') {

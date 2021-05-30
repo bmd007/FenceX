@@ -32,7 +32,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.0")
+    set('springCloudVersion', "2020.0.2")
 }
 
 dependencies {
@@ -75,10 +75,6 @@ jacocoTestReport {
         xml.enabled = true
         html.enabled = true
     }
-}
-
-bootJar {
-    layered()
 }
 
 tasks.named('wrapper') {

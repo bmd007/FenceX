@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk15
+FROM adoptopenjdk/openjdk16
 
 MAINTAINER "Mohammad Mahdi Amini 'bmd579@gmail.com'"
 

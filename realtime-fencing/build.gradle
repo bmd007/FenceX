@@ -85,10 +85,6 @@ jacocoTestReport {
     }
 }
 
-bootJar {
-    layered()
-}
-
 tasks.named('wrapper') {
     distributionType = Wrapper.DistributionType.ALL
 }

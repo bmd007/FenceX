@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.2'
+    id 'org.springframework.boot' version '2.4.6'
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id 'java'
     id 'idea'
@@ -21,7 +21,7 @@ ext.buildNumber = {
 
 project.version = buildNumber()
 
-sourceCompatibility = 15
+sourceCompatibility = 16
 
 repositories {
     mavenCentral()
@@ -32,11 +32,10 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.0")
+    set('springCloudVersion', "2020.0.2")
 }
 
 dependencies {
-    runtime("org.springframework.boot:spring-boot-properties-migrator")
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -45,7 +44,7 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-consul-discovery"
     implementation 'org.springframework.cloud:spring-cloud-function-context'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-devtools'
 
     // kafka
     implementation 'org.apache.kafka:kafka-streams'
@@ -53,7 +52,7 @@ dependencies {
 
     implementation 'org.locationtech.jts:jts-core:1.17.1' // not needed if h2gis got used
 
-    implementation "com.google.guava:guava:29.0-jre"
+    implementation "com.google.guava:guava:30.1.1-jre"
 
     implementation files('libs/statefull-geofencing-faas-common-beta.jar')
     implementation files('libs/statefull-geofencing-faas-function-beta.jar')
@@ -65,7 +64,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.awaitility:awaitility:3.1.6'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     implementation 'com.github.javafaker:javafaker:1.0.2'
 }
 

@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.2'
+    id 'org.springframework.boot' version '2.4.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.springframework.boot.experimental.thin-launcher" version "1.0.25.RELEASE"
     id 'idea'
@@ -8,7 +8,7 @@ plugins {
 
 group = 'statefull.geofencing.faas'
 version = 'beta'
-sourceCompatibility = '15'
+sourceCompatibility = '16'
 
 jar {
     manifest {
@@ -30,11 +30,10 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.0")
+    set('springCloudVersion', "2020.0.2")
 }
 
 dependencies {
-    runtime("org.springframework.boot:spring-boot-properties-migrator")
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.cloud:spring-cloud-function-context'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -43,7 +42,7 @@ dependencies {
         exclude group: 'com.zaxxer', module: 'HikariCP'
     }
     implementation 'org.locationtech.jts:jts-core:1.17.1'
-    implementation "com.google.guava:guava:29.0-jre"
+    implementation "com.google.guava:guava:30.1.1-jre"
     implementation files('libs/statefull-geofencing-faas-common-beta.jar')
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

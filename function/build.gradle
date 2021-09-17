@@ -3,7 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.springframework.boot.experimental.thin-launcher" version "1.0.27.RELEASE"
     id 'idea'
-    id 'java'
+    id 'java-library'
 }
 
 group = 'statefull.geofencing.faas'
@@ -30,7 +30,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.2")
+    set('springCloudVersion', "2020.0.3")
 }
 
 dependencies {
@@ -43,7 +43,7 @@ dependencies {
     }
     implementation 'org.locationtech.jts:jts-core:1.18.1'
     implementation "com.google.guava:guava:30.1.1-jre"
-    implementation files('libs/statefull-geofencing-faas-common-beta.jar')
+    api files('libs/statefull-geofencing-faas-common-beta.jar')
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

@@ -22,7 +22,7 @@ ext.buildNumber = {
 
 project.version = buildNumber()
 
-sourceCompatibility = 16
+sourceCompatibility = 15
 
 repositories {
     mavenCentral()

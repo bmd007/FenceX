@@ -1,1 +1,20 @@
+//pluginManagement {
+//    buildscript {
+//        repositories {
+//            flatDir {
+//                dirs 'libs'
+//            }
+//            gradlePluginPortal()
+//            maven { url "https://repo.spring.io/snapshot" }
+//            maven { url "https://repo.spring.io/milestone" }
+//            maven { url 'https://repo.spring.io/release' }
+//        }
+////        dependencies {
+////            classpath ":spring-boot-thin-gradle-plugin:1.0.27.RELEASE"
+////        }
+//        dependencies {
+//            classpath files('./libs/spring-boot-thin-gradle-plugin-1.0.28.BUILD-20210628.083041-2.jar')
+//        }
+//    }
+//}
 rootProject.name = 'statefull-geofencing-faas-common'

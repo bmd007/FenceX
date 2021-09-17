@@ -1,9 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.4'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.springframework.boot.experimental.thin-launcher' version '1.0.29.RELEASE'
     id 'java-library'
     id 'idea'
+    id 'org.springframework.boot' version '2.5.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot.experimental.thin-launcher' version '1.0.27-RELEASE'
 }
 
 group = 'statefull.geofencing.faas'
@@ -23,7 +23,9 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    maven { url "https://repo.spring.io/release" }
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
 }

@@ -24,10 +24,8 @@ project.version = buildNumber()
 sourceCompatibility = 15
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    flatDir {
-        dirs 'libs'
-    }
 }
 
 ext {
@@ -82,4 +80,5 @@ tasks.named('wrapper') {
 
 bootBuildImage {
     imageName = "bmd007/bench-marking"
+    environment= ["BP_JVM_VERSION" : "16"]
 }

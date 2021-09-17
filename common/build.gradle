@@ -4,10 +4,11 @@ plugins {
     id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "org.springframework.boot.experimental.thin-launcher" version "1.0.27.RELEASE"
+    id 'maven-publish'
 }
 
 group = 'statefull.geofencing.faas'
-version = 'beta'
+version = '0.0.1'
 sourceCompatibility = '15'
 
 jar {
@@ -25,13 +26,9 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
-    gradlePluginPortal()
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
-//    maven { url "https://repo.spring.io//libs-milestone" }
-//    maven { url "https://repo.spring.io//libs-snapshot" }
     maven { url 'https://repo.spring.io/release' }
-
 }
 
 ext {
@@ -62,3 +59,11 @@ test {
     useJUnitPlatform()
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+}

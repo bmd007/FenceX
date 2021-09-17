@@ -3,12 +3,12 @@ plugins {
     id 'idea'
     id 'org.springframework.boot' version '2.5.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.springframework.boot.experimental.thin-launcher' version '1.0.27-RELEASE'
+    id "org.springframework.boot.experimental.thin-launcher" version "1.0.27.RELEASE"
 }
 
 group = 'statefull.geofencing.faas'
 version = 'beta'
-sourceCompatibility = '16'
+sourceCompatibility = '15'
 
 jar {
     manifest {
@@ -25,9 +25,13 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://repo.spring.io/release" }
+    gradlePluginPortal()
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
+//    maven { url "https://repo.spring.io//libs-milestone" }
+//    maven { url "https://repo.spring.io//libs-snapshot" }
+    maven { url 'https://repo.spring.io/release' }
+
 }
 
 ext {

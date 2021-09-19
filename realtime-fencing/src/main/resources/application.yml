@@ -34,6 +34,8 @@ management:
         enabled: true
 
 spring:
+  config:
+    import: consul
   application.name: realtime-fencing
   cloud:
     consul:

@@ -33,7 +33,11 @@ management:
       prometheus:
         enabled: true
 
+
 spring:
+  config:
+    import: consul
+
   application:
     name: bench-marking
 

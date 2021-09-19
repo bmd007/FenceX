@@ -125,7 +125,7 @@ public class ViewService<E, M, I> {
             return Mono.empty();//No metadata for that key
         }
 
-        if (metadata.getActiveHost().host().equals(ip) && metadata.getActiveHost().port() == port) {
+        if (metadata. activeHost().host().equals(ip) && metadata. activeHost().port() == port) {
             LOGGER.debug("Querying local store {} for id: {}", storeName, id);
             var store = waitUntilStoreIsQueryable();
             return Optional.ofNullable(store.get(id))
@@ -134,7 +134,7 @@ public class ViewService<E, M, I> {
                     .orElseGet(() -> Mono.empty());//No data for that key locally
         }
 
-        var url = String.format("http://%s:%d/api/%s/%s", metadata.getActiveHost().host(), metadata.getActiveHost().port(), pathPart, id);
+        var url = String.format("http://%s:%d/api/%s/%s", metadata. activeHost().host(), metadata. activeHost().port(), pathPart, id);
         LOGGER.debug("Querying other instance's {} store for id: {} from {}", storeName, id, url);
         return commonClient.getOne(middleClass, url)
                 .switchIfEmpty(Mono.empty());//No data for that key remotely

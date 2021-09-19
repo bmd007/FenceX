@@ -139,8 +139,8 @@ services:
       - prometheus
       - grafana
     environment:
-      KAFKA_TOPIC_CONFIG_EVENT: "5:3"
-      KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       SPRING_CLOUD_CONSUL_HOST: consul
 
@@ -160,8 +160,29 @@ services:
     environment:
       SERVER_PORT: 9766
       MANAGEMENT_SERVER_PORT: 9767
-      KAFKA_TOPIC_CONFIG_EVENT: "5:3"
-      KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      SPRING_CLOUD_CONSUL_HOST: consul
+
+  location-update-publisher3:
+    container_name: location-update-publisher3
+#    cpu_shares: 30
+#    mem_limit: 700mb
+    image: bmd007/location-update-publisher
+    ports:
+      - "9526:9746"
+      - "9527:9747"
+    depends_on:
+      - kafka
+      - consul
+      - prometheus
+      - grafana
+    environment:
+      SERVER_PORT: 9746
+      MANAGEMENT_SERVER_PORT: 9747
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       SPRING_CLOUD_CONSUL_HOST: consul
 
@@ -177,13 +198,14 @@ services:
       - "8084:8084"
       - "9097:9097"
     depends_on:
+      - location-update-publisher
       - kafka
       - consul
       - prometheus
       - grafana
     environment:
-      KAFKA_TOPIC_CONFIG_EVENT: "5:3"
-      KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-aggregate
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
@@ -201,6 +223,7 @@ services:
       - "6084:8084"
       - "7097:9097"
     depends_on:
+      - location-update-publisher2
       - kafka
       - consul
       - prometheus
@@ -208,8 +231,8 @@ services:
     environment:
       SERVER_PORT: 9285
       MANAGEMENT_SERVER_PORT: 9286
-      KAFKA_TOPIC_CONFIG_EVENT: "5:3"
-      KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: location-aggregate2
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9585
@@ -225,13 +248,14 @@ services:
       - "7474:9535"
       - "7475:9536"
     depends_on:
+      - location-update-publisher3
       - kafka
       - consul
       - prometheus
       - grafana
     environment:
-      KAFKA_TOPIC_CONFIG_EVENT: "5:3"
-      KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
@@ -247,6 +271,7 @@ services:
       - "7476:9445"
       - "7477:9446"
     depends_on:
+      - location-update-publisher
       - kafka
       - consul
       - prometheus
@@ -254,8 +279,8 @@ services:
     environment:
       SERVER_PORT: 9445
       MANAGEMENT_SERVER_PORT: 9446
-      KAFKA_TOPIC_CONFIG_EVENT: "5:3"
-      KAFKA_TOPIC_CONFIG_CHANGELOG: "5:3"
+      KAFKA_TOPIC_CONFIG_EVENT: "12:3"
+      KAFKA_TOPIC_CONFIG_CHANGELOG: "12:3"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       KAFKA_STREAMS_SERVER_CONFIG_APP_IP: realtime-fencing2
       KAFKA_STREAMS_SERVER_CONFIG_APP_PORT: 9535
@@ -271,6 +296,7 @@ services:
       - "9511:9511"
       - "9512:9512"
     depends_on:
+      - location-update-publisher3
       - consul
       - prometheus
       - grafana

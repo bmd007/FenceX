@@ -1,6 +1,8 @@
 spring:
   cloud:
     consul:
+      host: localhost
+      port: 8500
       config:
         enabled: true
       enabled: true

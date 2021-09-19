@@ -1,7 +1,6 @@
 #!/bin/sh
 
-
-echo 'Building docker images out of involed applications in stateful geofincing faas'
+echo 'Building docker images out of involved applications in stateful geofincing faas'
 
 cd common
 ./gradlew clean thinJar publishMavenJavaPublicationToMavenLocal publishToMavenLocal
@@ -9,6 +8,7 @@ cd common
 cd ../function/
 pwd
 ./gradlew clean thinJar publishMavenJavaPublicationToMavenLocal publishToMavenLocal
+
 
 cd ../bench-marking/
 pwd

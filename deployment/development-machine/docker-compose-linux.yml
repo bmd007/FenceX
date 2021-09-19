@@ -2,6 +2,7 @@ version: "3.7"
 services:
 
   consul-server:
+    container_name: consul
     hostname: consul
     image: consul
     ports:
@@ -13,12 +14,14 @@ services:
   # Zookeeper for kafka
   zookeeper:
     image: wurstmeister/zookeeper
+    container_name: zookeeper
     hostname: zookeeper
     ports:
       - "2181:2181"
   # Kafka
   kafka:
     image: wurstmeister/kafka
+    container_name: kafka
     ports:
       - "9092:9092"
     environment:
@@ -31,10 +34,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   prometheus:
-    network_mode: host
-    user: "1000"
     image: prom/prometheus
+    container_name: prometheus
     hostname: prometheus
+#    network_mode: host
+    user: "1000"
     volumes:
       - ./metrics/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./metrics/prometheus_db:/var/lib/prometheus
@@ -50,8 +54,11 @@ services:
     ports:
       - '9090:9090'
 
+
+
   grafana:
-    network_mode: host
+#    network_mode: host
+    container_name: grafana
     image: grafana/grafana
     user: "1000"
     environment:
@@ -66,6 +73,7 @@ services:
 
   mongo:
     image: mongo
+    container_name: mongo
     #    environment:
     #      MONGO_INITDB_ROOT_USERNAME: root
     #      MONGO_INITDB_ROOT_PASSWORD: rootpassword

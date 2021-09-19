@@ -2,6 +2,7 @@ version: "3.8"
 services:
 
   consul-server:
+    container_name: consul
     hostname: consul
     image: consul
     ports:
@@ -13,6 +14,7 @@ services:
   # Zookeeper for kafka
   zookeeper:
     image: wurstmeister/zookeeper
+    container_name: zookeeper
     hostname: zookeeper
     ports:
       - "2181:2181"
@@ -32,6 +34,7 @@ services:
 
   prometheus:
     image: prom/prometheus
+    container_name: prometheus
     hostname: prometheus
     volumes:
       - ./metrics/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -48,7 +51,11 @@ services:
     ports:
       - '9090:9090'
 
+
+
   grafana:
+    network_mode: host
+    container_name: host
     image: grafana/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
@@ -62,6 +69,7 @@ services:
 
   mongo:
     image: mongo
+    container_name: mongo
     #    environment:
     #      MONGO_INITDB_ROOT_USERNAME: root
     #      MONGO_INITDB_ROOT_PASSWORD: rootpassword

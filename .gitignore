@@ -37,3 +37,7 @@ HELP.md
 /deployment/docker/metrics/
 !/deployment/docker/metrics/prometheus.yml
 !/deployment/docker/metrics/consul.json
+
+/deployment/development-machine/metrics/
+!/deployment/development-machine/metrics/prometheus.yml
+!/deployment/development-machine/metrics/consul.json

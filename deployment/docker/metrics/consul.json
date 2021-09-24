@@ -7,7 +7,7 @@
         "id": "metrics",
         "name": "Prometheus Server Metrics",
         "http": "http://prometheus:9090/metrics",
-        "interval": "15s"
+        "interval": "5s"
       }
     ]
   }

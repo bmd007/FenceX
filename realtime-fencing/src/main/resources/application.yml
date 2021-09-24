@@ -62,9 +62,8 @@ kafka:
   streams:
     server:
       config:
-        app:
-          ip: localhost
-          port: ${server.port}
+        app-ip: "localhost"
+        app-port: ${server.port}
 ---
 spring:
   config:

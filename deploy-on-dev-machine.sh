@@ -24,6 +24,7 @@ if [ $1 = 'clean' ];
 then
 pwd
 sh ./build-jars.sh
+rm -fr /tmp/kafka-streams/
 echo "-------------------------------\n"
 fi
 

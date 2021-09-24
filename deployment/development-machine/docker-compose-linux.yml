@@ -54,8 +54,6 @@ services:
     ports:
       - '9090:9090'
 
-
-
   grafana:
 #    network_mode: host
     container_name: grafana

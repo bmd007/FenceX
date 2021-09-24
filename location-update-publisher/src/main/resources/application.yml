@@ -38,6 +38,10 @@ spring:
     name: location-update-publisher
   config:
     import: optional:consul:localhost:8500
+  consul:
+    discovery:
+      prefer-ip-address: true
+      health-check-path: /health
   kafka:
     bootstrap-servers: "localhost:9092"
     producer:

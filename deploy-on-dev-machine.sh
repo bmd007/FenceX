@@ -55,3 +55,4 @@ pwd
 cd ../
 echo "-------------------------------\n"
 
+kill -SIGINT -$(echo $(ps -pPID_of_shell o tpgid=))

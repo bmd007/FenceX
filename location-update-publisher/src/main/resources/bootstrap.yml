@@ -8,6 +8,8 @@ spring:
       enabled: true
       discovery:
         enabled: true
+        prefer-ip-address: true
+        health-check-path: /health
     loadbalancer:
       ribbon:
         enabled: false

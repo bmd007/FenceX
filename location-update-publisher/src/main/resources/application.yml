@@ -34,16 +34,10 @@ management:
         enabled: true
 
 spring:
-  config:
-    import: consul
   application:
     name: location-update-publisher
-  cloud:
-    consul:
-      discovery:
-        prefer-ip-address: true
-        health-check-path: /health
-
+  config:
+    import: optional:consul:localhost:8500
   kafka:
     bootstrap-servers: "localhost:9092"
     producer:
@@ -51,8 +45,6 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 #      properties:
 #        - spring.json.type.mapping: MoverLocationUpdate:statefull.geofencing.faas.common.dto.MoverLocationUpdate
-
-
 
 kafka:
   topic:

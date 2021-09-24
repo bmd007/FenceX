@@ -36,7 +36,7 @@ management:
 
 spring:
   config:
-    import: consul
+    import: optional:consul:localhost:8500
 
   application:
     name: bench-marking

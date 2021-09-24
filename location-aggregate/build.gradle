@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.4'
+    id 'org.springframework.boot' version '2.5.5'
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id 'java'
     id 'idea'
@@ -30,7 +30,7 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2020.0.3")
+    set('springCloudVersion', "2020.0.4")
 }
 
 dependencies {
@@ -101,5 +101,5 @@ tasks.named('wrapper') {
 
 bootBuildImage {
     imageName = "bmd007/location-aggregate"
-    environment= ["BP_JVM_VERSION" : "16"]
+    environment= ["BP_JVM_VERSION" : "17"]
 }

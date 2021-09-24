@@ -12,8 +12,8 @@ import org.springframework.context.event.EventListener;
 import java.net.UnknownHostException;
 
 @SpringBootApplication
-public class Application {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+public class LocationUpdatePublisherApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocationUpdatePublisherApplication.class);
 
 //    @Bean
 //    public TimedAspect timedAspect(MeterRegistry registry) {
@@ -21,7 +21,7 @@ public class Application {
 //    }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(LocationUpdatePublisherApplication.class, args);
     }
 
     @EventListener(org.springframework.context.event.ContextRefreshedEvent.class)

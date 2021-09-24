@@ -1,13 +1,12 @@
-package statefull.geofencing.faas.function;
+package statefull.geofencing.faas.common;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Application {
-
+public class CommonApplication {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(CommonApplication.class, args);
     }
 
 }

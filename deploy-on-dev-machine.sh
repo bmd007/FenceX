@@ -8,6 +8,7 @@ docker rm -f kafka
 docker rm -f grafana
 docker rm -f zookeeper
 docker rm -f prometheus
+docker rm -f mongo
 
 cd ./deployment/development-machine
 docker-compose -f docker-compose-linux.yml rm
@@ -15,23 +16,30 @@ docker-compose -f docker-compose-linux.yml up -d
 cd ../
 sleep 10s
 
-SPRING_PROFILES_ACTIVE=local
+sh ./build-jars.sh
+
+export SPRING_PROFILES_ACTIVE=local
 
 cd ../location-update-publisher
+echo "-------------------------------\n"
 pwd
-./gradlew clean bootRun
-
-cd ../location-aggregate/
+./gradlew bootRun
+#
+#cd ../location-aggregate/
+#echo "-------------------------------\n"
 pwd
-./gradlew clean bootRun
-
-cd ../realtime-fencing
+#./gradlew bootRun
+#
+#cd ../realtime-fencing
+#echo "-------------------------------\n"
 pwd
-./gradlew clean bootRun
-
-cd ../bench-marking/
+#./gradlew bootRun
+#
+#cd ../bench-marking/
+#echo "-------------------------------\n"
 pwd
-./gradlew clean bootRun
+#./gradlew bootRun
 
 cd ../
+echo "-------------------------------\n"
 pwd

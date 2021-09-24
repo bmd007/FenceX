@@ -11,3 +11,11 @@
  2. still h2 but with r2dbc
  3. location update topic compact log
  4. if table is empty, subscribe to offset zero of location update topic
+
+### Autoscaling solutions
+### Making core data type more flexible
+### Aws/Google/Azure integration
+### Load testing
+### Cloud Foundry integration
+### Examining support of JVM languages other than Java
+

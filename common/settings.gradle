@@ -19,4 +19,4 @@
 ////        }
 //    }
 //}
-rootProject.name = 'statefull-geofencing-faas-common'
+rootProject.name = 'common'

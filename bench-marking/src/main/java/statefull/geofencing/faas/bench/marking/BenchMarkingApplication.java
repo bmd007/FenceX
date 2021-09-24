@@ -20,8 +20,8 @@ import java.nio.file.Files;
 import java.util.stream.BaseStream;
 
 @SpringBootApplication
-public class Application {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+public class BenchMarkingApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BenchMarkingApplication.class);
 
     @Autowired
     TripDocumentRepository repository;
@@ -30,7 +30,7 @@ public class Application {
     ObjectMapper objectMapper;
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(BenchMarkingApplication.class, args);
     }
 
     @EventListener(ApplicationReadyEvent.class)

@@ -51,8 +51,8 @@ dependencies {
     implementation "com.google.guava:guava:30.1.1-jre"
 
 //    implementation files('libs/statefull-geofencing-faas-common-beta.jar')
-    implementation "statefull.geofencing.faas:statefull-geofencing-faas-common:0.0.1"
-    implementation "statefull.geofencing.faas:statefull-geofencing-faas-function:0.0.1"
+    implementation "statefull.geofencing.faas:common:0.0.1"
+    implementation "statefull.geofencing.faas:function:0.0.1"
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

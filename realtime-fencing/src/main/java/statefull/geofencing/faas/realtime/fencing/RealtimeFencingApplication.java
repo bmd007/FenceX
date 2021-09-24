@@ -11,11 +11,11 @@ import org.springframework.context.event.EventListener;
 
 @SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas.common.domain",
 "statefull.geofencing.faas.common.dto", "statefull.geofencing.faas.function", "statefull.geofencing.faas.realtime.fencing"})
-public class Application {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+public class RealtimeFencingApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeFencingApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(RealtimeFencingApplication.class, args);
     }
 
     @EventListener(org.springframework.context.event.ContextRefreshedEvent.class)

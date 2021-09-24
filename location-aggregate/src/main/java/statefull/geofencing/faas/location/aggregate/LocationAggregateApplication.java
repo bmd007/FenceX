@@ -12,13 +12,13 @@ import org.springframework.context.event.EventListener;
 import java.sql.SQLException;
 
 @SpringBootApplication(scanBasePackages = {"statefull.geofencing.faas"})
-public class Application {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+public class LocationAggregateApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocationAggregateApplication.class);
     private org.h2.tools.Server webServer;
     private org.h2.tools.Server server;
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(LocationAggregateApplication.class, args);
     }
 
     @Bean
